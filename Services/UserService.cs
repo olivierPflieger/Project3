@@ -25,8 +25,6 @@ public class UserService : IUserService
 
         var newUser = new User
         {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
             Email = request.Email,
             Password = passwordHash
         };
@@ -35,5 +33,10 @@ public class UserService : IUserService
         await _context.SaveChangesAsync();
 
         return (true, string.Empty, newUser);
+    }
+
+    public async Task<List<User>> GetAllUsersAsync()
+    {
+        return await _context.Users.ToListAsync();
     }
 }

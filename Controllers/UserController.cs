@@ -20,6 +20,11 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var (isSuccess, errorMessage, createdUser) = await _userService.CreateUserAsync(request);
 
         if (!isSuccess)
@@ -28,5 +33,12 @@ public class UsersController : ControllerBase
         }
 
         return CreatedAtAction(nameof(CreateUser), new { id = createdUser!.Id }, new { message = "User correctly created" });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var users = await _userService.GetAllUsersAsync();
+        return Ok(users);
     }
 }

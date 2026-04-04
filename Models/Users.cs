@@ -1,22 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Project3.Models
 {
+    [Index(nameof(Email), IsUnique = true)]
     public class User
     {        
         public int Id { get; set; }
-
-        [Required]
-        [MaxLength(255)]
-        public required string FirstName { get; set; }
-        
-        [Required]
-        [MaxLength(255)]
-        public required string LastName { get; set; }
-        
+                        
         [Required]        
-        [EmailAddress(ErrorMessage = "Invalid email address format")]
+        [EmailAddress(ErrorMessage = "Email invalide")]
         public required string Email { get; set; }
+        
+        [MinLength(8, ErrorMessage = "Le mot de passe doit contenir au moins 8 caractères.")]
         public required string Password { get; set; }
     }
 }

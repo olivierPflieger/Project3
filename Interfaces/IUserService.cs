@@ -6,5 +6,6 @@ namespace Project3.Services;
 public interface IUserService
 {
     Task<(bool IsSuccess, string ErrorMessage, User? User)> CreateUserAsync(CreateUserRequest request);
+    Task<List<User>> GetAllUsersAsync();
 }
 
