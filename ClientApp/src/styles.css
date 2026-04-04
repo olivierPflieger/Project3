@@ -1,1 +1,75 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --Main-Font: "DM Sans";
+  --Static-Headline-Large-Tracking: 0;
+  --Background: linear-gradient(173deg, #FFB88C 2.29%, #DE6262 97.71%);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  background: var(--Background);
+}
+
+body {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  font-family: var(--Main-Font), sans-serif;
+}
+
+.main-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.gardeDataShare {
+  color: #000;
+  text-align: center;
+  font-feature-settings: 'liga' off;
+  font-family: var(--Main-Font), sans-serif;
+  font-size: clamp(3rem, 12vw, 8rem);
+  font-style: normal;
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: var(--Static-Headline-Large-Tracking);
+  margin: 0;
+}
+
+.gardeSlogan {
+  color: #000;
+  font-feature-settings: 'liga' off;
+  font-family: var(--Main-Font), sans-serif;
+  font-size: clamp(1.125rem, 3.2vw, 3rem);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.4;
+  letter-spacing: var(--Static-Headline-Large-Tracking);
+  white-space: nowrap;  
+}
+
+@media (max-width: 640px) {
+  .main-frame {
+    width: min(100%, calc(100vw - 2rem));
+  }
+
+  .gardeDataShare {
+    font-size: clamp(2.5rem, 18vw, 4.5rem);
+  }
+
+  .gardeSlogan {
+    white-space: normal;
+    font-size: clamp(1rem, 5vw, 1.5rem);
+  }
+}

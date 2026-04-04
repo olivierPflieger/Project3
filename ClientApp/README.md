@@ -1,6 +1,12 @@
-# Frontend
+# EtudiantFrontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.3.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.16.
+
+## Dependances installation
+
+```bash
+npm install
+```
 
 ## Development server
 
@@ -38,18 +44,41 @@ This will compile your project and store the build artifacts in the `dist/` dire
 
 ## Running unit tests
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+To execute unit tests with the [Jest](https://jestjs.io/) test runner, use the following command:
+Coverage report is generated in ..\coverage
 
 ```bash
-ng test
+npm run jest
 ```
 
 ## Running end-to-end tests
 
-For end-to-end (e2e) testing, run:
+NOTE : Ensure both backEnd and frontEnd are running
+to run backEnd, check README.md in BackEnd solution
+to run frontEnd, run ng serve
+
+For end-to-end (e2e) testing without coverage, run:
 
 ```bash
-ng e2e
+npm run e2e
+```
+
+For end-to-end (e2e) testing with coverage, run:
+
+```bash
+npm run cy:coverage
+```
+
+Additionally, if you need to clean the coverage report, run :
+
+```bash
+npm run coverage:clean
+```
+
+In order to open Cypress console, run : 
+
+```bash
+npx cypress open
 ```
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
