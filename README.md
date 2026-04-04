@@ -62,8 +62,8 @@ docker-compose up -d
 
 ### Mettre à jour la base de données
 
-Au besoin, afin d'appliquer les nouveaux changements de structure effectués sur la base de données
-Toujours dans le terminal à la racine du projet et exécutez :
+Au besoin, afin d'appliquer les nouveaux changements de structure effectués sur la base de données, 
+toujours dans le terminal à la racine du projet, exécutez :
 
 ```
 dotnet ef database update
@@ -88,22 +88,20 @@ Pour accéder directement à la base via le terminal du conteneur :
 docker exec -it postgres_db psql -U admin -d datashare -W
 ```
 
-*(Renseignez le password par la valeurs réelle du fichier `docker-compose.yml`).*
+*(Renseignez le mot de passe par la valeur réelle du fichier `docker-compose.yml`).*
 
 #### Via Docker Desktop
 
 - Dans Docker Desktop, développez l'arborescence du conteneur `project3-backend`.
 - Cliquez sur le conteneur `postgres_db`, puis allez dans l'onglet Exec pour ouvrir une session terminal.
-- Exécutez: 
+- Exécutez : 
 
 ```
 psql -U admin -d datashare -W
 ```
-*(Renseignez le password par la valeurs réelle du fichier `docker-compose.yml`).*
+*(Renseignez le mot de passe par la valeur réelle du fichier `docker-compose.yml`).*
 
-#### Via Docker Desktop
-
-Commandes utiles une fois connecté :
+#### Commandes utiles une fois connecté :
 - `\dt` : Lister les tables
 - `\d "Users"` : Voir la structure de la table Users
 - `SELECT * FROM "Users";` : Voir les données des utilisateurs
@@ -130,3 +128,25 @@ ng serve
 ```
 
 Une fois le serveur démarré, naviguez vers `http://localhost:4200/`
+
+## Configuration pour le développement local
+
+### Jwt Key
+Ce projet utilise les "User Secrets" de .NET pour gérer la clé secrète JWT en local sans la commiter sur Git. 
+Après avoir cloné le dépôt, vous devez configurer votre propre clé JWT locale pour que l'authentification fonctionne.
+
+Une fois la clé générée, ouvrez un terminal à la racine du projet backend et exécutez les commandes suivantes :
+
+```bash
+dotnet user-secrets init
+dotnet user-secrets set "Jwt:Key" "votre-cle-secrete-locale"
+```
+
+*Note : Assurez-vous que la clé locale fait au moins 256 bits (environ 32 caractères) pour que l'algorithme HMAC-SHA256 fonctionne correctement.*
+
+Pour voir le contenu de vos secrets locaux, vous pouvez exécuter :
+
+```bash
+dotnet user-secrets list
+```
+
