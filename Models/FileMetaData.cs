@@ -13,7 +13,7 @@ namespace Project3.Models
         public required string OriginalName { get; set; }
         
         [Required]
-        public required string GeneratedName { get; set; }
+        public required string Token { get; set; }
 
         [Required]
         public required string Extension { get; set; }

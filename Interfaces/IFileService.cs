@@ -7,6 +7,6 @@ namespace Project3.Interfaces
     {
         Task<FileMetaDataViewModel> UploadFileAsync(Stream requestBody, string contentType, int userId);
 
-        Task<List<FileMetaData>> GetAllFileMetaDatasAsync();
+        Task<List<FileMetaData>> GetAllFileMetaDatasAsync();                
     }
 }

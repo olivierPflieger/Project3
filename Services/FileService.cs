@@ -93,8 +93,8 @@ namespace Project3.Services
                     }
 
                     // Security : Generate new file name for S3 bucket
-                    var generatedFileName = Guid.NewGuid().ToString();
-                    var generatedFileNameWithExtension = String.Format("{0}.{1}", generatedFileName, extension);
+                    var token = Guid.NewGuid().ToString();
+                    var generatedFileName = String.Format("{0}.{1}", token, extension);
 
                     // Security : Validate file signature (magic number)                    
                     if (!await FileValidationHelper.IsValidFile_MagicNumberAsync(section.Body, extension))
@@ -119,7 +119,7 @@ namespace Project3.Services
                             var uploadRequest = new TransferUtilityUploadRequest
                             {
                                 InputStream = section.Body,
-                                Key = generatedFileNameWithExtension,
+                                Key = generatedFileName,
                                 BucketName = _settings.AwsBucketName,
                                 ContentType = section.ContentType
                             };
@@ -128,13 +128,13 @@ namespace Project3.Services
                             await fileTransferUtility.UploadAsync(uploadRequest);
 
                             // Get file metadata from S3 to retrieve the file size
-                            var s3ObjectMetadata = await _s3Client.GetObjectMetadataAsync(_settings.AwsBucketName, generatedFileNameWithExtension);
+                            var s3ObjectMetadata = await _s3Client.GetObjectMetadataAsync(_settings.AwsBucketName, generatedFileName);
 
                             // Create file metadata record in database
                             var fileMetaData = new Models.FileMetaData
                             {
                                 OriginalName = originalFileName,
-                                GeneratedName = generatedFileName,
+                                Token = token,
                                 Extension = extension,
                                 Size = s3ObjectMetadata.ContentLength.ToString(),
                                 Password = passwordHash,
@@ -152,7 +152,8 @@ namespace Project3.Services
                                 IsSuccess = true,
                                 Message = "Fichier correctement téléversé",
                                 OriginalFileName = originalFileName,
-                                GeneratedFileName = generatedFileName,
+                                Token = token,
+                                Extension = extension,
                                 FileSize = s3ObjectMetadata.ContentLength.ToString()
                             };
                         }
