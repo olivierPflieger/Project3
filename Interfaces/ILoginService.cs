@@ -1,9 +1,9 @@
-using Project3.DTOs;
+using Project3.ViewModels;
 
 namespace Project3.Interfaces
 {
     public interface ILoginService
     {
-        string? Login(LoginRequest request);
+        string? Login(string email, string password);
     }
 }

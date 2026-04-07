@@ -1,12 +1,13 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
-using Project3.DTOs;
 using Project3.Helpers;
 using Project3.Interfaces;
 using Project3.Models;
+using Project3.ViewModels;
 
 namespace Project3.Services
 {
@@ -14,19 +15,21 @@ namespace Project3.Services
     {        
         private readonly FileUploadSettings _settings;
         private readonly IAmazonS3 _s3Client;
-                
-        public FileService(IOptions<FileUploadSettings> options, IAmazonS3 s3Client)
+        private readonly AppDbContext _context;
+
+        public FileService(IOptions<FileUploadSettings> options, IAmazonS3 s3Client, AppDbContext context)
         {
             _settings = options.Value;
             _s3Client = s3Client;
+            _context = context;
         }
 
-        public async Task<FileUploadResponse> UploadFileAsync(Stream requestBody, string contentType)
+        public async Task<FileMetaDataViewModel> UploadFileAsync(Stream requestBody, string contentType, int userId)
         {
             // Check HTTP request content type
             if (!MultipartRequestHelper.IsMultipartContentType(contentType))
             {
-                return new FileUploadResponse { IsSuccess = false, ErrorMessage = "Le type de contenu attendu est 'multipart/form-data'." };
+                return new FileMetaDataViewModel { IsSuccess = false, Message = "Le type de contenu attendu est 'multipart/form-data'." };
             }
 
             // Read the boundary from the Content-Type header
@@ -37,11 +40,44 @@ namespace Project3.Services
             var reader = new MultipartReader(boundary, requestBody);
 
             var section = await reader.ReadNextSectionAsync();
-            
+                        
+            // Additional parameters (ex: password, expiration, tags)
+            string password = string.Empty;
+            int expiration = 7;
+            string[] tags = Array.Empty<string>();
+
             while (section != null)                        
             {
                 var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition);
 
+                // Additional parameters from body (ex: password, tags, etc.)
+                if (hasContentDispositionHeader && contentDisposition.DispositionType.Equals("form-data"))                    
+                {
+                    if (string.IsNullOrEmpty(contentDisposition.FileName.Value))
+                    {
+                        var key = HeaderUtilities.RemoveQuotes(contentDisposition.Name).Value;
+                                                
+                        using var streamReader = new StreamReader(section.Body, System.Text.Encoding.UTF8);
+                        var value = await streamReader.ReadToEndAsync();
+
+                        if (key.Equals("password", StringComparison.OrdinalIgnoreCase))
+                        {
+                            password = value;
+                        }
+
+                        if (key.Equals("expiration", StringComparison.OrdinalIgnoreCase))
+                        {
+                            int.TryParse(value, out expiration);
+                        }
+
+                        if (key.Equals("tags", StringComparison.OrdinalIgnoreCase))
+                        {
+                            tags = value.Trim().Split(",");
+                        }
+                    }
+                }
+
+                // Streaming
                 if (hasContentDispositionHeader && contentDisposition.DispositionType.Equals("form-data") &&
                     !string.IsNullOrEmpty(contentDisposition.FileName.Value))
                 {
@@ -51,16 +87,16 @@ namespace Project3.Services
                     // Security : Extension validation          
                     if (string.IsNullOrEmpty(extension) || !(FileValidationHelper.GetAllowedExtensions().Contains(extension, StringComparer.OrdinalIgnoreCase)))
                     {
-                        return new FileUploadResponse { IsSuccess = false, ErrorMessage = "Type de fichier non autorisé" };
+                        return new FileMetaDataViewModel { IsSuccess = false, Message = "Type de fichier non autorisé" };
                     }
 
                     // Security : Generate new file name for S3 bucket
-                    var s3Key = Guid.NewGuid().ToString() + extension;
+                    var generatedFileName = Guid.NewGuid().ToString() + extension;
 
                     // Security : Validate file signature (magic number)                    
                     if (!await FileValidationHelper.IsValidFile_MagicNumberAsync(section.Body, extension))
                     {
-                        return new FileUploadResponse { IsSuccess = false, ErrorMessage = "Signature de fichier non autorisée" };
+                        return new FileMetaDataViewModel { IsSuccess = false, Message = "Signature de fichier non autorisée" };
                     }
 
                     // Security : MIME type validation
@@ -69,7 +105,7 @@ namespace Project3.Services
                         !FileValidationHelper.ExpectedMimeTypes.TryGetValue(extension, out var expectedMime) ||
                         !sectionContentType.StartsWith(expectedMime, StringComparison.OrdinalIgnoreCase))
                     {
-                        return new FileUploadResponse { IsSuccess = false, ErrorMessage = "Le type de contenu (MIME) ne correspond pas à l'extension du fichier" };
+                        return new FileMetaDataViewModel { IsSuccess = false, Message = "Le type de contenu (MIME) ne correspond pas à l'extension du fichier" };
                     }
 
                     try
@@ -80,36 +116,75 @@ namespace Project3.Services
                             var uploadRequest = new TransferUtilityUploadRequest
                             {
                                 InputStream = section.Body,
-                                Key = s3Key,
+                                Key = generatedFileName,
                                 BucketName = _settings.AwsBucketName,
                                 ContentType = section.ContentType
                             };
 
                             // S3 Upload
                             await fileTransferUtility.UploadAsync(uploadRequest);
-                        }
 
-                        return new FileUploadResponse
-                        {
-                            IsSuccess = true,
-                            OriginalFileName = originalFileName,
-                            SavedFileName = s3Key
-                        };
+                            // Get file metadata from S3 to retrieve the file size
+                            var s3ObjectMetadata = await _s3Client.GetObjectMetadataAsync(_settings.AwsBucketName, generatedFileName);
+
+                            // Create file metadata record in database
+                            var fileMetaData = new Models.FileMetaData
+                            {
+                                OriginalName = originalFileName,
+                                GeneratedName = generatedFileName,
+                                Size = s3ObjectMetadata.ContentLength.ToString(),
+                                Password = password,
+                                CreatedDate = DateTime.UtcNow,
+                                ExpirationDate = DateTime.UtcNow.AddDays(expiration),
+                                Tags = tags,
+                                UserId = userId
+                            };
+
+                            CreateFileMetaDataAsync(fileMetaData).Wait();
+
+                            // Finally return response
+                            return new FileMetaDataViewModel
+                            {
+                                IsSuccess = true,
+                                Message = "Fichier correctement téléversé",
+                                OriginalFileName = originalFileName,
+                                GeneratedFileName = generatedFileName,
+                                FileSize = s3ObjectMetadata.ContentLength.ToString()
+                            };
+                        }
                     }
                     catch (AmazonS3Exception ex)
                     {
-                        return new FileUploadResponse { IsSuccess = false, ErrorMessage = $"Erreur S3 : {ex.Message}" };
+                        return new FileMetaDataViewModel { IsSuccess = false, Message = $"Erreur S3 : {ex.Message}" };
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        return new FileUploadResponse { IsSuccess = false, ErrorMessage = "Une erreur serveur est survenue lors de l'envoi vers AWS S3" };
+                        if (!string.IsNullOrEmpty(ex.Message))
+                        {
+                            return new FileMetaDataViewModel { IsSuccess = false, Message = $"Erreur serveur : {ex.Message}" };
+                        }
+                        else
+                        {
+                            return new FileMetaDataViewModel { IsSuccess = false, Message = "Une erreur serveur est survenue lors de l'envoi du fichier" };
+                        }
                     }
                 }
-
+                                
                 section = await reader.ReadNextSectionAsync();
             }
 
-            return new FileUploadResponse { IsSuccess = false, ErrorMessage = "Aucun fichier valide n'a été trouvé" };
-        }                
+            return new FileMetaDataViewModel { IsSuccess = false, Message = "Aucun fichier valide n'a été trouvé" };
+        }
+
+        public async Task<List<FileMetaData>> GetAllFileMetaDatasAsync()
+        {
+            return await _context.FileMetaDatas.ToListAsync();
+        }
+
+        private async Task<int> CreateFileMetaDataAsync(FileMetaData fileMetaData)
+        {
+            _context.FileMetaDatas.Add(fileMetaData);
+            return await _context.SaveChangesAsync();
+        }
     }
 }

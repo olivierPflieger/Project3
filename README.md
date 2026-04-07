@@ -103,8 +103,8 @@ psql -U admin -d datashare -W
 
 #### Commandes utiles une fois connecté :
 - `\dt` : Lister les tables
-- `\d "Users"` : Voir la structure de la table Users
-- `SELECT * FROM "Users";` : Voir les données des utilisateurs
+- `\d "table"` : Voir la structure d'une table
+- `SELECT * FROM "table";` : Voir les données d'une table
 - `\q` : Quitter
 
 #### SWAGGER

@@ -1,5 +1,5 @@
 using Microsoft.IdentityModel.Tokens;
-using Project3.DTOs;
+using Project3.ViewModels;
 using Project3.Interfaces;
 using Project3.Models;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,10 +19,9 @@ namespace Project3.Services
             _configuration = configuration;
         }
 
-        public string? Login(LoginRequest request)
+        public string? Login(string email, string password)
         {
-            // 1. Find user by email
-            var user = _context.Users.SingleOrDefault(u => u.Email == request.Email);
+            var user = _context.Users.SingleOrDefault(u => u.Email == email);
 
             if (user == null)
             {
@@ -30,7 +29,7 @@ namespace Project3.Services
             }
 
             // 2. Validate password against the stored hash
-            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
 
             if (!isPasswordValid)
             {
@@ -47,7 +46,7 @@ namespace Project3.Services
             var keyStr = jwtSettings["Key"];
 
             if (string.IsNullOrEmpty(keyStr))
-                throw new InvalidOperationException("JWT Key is not configured.");
+                throw new InvalidOperationException("La clé JWT n'est pas configurée correctement");
 
             var key = Encoding.ASCII.GetBytes(keyStr);
 

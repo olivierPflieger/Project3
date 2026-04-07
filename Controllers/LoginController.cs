@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Project3.DTOs;
+using Project3.ViewModels;
 using Project3.Interfaces;
 
 namespace Project3.Controllers
@@ -16,16 +16,26 @@ namespace Project3.Controllers
         }
 
         [HttpPost()]
-        public IActionResult Login([FromBody] LoginRequest request)
+        public IActionResult Login([FromBody] LoginViewModel request)
         {
-            var token = _loginService.Login(request);
-
-            if (token == null)
+            try
             {
-                return Unauthorized(new { message = "Email ou mot de passe incorrect." });
+                var token = _loginService.Login(request.Email, request.Password);
+                
+                if (!string.IsNullOrEmpty(token))
+                {
+                    return Ok(new { token });
+                }
+                else
+                {
+                    return Unauthorized(new { message = "Email ou mot de passe incorrect." });
+                }
+            }            
+            catch (Exception ex)
+            {
+                string errorMessage = $"Une erreur serveur s'est produite: {ex.Message}";
+                return StatusCode(500, new { message = errorMessage });
             }
-
-            return Ok(new { token });
         }
     }
 }

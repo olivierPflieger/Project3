@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Project3.DTO;
+using Project3.ViewModels;
 using Project3.Models;
 using Project3.Services;
 
@@ -10,37 +10,52 @@ namespace Project3.Controllers;
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
-    private readonly IUserService _userService;
-    private readonly AppDbContext _context;
+    private readonly IUserService _userService;    
 
     public UsersController(IUserService userService)
     {
-        _userService = userService;
+        _userService = userService;        
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserViewModel request)
     {
-        if (!ModelState.IsValid)
+        try
         {
-            return BadRequest(ModelState);
+            User user = new User
+            {
+                Email = request.Email,
+                Password = request.Password
+            };
+
+            await _userService.CreateUserAsync(user);
+                return CreatedAtAction(nameof(CreateUser), new { message = "Utilisateur correctement ajouté" });
         }
-
-        var (isSuccess, errorMessage, createdUser) = await _userService.CreateUserAsync(request);
-
-        if (!isSuccess)
+        catch (ArgumentException ex)
         {
+            string errorMessage = $"{ex.Message}";
             return Conflict(new { message = errorMessage });
-        }
-
-        return CreatedAtAction(nameof(CreateUser), new { id = createdUser!.Id }, new { message = "User correctly created" });
+        }        
+        catch (Exception ex)
+        {
+            string errorMessage = $"Une erreur serveur s'est produite: {ex.Message}";
+            return StatusCode(500, new { message = errorMessage });
+        }                
     }
 
     [HttpGet]
     [Authorize]
     public async Task<IActionResult> GetAllUsers()
     {
-        var users = await _userService.GetAllUsersAsync();
-        return Ok(users);
+        try
+        {
+            var users = await _userService.GetAllUsersAsync();
+            return Ok(users);
+        }
+        catch (Exception ex)
+        {
+            string errorMessage = $"Une erreur s'est produite durant la lecture des utilisateurs: {ex.Message}";
+            return StatusCode(500, new { message = errorMessage });
+        }
     }
 }

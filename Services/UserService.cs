@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project3.Models;
-using Project3.DTO;
-using Project3.DTOs;
+using Project3.ViewModels;
 
 namespace Project3.Services;
 
@@ -14,32 +13,29 @@ public class UserService : IUserService
         _context = context;
     }
 
-    public async Task<(bool IsSuccess, string ErrorMessage, CreateUserResponse? UserResponse)> CreateUserAsync(CreateUserRequest request)
+    public async Task<int> CreateUserAsync(User user)
     {        
-        if (await _context.Users.AnyAsync(u => u.Email == request.Email))
+        if (await _context.Users.AnyAsync(u => u.Email == user.Email))
         {
-            return (false, "A user is already existing with this email", null);
+            throw new ArgumentException("Un utilisateur existe déjà avec cet email");
         }
 
         // Encrypt password
-        string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+        string passwordHash = BCrypt.Net.BCrypt.HashPassword(user.Password);
 
-        var newUser = new User
+        var userToCreated = new User
         {
-            Email = request.Email,
+            Email = user.Email,
             Password = passwordHash
         };
 
-        _context.Users.Add(newUser);
-        await _context.SaveChangesAsync();
+        _context.Users.Add(userToCreated);
+        return await _context.SaveChangesAsync();
+    }
 
-        CreateUserResponse userResponse = new CreateUserResponse
-        {
-            Email = newUser.Email,
-            Password = newUser.Password
-        };
-
-        return (true, string.Empty, userResponse);
+    public async Task<User> FindById(int id)
+    {
+        return await _context.Users.FindAsync(id);
     }
 
     // TEMP !! TO DELETE

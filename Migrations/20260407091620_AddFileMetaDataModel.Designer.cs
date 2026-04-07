@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Project3.Models;
@@ -11,9 +12,11 @@ using Project3.Models;
 namespace Project3.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260407091620_AddFileMetaDataModel")]
+    partial class AddFileMetaDataModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,12 +58,7 @@ namespace Project3.Migrations
                         .IsRequired()
                         .HasColumnType("text[]");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("FileMetaDatas");
                 });
@@ -87,22 +85,6 @@ namespace Project3.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Project3.Models.FileMetaData", b =>
-                {
-                    b.HasOne("Project3.Models.User", "User")
-                        .WithMany("FileMetaDatas")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Project3.Models.User", b =>
-                {
-                    b.Navigation("FileMetaDatas");
                 });
 #pragma warning restore 612, 618
         }

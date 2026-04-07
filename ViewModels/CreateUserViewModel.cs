@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Project3.DTO
+namespace Project3.ViewModels
 {
-    public class CreateUserRequest
+    public class CreateUserViewModel
     {
         [Required]
         [EmailAddress(ErrorMessage = "Email invalide")] 
         public required string Email { get; set; }
+
         [MinLength(8, ErrorMessage = "Le mot de passe doit contenir au moins 8 caractères.")] 
         public required string Password { get; set; }
     }

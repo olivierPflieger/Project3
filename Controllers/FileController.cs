@@ -2,28 +2,30 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Project3.ViewModels;
 using Project3.Filters;
 using Project3.Interfaces;
 using Project3.Models;
+using System.Security.Claims;
 
 namespace Project3.Controllers
 {
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class FileController : ControllerBase
+    public class FilesController : ControllerBase
     {        
         private readonly IFileService _fileService;
-        private readonly FileUploadSettings _settings;
+        private readonly FileUploadSettings _settings;        
 
         // Injection des paramètres de configuration
-        public FileController(IFileService fileService, IOptions<FileUploadSettings> options)
+        public FilesController(IFileService fileService, IOptions<FileUploadSettings> options)
         {
             _fileService = fileService;
             _settings = options.Value;
         }
 
-        [HttpPost("upload")]
+        [HttpPost()]
         [DisableFormValueModelBinding]
         [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
         public async Task<IActionResult> UploadFile()
@@ -41,20 +43,34 @@ namespace Project3.Controllers
             {
                 return BadRequest($"La taille de la requête dépasse la limite autorisée de {_settings.MaxFileSize} octets.");
             }
-                        
-            var result = await _fileService.UploadFileAsync(Request.Body, Request.ContentType);
 
-            if (!result.IsSuccess)
+            // Get Connected User Id
+            int userId = 0;
+            int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId);
+
+            FileMetaDataViewModel fileMetaData = await _fileService.UploadFileAsync(Request.Body, Request.ContentType, userId);
+            
+            if (!fileMetaData.IsSuccess)
             {
-                return BadRequest(result.ErrorMessage);
+                return BadRequest(fileMetaData.ErrorMessage);
             }
 
-            return Ok(new
+            return Ok(fileMetaData);
+        }
+
+        [HttpGet()]
+        public async Task<IActionResult> GetAllFilesMetaDatas()
+        {
+            try
             {
-                Message = "Fichier uploadé avec succès.",
-                OriginalName = result.OriginalFileName,
-                SavedName = result.SavedFileName
-            });
-        }                
+                var fileMetaDatas = await _fileService.GetAllFileMetaDatasAsync();
+                return Ok(fileMetaDatas);
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = $"Une erreur s'est produite durant la lecture des fichiers: {ex.Message}";
+                return StatusCode(500, new { message = errorMessage });
+            }
+        }
     }
 }

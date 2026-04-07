@@ -1,11 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Project3.Models
 {
     [Index(nameof(Email), IsUnique = true)]
     public class User
-    {        
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
         public int Id { get; set; }
                         
         [Required]        
@@ -14,5 +17,7 @@ namespace Project3.Models
         
         [MinLength(8, ErrorMessage = "Le mot de passe doit contenir au moins 8 caractères.")]
         public required string Password { get; set; }
+                
+        public ICollection<FileMetaData> FileMetaDatas { get; set; } = new List<FileMetaData>();
     }
 }
