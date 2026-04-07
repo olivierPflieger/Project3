@@ -16,6 +16,9 @@ namespace Project3.Models
         public required string GeneratedName { get; set; }
 
         [Required]
+        public required string Extension { get; set; }
+
+        [Required]
         public required string Size { get; set; }
 
         // Warning : Angular doit renvoyer NULL (si non renseigné)
