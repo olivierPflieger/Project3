@@ -8,6 +8,7 @@ using Project3.Helpers;
 using Project3.Interfaces;
 using Project3.Models;
 using Project3.ViewModels;
+using System.Globalization;
 
 namespace Project3.Services
 {
@@ -40,9 +41,9 @@ namespace Project3.Services
             var reader = new MultipartReader(boundary, requestBody);
 
             var section = await reader.ReadNextSectionAsync();
-                        
+
             // Additional parameters (ex: password, expiration, tags)
-            string password = string.Empty;
+            string passwordHash = string.Empty;
             int expiration = 7;
             string[] tags = Array.Empty<string>();
 
@@ -61,8 +62,9 @@ namespace Project3.Services
                         var value = await streamReader.ReadToEndAsync();
 
                         if (key.Equals("password", StringComparison.OrdinalIgnoreCase))
-                        {
-                            password = value;
+                        {                            
+                            if (!string.IsNullOrEmpty(value))
+                                passwordHash = BCrypt.Net.BCrypt.HashPassword(value);
                         }
 
                         if (key.Equals("expiration", StringComparison.OrdinalIgnoreCase))
@@ -133,7 +135,7 @@ namespace Project3.Services
                                 OriginalName = originalFileName,
                                 GeneratedName = generatedFileName,
                                 Size = s3ObjectMetadata.ContentLength.ToString(),
-                                Password = password,
+                                Password = passwordHash,
                                 CreatedDate = DateTime.UtcNow,
                                 ExpirationDate = DateTime.UtcNow.AddDays(expiration),
                                 Tags = tags,

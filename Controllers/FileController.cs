@@ -52,7 +52,7 @@ namespace Project3.Controllers
             
             if (!fileMetaData.IsSuccess)
             {
-                return BadRequest(fileMetaData.ErrorMessage);
+                return BadRequest(fileMetaData.Message);
             }
 
             return Ok(fileMetaData);
