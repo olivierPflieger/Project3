@@ -150,3 +150,14 @@ Pour voir le contenu de vos secrets locaux, vous pouvez exécuter :
 dotnet user-secrets list
 ```
 
+### AWS Access Key
+
+Ce projet utilise également les "User Secrets" pour gérer les clés d'accès AWS en local
+
+Après avoir obtenu vos clés d'accès AWS, ouvrez un terminal à la racine du projet backend et exécutez les commandes suivantes :
+
+```bash
+dotnet user-secrets set "AWS:AccessKey" "VOTRE_ACCESS_KEY_ICI"
+dotnet user-secrets set "AWS:SecretKey" "VOTRE_SECRET_KEY_ICI"
+dotnet user-secrets set "AWS:Region" "eu-west-3"
+```
