@@ -28,7 +28,7 @@ namespace Project3.Models
         [Required]
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        public DateTime ExpirationDate { get; set; } = DateTime.UtcNow.AddDays(7);
+        public int Expiration { get; set; } = 7;
 
         public string[] Tags { get; set; } = Array.Empty<string>();
 

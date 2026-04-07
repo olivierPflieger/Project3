@@ -58,13 +58,53 @@ namespace Project3.Controllers
             return Ok(fileMetaData);
         }
 
+        [HttpGet("{token}")]
+        public async Task<IActionResult> GetFileByToken(string token)
+        {
+            // 1. Appel de la méthode avec le paramètre reçu par l'URL
+            var fileMetaData = await _fileService.GetFileMetaDataByTokenAsync(token);
+
+            // 2. Vérification si le fichier existe
+            if (fileMetaData == null)
+            {
+                return NotFound(new { message = "Fichier introuvable" });
+            }
+                        
+            var fileMetaDataViewModel = new FileMetaDataViewModel
+            {
+                IsSuccess = true,
+                Message = "Fichier trouvé",
+                OriginalFileName = fileMetaData.OriginalName,
+                FileSize = fileMetaData.Size,
+                Extension = fileMetaData.Extension,
+                Token = fileMetaData.Token,
+                CreatedDate = fileMetaData.CreatedDate,
+                Expiration = fileMetaData.Expiration
+            };
+
+            return Ok(fileMetaDataViewModel);
+        }
+
         [HttpGet()]
         public async Task<IActionResult> GetAllFilesMetaDatas()
         {
             try
             {
                 var fileMetaDatas = await _fileService.GetAllFileMetaDatasAsync();
-                return Ok(fileMetaDatas);
+
+                List<FileMetaDataViewModel> fileMetaDataViewModels = fileMetaDatas.Select(f => new FileMetaDataViewModel
+                {
+                    IsSuccess = true,
+                    Message = "Fichier trouvé",
+                    OriginalFileName = f.OriginalName,
+                    FileSize = f.Size,
+                    Extension = f.Extension,
+                    Token = f.Token,
+                    CreatedDate = f.CreatedDate,
+                    Expiration = f.Expiration
+                }).ToList();
+
+                return Ok(fileMetaDataViewModels);
             }
             catch (Exception ex)
             {

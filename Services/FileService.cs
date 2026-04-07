@@ -139,7 +139,7 @@ namespace Project3.Services
                                 Size = s3ObjectMetadata.ContentLength.ToString(),
                                 Password = passwordHash,
                                 CreatedDate = DateTime.UtcNow,
-                                ExpirationDate = DateTime.UtcNow.AddDays(expiration),
+                                Expiration = expiration,
                                 Tags = tags,
                                 UserId = userId
                             };
@@ -153,8 +153,10 @@ namespace Project3.Services
                                 Message = "Fichier correctement téléversé",
                                 OriginalFileName = originalFileName,
                                 Token = token,
-                                Extension = extension,
-                                FileSize = s3ObjectMetadata.ContentLength.ToString()
+                                Extension = extension,                                
+                                FileSize = s3ObjectMetadata.ContentLength.ToString(),
+                                CreatedDate = fileMetaData.CreatedDate,
+                                Expiration = expiration
                             };
                         }
                     }
@@ -179,6 +181,11 @@ namespace Project3.Services
             }
 
             return new FileMetaDataViewModel { IsSuccess = false, Message = "Aucun fichier valide n'a été trouvé" };
+        }
+
+        public async Task<FileMetaData> GetFileMetaDataByTokenAsync(string token)
+        {
+            return await _context.FileMetaDatas.FirstOrDefaultAsync(f=>f.Token == token);
         }
 
         public async Task<List<FileMetaData>> GetAllFileMetaDatasAsync()
