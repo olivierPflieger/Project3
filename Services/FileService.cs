@@ -7,6 +7,7 @@ using Microsoft.Net.Http.Headers;
 using Project3.Helpers;
 using Project3.Interfaces;
 using Project3.Models;
+using Project3.Utils;
 using Project3.ViewModels;
 using System.Globalization;
 
@@ -129,7 +130,7 @@ namespace Project3.Services
 
                             // Get file metadata from S3 to retrieve the file size
                             var s3ObjectMetadata = await _s3Client.GetObjectMetadataAsync(_settings.AwsBucketName, generatedFileName);
-
+                            
                             // Create file metadata record in database
                             var fileMetaData = new Models.FileMetaData
                             {
@@ -154,7 +155,7 @@ namespace Project3.Services
                                 OriginalFileName = originalFileName,
                                 Token = token,
                                 Extension = extension,                                
-                                FileSize = s3ObjectMetadata.ContentLength.ToString(),
+                                FileSize = FileUtils.FormatFileSize(s3ObjectMetadata.ContentLength),
                                 CreatedDate = fileMetaData.CreatedDate,
                                 Expiration = expiration
                             };
@@ -188,15 +189,15 @@ namespace Project3.Services
             return await _context.FileMetaDatas.FirstOrDefaultAsync(f=>f.Token == token);
         }
 
-        public async Task<List<FileMetaData>> GetAllFileMetaDatasAsync()
+        public async Task<List<FileMetaData>> GetAllFileMetaDatasAsync(int userId)
         {
-            return await _context.FileMetaDatas.ToListAsync();
+            return await _context.FileMetaDatas.Where(f => f.UserId == userId).ToListAsync();
         }
 
         private async Task<int> CreateFileMetaDataAsync(FileMetaData fileMetaData)
         {
             _context.FileMetaDatas.Add(fileMetaData);
             return await _context.SaveChangesAsync();
-        }
+        }                
     }
 }

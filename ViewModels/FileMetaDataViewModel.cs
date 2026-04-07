@@ -10,6 +10,7 @@
         public string FileSize { get; set; } = string.Empty;        
         public DateTime CreatedDate { get; set; }
         public int Expiration { get; set; } = 0;
+        public string[] Tags {  get; set; } = new string[0];
 
     }
 }

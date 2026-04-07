@@ -7,6 +7,7 @@ using Project3.Filters;
 using Project3.Interfaces;
 using Project3.Models;
 using System.Security.Claims;
+using Project3.Utils;
 
 namespace Project3.Controllers
 {
@@ -90,19 +91,29 @@ namespace Project3.Controllers
         {
             try
             {
-                var fileMetaDatas = await _fileService.GetAllFileMetaDatasAsync();
+                // Get Connected User Id
+                int userId = 0;
+                int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId);
+
+                var fileMetaDatas = await _fileService.GetAllFileMetaDatasAsync(userId);
 
                 List<FileMetaDataViewModel> fileMetaDataViewModels = fileMetaDatas.Select(f => new FileMetaDataViewModel
                 {
                     IsSuccess = true,
                     Message = "Fichier trouvé",
                     OriginalFileName = f.OriginalName,
-                    FileSize = f.Size,
+                    FileSize = FileUtils.FormatFileSize(long.Parse(f.Size)),
                     Extension = f.Extension,
                     Token = f.Token,
                     CreatedDate = f.CreatedDate,
-                    Expiration = f.Expiration
+                    Expiration = f.Expiration,
+                    Tags = f.Tags
                 }).ToList();
+
+                if (fileMetaDataViewModels.Count == 0)
+                {
+                    return NotFound(new { message = "Aucun fichier trouvé pour cet utilisateur" });
+                }
 
                 return Ok(fileMetaDataViewModels);
             }
