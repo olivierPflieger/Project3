@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project3.Models;
 using Project3.DTO;
+using Project3.DTOs;
 
 namespace Project3.Services;
 
@@ -13,7 +14,7 @@ public class UserService : IUserService
         _context = context;
     }
 
-    public async Task<(bool IsSuccess, string ErrorMessage, User? User)> CreateUserAsync(CreateUserRequest request)
+    public async Task<(bool IsSuccess, string ErrorMessage, CreateUserResponse? UserResponse)> CreateUserAsync(CreateUserRequest request)
     {        
         if (await _context.Users.AnyAsync(u => u.Email == request.Email))
         {
@@ -32,9 +33,16 @@ public class UserService : IUserService
         _context.Users.Add(newUser);
         await _context.SaveChangesAsync();
 
-        return (true, string.Empty, newUser);
+        CreateUserResponse userResponse = new CreateUserResponse
+        {
+            Email = newUser.Email,
+            Password = newUser.Password
+        };
+
+        return (true, string.Empty, userResponse);
     }
 
+    // TEMP !! TO DELETE
     public async Task<List<User>> GetAllUsersAsync()
     {
         return await _context.Users.ToListAsync();
