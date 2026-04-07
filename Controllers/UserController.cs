@@ -43,6 +43,7 @@ public class UsersController : ControllerBase
         }                
     }
 
+    // TEMP !! TO DELETE
     [HttpGet]
     [Authorize]
     public async Task<IActionResult> GetAllUsers()
@@ -50,7 +51,13 @@ public class UsersController : ControllerBase
         try
         {
             var users = await _userService.GetAllUsersAsync();
-            return Ok(users);
+
+            List<ListUserViewModel> usersViewModel = users.Select(u => new ListUserViewModel
+            {
+                Email = u.Email
+            }).ToList();
+
+            return Ok(usersViewModel);
         }
         catch (Exception ex)
         {
