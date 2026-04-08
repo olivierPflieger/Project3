@@ -1,37 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
 :root {
   --Main-Font: "DM Sans";
   --Static-Headline-Large-Tracking: 0;
   --Background: linear-gradient(173deg, #FFB88C 2.29%, #DE6262 97.71%);
+  --sds-size-radius-200: 8px;
+  --sds-size-space-300: 12px;
+  --sds-size-space-200: 8px;
+  --sds-size-space-400:16px;
+  --sds-size-stroke-border: 1px;
+  --sds-color-border-default-default: #D9D9D9;
+  --sds-color-background-default-default: #FFF;
+  --sds-color-text-default-default: #1E1E1E;
+  --sds-color-text-default-tertiary: #B3B3B3;
+  --sds-typography-body-size-medium: 16px;
+  --sds-typography-body-font-weight-regular: 400;
+
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  width: 100%;
-  min-height: 100%;
+/* Full height + flex layout */
+html, body {
+  height: 100%;
   margin: 0;
-  background: var(--Background);
 }
 
-body {
-  min-height: 100dvh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow-x: hidden;
-  font-family: var(--Main-Font), sans-serif;
-}
-
-.main-frame {
+.app-container {
   display: flex;
   flex-direction: column;
+  min-height: 100vh; /* toute la hauteur de la fenêtre */
+  background: var(--Background);  
+}
+
+/* Header en flex horizontal */
+.header {
+  display: flex;
+  justify-content: space-between; /* pousse gauche et droite aux extrémités */
   align-items: center;
+  padding: 16px 32px;  
+  flex-shrink: 0;
+}
+
+/* DIV gauche */
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
   text-align: center;
+}
+
+h1 {
+  color: #000;
+  font-feature-settings: 'liga' off;
+  font-family: var(--Main-Font, "DM Sans");
+  font-size: var(--Static-Headline-Large-Size, 32px);
+  font-style: normal;
+  font-weight: 700;
+  line-height: var(--Static-Headline-Large-Line-Height, 40px); /* 125% */
+  letter-spacing: var(--Static-Headline-Large-Tracking, 0);
+}
+
+.btnConnexion {
+  border: none;
+  border-radius: var(--sds-size-radius-200);
+  background: #2C2C2C;
+  color: #F3EEEA;  
+  padding: 12px;
+  cursor: pointer;
+}
+
+.footer{
+  color: #FFF;
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
 }
 
 .gardeDataShare {

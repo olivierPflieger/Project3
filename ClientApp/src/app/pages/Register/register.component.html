@@ -1,0 +1,73 @@
+<div class="frame-18">
+    <div class="frame-37">
+        <div class="frame-8">
+            
+            <div class="frame-22">
+                <h3>Créer un compte</h3>
+            </div>
+
+            <div *ngIf="message" 
+                [ngClass]="messageType" 
+                style="white-space: pre-line;">
+            {{ message }}
+            </div>
+
+            
+            <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+                
+                <div class="frame-10">
+                    <label>Email</label>                
+                    <input type="email" 
+                        formControlName="email" 
+                        placeholder="Saisissez votre email..."
+                    />
+                    @if (submitted && form['email'].errors) {
+                        <div class="invalid-feedback">
+                        @if (form['email']?.errors?.['required']) {
+                            <div>Veuillez saisir votre email</div>
+                        }
+                        @if (form['email']?.errors?.['email']) {
+                            <div>Veuillez saisir une adresse email valide</div>
+                        }
+                        </div>
+                    }
+                    
+                    <label>Mot de passe</label>
+                    <input type="password" 
+                        formControlName="password" 
+                        placeholder="Saisissez votre mot de passe...">
+                    @if (submitted && form['password'].errors) {
+                        <div class="invalid-feedback">
+                        @if (form['password']?.errors?.['required']) {
+                            <div>Veuillez saisir votre mot de passe</div>
+                        }
+                        @if (form['password']?.errors?.['minlength']) {
+                            <div>Veuillez saisir un mot de passe d'au moins 8 caractères</div>
+                        }
+                        </div>
+                    }
+
+                    <label>Vérification du mot de passe</label>
+                    <input type="password" 
+                        formControlName="confirmPassword" 
+                        placeholder="Saisissez-le à nouveau">
+                    @if (submitted && userForm?.errors?.['passwordMismatch']) {
+                        <div>Les mots de passe ne correspondent pas</div>
+                    }
+                    @if (submitted && form['confirmPassword'].errors) {
+                        <div class="invalid-feedback">
+                        @if (form['confirmPassword']?.errors?.['required']) {
+                            <div>Veuillez ressaisir votre mot de passe</div>
+                        }                        
+                        </div>
+                    }
+
+                </div>
+                <div class="frame-36">
+                    <button type="reset" (click)="onReset()" routerLink="/login">J'ai déjà un compte</button>
+                    <button>Créer mon compte</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

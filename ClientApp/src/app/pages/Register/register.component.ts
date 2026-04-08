@@ -3,23 +3,24 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from "@angular/router";
-import { LoginService } from '../../core/service/login/login.service';
-import { Login } from '../../core/models/Login';
+import { UserService } from '../../core/service/user/user.service';
+import { User } from '../../core/models/User';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { passwordMatchValidator } from '../../core/validators/password-match.validator';
 
 @Component({
-  selector: 'app-login.component',
+  selector: 'app-register.component',
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   standalone: true,
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.css',
 })
 
-export class LoginComponent implements OnInit {  
-  private loginService = inject(LoginService);
+export class RegisterComponent implements OnInit {  
+  private userService = inject(UserService);
   private formBuilder = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
-  loginForm: FormGroup = new FormGroup({});
+  userForm: FormGroup = new FormGroup({});
   submitted: boolean = false;
   message: string | null = null;
   messageType: 'success' | 'error' | null = null;
@@ -27,40 +28,38 @@ export class LoginComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    this.loginForm = this.formBuilder.group(
+    this.userForm = this.formBuilder.group(
       {        
         email: ['', [Validators.required, Validators.email]],
-        password: ['', Validators.required]
+        password: ['', [Validators.required, Validators.minLength(8)]],
+        confirmPassword: ['', Validators.required]
       },
+      {
+        validators: passwordMatchValidator
+      }
     );
   }
 
   get form() {
-    return this.loginForm.controls;
+    return this.userForm.controls;
   }
 
   onSubmit(): void {
     this.submitted = true;
-    if (this.loginForm.invalid) {
+    if (this.userForm.invalid) {
       return;
     }
-    const loginUser: Login = {
-      email: this.loginForm.get('email')?.value,
-      password: this.loginForm.get('password')?.value
+    const newUser: User = {
+      email: this.userForm.get('email')?.value,
+      password: this.userForm.get('password')?.value
     };    
     
-    this.loginService.login(loginUser)
+    this.userService.register(newUser)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {
-          const token = res.body?.token.toString();
-          if (token) {
-            this.loginService.setToken(token);
-            this.loginService.setUserName(loginUser.email);
-            this.router.navigate(['/']);
-          } else {
-            alert ('The returned token is empty !');            
-          }                    
+          this.message = 'Inscription réussie !';
+          this.messageType = 'success';
         },
         error: (err) => {                    
           if (err.error && err.error.errors) {
@@ -85,6 +84,6 @@ export class LoginComponent implements OnInit {
 
   onReset(): void {
     this.submitted = false;
-    this.loginForm.reset();
+    this.userForm.reset();
   }
 }

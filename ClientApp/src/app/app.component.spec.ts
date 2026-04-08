@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 describe('AppComponent Unit Tests Suite', () => {
   let component: AppComponent;
@@ -9,7 +9,7 @@ describe('AppComponent Unit Tests Suite', () => {
   beforeEach(async () => {
     
     await TestBed.configureTestingModule({
-      imports: [AppComponent, RouterOutlet],
+      imports: [AppComponent, RouterOutlet, RouterLink],
       providers: [       
       ]
     }).compileComponents();
