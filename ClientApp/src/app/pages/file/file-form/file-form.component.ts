@@ -27,6 +27,7 @@ export class FileFormComponent implements OnInit {
   selectedFile!: File;
   showForm: boolean = true;
   uploadFileResponse: UploadFileResponse | null = null;
+  isUploading: boolean = false;
 
   expirations = [
     { value: '1', viewValue: '1 journée' },
@@ -69,14 +70,17 @@ export class FileFormComponent implements OnInit {
     formData.append('expiration', this.selectExpiration.value);
     formData.append('file', this.selectedFile);
 
+    this.isUploading = true;
     this.fileService.upload(formData)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
+          this.isUploading = false;
           this.showForm = false;
           this.uploadFileResponse = response.body as UploadFileResponse;
         },
         error: (err) => {                    
+          this.isUploading = false;
           if (err.error && err.error.errors) {
             const apiErrors = err.error?.errors;
             this.message = Object.values(apiErrors)

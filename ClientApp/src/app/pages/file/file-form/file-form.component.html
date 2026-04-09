@@ -13,6 +13,7 @@
             </div>
 
             <div *ngIf="showForm; else uploadedBlock">
+                <div *ngIf="isUploading" class="spinner"></div>
                 <form [formGroup]="fileForm" (ngSubmit)="onSubmit()" (keydown.enter)="$event.preventDefault()">
                     
                     <input type="file" (change)="onFileSelected($event)">
@@ -51,7 +52,9 @@
 
                     </div>
                     <div>
-                        <button type="submit">Téléverser</button>
+                        <button type="submit" [disabled]="isUploading">
+                            {{ isUploading ? 'Téléversement en cours...' : 'Téléverser' }}
+                        </button>
                     </div>
                 </form>
             </div>
