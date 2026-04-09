@@ -70,7 +70,7 @@ namespace Project3.Controllers
                 return result.ErrorCode switch
                 {
                     404 => NotFound(new { message = result.ErrorMessage }),
-                    401 => Unauthorized(new { message = result.ErrorMessage }),
+                    409 => Conflict(new { message = result.ErrorMessage }),
                     _ => StatusCode(500, new { message = result.ErrorMessage })
                 };
             }

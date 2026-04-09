@@ -196,11 +196,11 @@ namespace Project3.Services
             if (!string.IsNullOrEmpty(fileMetaData.Password))
             {
                 if (string.IsNullOrEmpty(password))                
-                    return new DownloadFileResponse { Success = false, ErrorCode = 401, ErrorMessage = "Ce fichier est protégé par un mot de passe." };
+                    return new DownloadFileResponse { Success = false, ErrorCode = 409, ErrorMessage = "Ce fichier est protégé par un mot de passe." };
                 
                 bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, fileMetaData.Password);
                 if (!isPasswordValid)                
-                    return new DownloadFileResponse { Success = false, ErrorCode = 401, ErrorMessage = "Mot de passe incorrect." };                
+                    return new DownloadFileResponse { Success = false, ErrorCode = 409, ErrorMessage = "Mot de passe incorrect." };                
             }
 
             // Récupération depuis AWS S3
