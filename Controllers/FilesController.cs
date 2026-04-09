@@ -91,15 +91,19 @@ namespace Project3.Controllers
             {
                 return NotFound(new { message = "Fichier introuvable" });
             }
-                        
+            
+            var expirationDetails = FileUtils.GetExpirationDetails(fileMetaData.CreatedAt, fileMetaData.ExpirationDays);
+
             var fileMetaDataResponse = new FileMetaDataResponse
             {
                 OriginalFileName = fileMetaData.OriginalName,
                 FileSize = fileMetaData.Size,
                 Extension = fileMetaData.Extension,
                 Token = fileMetaData.Token,
-                CreatedDate = fileMetaData.CreatedDate,
-                Expiration = fileMetaData.Expiration
+                IsExpired = expirationDetails.isExpired,
+                ExpirationDays = expirationDetails.RemainingDays,
+                ExpirationDate = expirationDetails.ExpirationDate,
+                Tags = fileMetaData.Tags
             };
 
             return Ok(fileMetaDataResponse);
@@ -116,17 +120,25 @@ namespace Project3.Controllers
 
                 var fileMetaDatas = await _fileService.GetAllFileMetaDatasAsync(userId);
 
-                List<FileMetaDataResponse> FileMetaDataResponses = fileMetaDatas.Select(f => new FileMetaDataResponse
+                List<FileMetaDataResponse> FileMetaDataResponses = new List<FileMetaDataResponse>();
+                foreach (var fileMetaData in fileMetaDatas)
                 {
-                    OriginalFileName = f.OriginalName,
-                    FileSize = FileUtils.FormatFileSize(long.Parse(f.Size)),
-                    Extension = f.Extension,
-                    Token = f.Token,
-                    CreatedDate = f.CreatedDate,
-                    Expiration = f.Expiration,
-                    Tags = f.Tags
-                }).ToList();
+                    var expirationDetails = FileUtils.GetExpirationDetails(fileMetaData.CreatedAt, fileMetaData.ExpirationDays);
 
+                    var fileMetaDataResponse = new FileMetaDataResponse
+                    {
+                        OriginalFileName = fileMetaData.OriginalName,
+                        FileSize = fileMetaData.Size,
+                        Extension = fileMetaData.Extension,
+                        Token = fileMetaData.Token,
+                        IsExpired = expirationDetails.isExpired,
+                        ExpirationDays = expirationDetails.RemainingDays,
+                        ExpirationDate = expirationDetails.ExpirationDate,
+                        Tags = fileMetaData.Tags
+                    };
+                    FileMetaDataResponses.Add(fileMetaDataResponse);
+                }
+                
                 if (FileMetaDataResponses.Count == 0)
                 {
                     return NotFound(new { message = "Aucun fichier trouvé pour cet utilisateur" });

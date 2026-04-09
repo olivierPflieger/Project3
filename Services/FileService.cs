@@ -46,7 +46,7 @@ namespace Project3.Services
 
             // Additional parameters (ex: password, expiration, tags)
             string passwordHash = string.Empty;
-            int expiration = 7;
+            int expirationDays = 7;
             string[] tags = Array.Empty<string>();
 
             while (section != null)                        
@@ -71,7 +71,7 @@ namespace Project3.Services
 
                         if (key.Equals("expiration", StringComparison.OrdinalIgnoreCase))
                         {
-                            int.TryParse(value, out expiration);
+                            int.TryParse(value, out expirationDays);
                         }
 
                         if (key.Equals("tags", StringComparison.OrdinalIgnoreCase))
@@ -140,8 +140,8 @@ namespace Project3.Services
                                 Extension = extension,
                                 Size = s3ObjectMetadata.ContentLength.ToString(),
                                 Password = passwordHash,
-                                CreatedDate = DateTime.UtcNow,
-                                Expiration = expiration,
+                                CreatedAt = DateTime.UtcNow,
+                                ExpirationDays = expirationDays,
                                 Tags = tags,
                                 UserId = userId
                             };
@@ -157,8 +157,8 @@ namespace Project3.Services
                                 Token = token,
                                 Extension = extension,                                
                                 FileSize = FileUtils.FormatFileSize(s3ObjectMetadata.ContentLength),
-                                CreatedDate = fileMetaData.CreatedDate,
-                                Expiration = expiration
+                                CreatedAt = fileMetaData.CreatedAt,
+                                ExpirationDays = expirationDays
                             };
                         }
                     }

@@ -26,9 +26,9 @@ namespace Project3.Models
         public string? Password { get; set; }
 
         [Required]
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public int Expiration { get; set; } = 7;
+        public int ExpirationDays { get; set; } = 7;
 
         public string[] Tags { get; set; } = Array.Empty<string>();
 

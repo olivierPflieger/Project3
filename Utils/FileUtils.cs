@@ -14,5 +14,30 @@
             }
             return $"{len:F2} {sizes[order]}";
         }
+
+        public static ExpirationDetails GetExpirationDetails(DateTime creationDate, int expirationDays)
+        {
+            var expirationDetails = new ExpirationDetails();
+
+            expirationDetails.ExpirationDate = creationDate.AddDays(expirationDays);
+            expirationDetails.RemainingDays = (int)(expirationDetails.ExpirationDate.Date - DateTime.UtcNow.Date).TotalDays;
+
+            if (DateTime.UtcNow > creationDate.AddDays(7))
+            {
+                expirationDetails.isExpired = true;
+            } else
+            {
+                expirationDetails.isExpired = false;                
+            }
+
+            return expirationDetails;
+        }
+    }
+
+    public class ExpirationDetails
+    {
+        public bool isExpired { get; set; } = false;
+        public DateTime ExpirationDate { get; set; }
+        public int RemainingDays { get; set; }
     }
 }
