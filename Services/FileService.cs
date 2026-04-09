@@ -187,24 +187,20 @@ namespace Project3.Services
 
         public async Task<DownloadFileResponse> DownloadFileAsync(string token, string? password)
         {
+            // Lecture du fichier en base
             var fileMetaData = await _context.FileMetaDatas.SingleOrDefaultAsync(f => f.Token == token);
 
             if (fileMetaData == null)
-            {
                 return new DownloadFileResponse { Success = false, ErrorCode = 404, ErrorMessage = "Fichier introuvable ou token invalide." };
-            }
 
             if (!string.IsNullOrEmpty(fileMetaData.Password))
             {
-                if (string.IsNullOrEmpty(password))
-                {
+                if (string.IsNullOrEmpty(password))                
                     return new DownloadFileResponse { Success = false, ErrorCode = 401, ErrorMessage = "Ce fichier est protégé par un mot de passe." };
-                }
-
-                if (fileMetaData.Password != password)
-                {
-                    return new DownloadFileResponse { Success = false, ErrorCode = 401, ErrorMessage = "Mot de passe incorrect." };
-                }
+                
+                bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, fileMetaData.Password);
+                if (!isPasswordValid)                
+                    return new DownloadFileResponse { Success = false, ErrorCode = 401, ErrorMessage = "Mot de passe incorrect." };                
             }
 
             // Récupération depuis AWS S3

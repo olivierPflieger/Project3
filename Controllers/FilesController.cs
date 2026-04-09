@@ -79,9 +79,11 @@ namespace Project3.Controllers
         }
 
         [HttpGet("{token}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetFileMetaDataByToken(string token)
         {
             // 1. Appel de la méthode avec le paramètre reçu par l'URL
+
             var fileMetaData = await _fileService.GetFileMetaDataByTokenAsync(token);
 
             // 2. Vérification si le fichier existe
