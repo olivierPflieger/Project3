@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/Register/register.component';
+import { AuthGuard } from './core/guards/auth.guard';
+import { FileFormComponent } from './pages/file/file-form/file-form.component';
 
 export const routes: Routes = [  
   {
@@ -15,5 +17,10 @@ export const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent
+  },
+  {
+    path: 'files/new',
+    component: FileFormComponent,
+    canActivate: [AuthGuard]
   },
 ];

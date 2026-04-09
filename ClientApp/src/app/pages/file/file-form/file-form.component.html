@@ -1,0 +1,59 @@
+<div>
+    <div>
+        <div>
+            
+            <div>
+                <h3>Ajouter un fichier</h3>
+            </div>
+
+            <div *ngIf="message" 
+                [ngClass]="messageType" 
+                style="white-space: pre-line;">
+            {{ message }}
+            </div>
+
+            
+            <form [formGroup]="fileForm" (ngSubmit)="onSubmit()" (keydown.enter)="$event.preventDefault()">
+                
+                <input type="file" (change)="onFileSelected($event)">
+
+                <div>
+                    <label>Mot de passe</label>
+                    <input type="password" 
+                        formControlName="password" 
+                        placeholder="Optionnel"
+                    />
+                    @if (submitted && form['password'].errors) {
+                        <div class="invalid-feedback">
+                        @if (form['password']?.errors?.['minlength']) {
+                            <div>Veuillez saisir un mot de passe d'au moins 6 caractères</div>
+                        }                        
+                        </div>
+                    }
+                    
+                    <select [formControl]="selectExpiration">
+                        <option *ngFor="let option of expirations" [value]="option.value">
+                            {{ option.viewValue }}
+                        </option>
+                    </select>
+
+                    <input
+                        type="text"
+                        [formControl]="tagInput"
+                        (keyup)="onKeyUp($event)"
+                        placeholder="Ajouter des tags (séparés par une virgule)"
+                    />
+                    
+                    <span *ngFor="let tag of tags; let i = index">
+                        {{ tag }}
+                        <button type="button" (click)="removeTag(i)">x</button>
+                    </span>
+
+                </div>
+                <div>
+                    <button type="submit">Téléverser</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
