@@ -15,7 +15,7 @@
             return $"{len:F2} {sizes[order]}";
         }
 
-        public static ExpirationDetails GetExpirationDetails(DateTime creationDate, int expirationDays)
+        public static ExpirationDetails CalculateExpirationDetails(DateTime creationDate, int expirationDays)
         {
             var expirationDetails = new ExpirationDetails();
 

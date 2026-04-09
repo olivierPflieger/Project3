@@ -12,5 +12,7 @@ namespace Project3.Interfaces
         Task<List<FileMetaData>> GetAllFileMetaDatasAsync(int userId);
         
         Task<FileMetaData> GetFileMetaDataByTokenAsync(string token);
+
+        Task<bool> DeleteFileAsync(string token, int userId);
     }
 }

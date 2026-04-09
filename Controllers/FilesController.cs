@@ -92,12 +92,12 @@ namespace Project3.Controllers
                 return NotFound(new { message = "Fichier introuvable" });
             }
             
-            var expirationDetails = FileUtils.GetExpirationDetails(fileMetaData.CreatedAt, fileMetaData.ExpirationDays);
+            var expirationDetails = FileUtils.CalculateExpirationDetails(fileMetaData.CreatedAt, fileMetaData.ExpirationDays);
 
             var fileMetaDataResponse = new FileMetaDataResponse
             {
                 OriginalFileName = fileMetaData.OriginalName,
-                FileSize = fileMetaData.Size,
+                FileSize = FileUtils.FormatFileSize(long.Parse(fileMetaData.Size)),
                 Extension = fileMetaData.Extension,
                 Token = fileMetaData.Token,
                 IsExpired = expirationDetails.isExpired,
@@ -123,12 +123,12 @@ namespace Project3.Controllers
                 List<FileMetaDataResponse> FileMetaDataResponses = new List<FileMetaDataResponse>();
                 foreach (var fileMetaData in fileMetaDatas)
                 {
-                    var expirationDetails = FileUtils.GetExpirationDetails(fileMetaData.CreatedAt, fileMetaData.ExpirationDays);
+                    var expirationDetails = FileUtils.CalculateExpirationDetails(fileMetaData.CreatedAt, fileMetaData.ExpirationDays);
 
                     var fileMetaDataResponse = new FileMetaDataResponse
                     {
                         OriginalFileName = fileMetaData.OriginalName,
-                        FileSize = fileMetaData.Size,
+                        FileSize = FileUtils.FormatFileSize(long.Parse(fileMetaData.Size)),
                         Extension = fileMetaData.Extension,
                         Token = fileMetaData.Token,
                         IsExpired = expirationDetails.isExpired,
@@ -150,6 +150,30 @@ namespace Project3.Controllers
             {
                 string errorMessage = $"Une erreur s'est produite durant la lecture des fichiers: {ex.Message}";
                 return StatusCode(500, new { message = errorMessage });
+            }
+        }
+
+        [HttpDelete("{token}")]
+        public async Task<IActionResult> DeleteFile(string token)
+        { 
+            try
+            {
+                int userId = 0;
+                if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId) || userId == 0)
+                {
+                    return Unauthorized(new { message = "Utilisateur non authentifié." });
+                }
+
+                bool isDeleted = await _fileService.DeleteFileAsync(token, userId);
+
+                if (!isDeleted)            
+                    return BadRequest(new { message = "Impossible de supprimer ce fichier." });
+            
+                return Ok(new { message = "Fichier supprimé avec succès." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
             }
         }
     }

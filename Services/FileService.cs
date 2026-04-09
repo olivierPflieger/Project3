@@ -239,6 +239,38 @@ namespace Project3.Services
             return await _context.FileMetaDatas.Where(f => f.UserId == userId).ToListAsync();
         }
 
+        public async Task<bool> DeleteFileAsync(string token, int userId)
+        {
+            var fileMetaData = await _context.FileMetaDatas.SingleOrDefaultAsync(f => f.Token == token);
+
+            // File not found or user is not the owner (Security check)
+            if (fileMetaData == null || fileMetaData.UserId != userId)
+                throw new Exception("Suppression impossible, ce fichier ne vous appartient pas");
+
+            // Delete from AWS S3
+            try
+            {
+                var s3Key = String.Format("{0}{1}", fileMetaData.Token, fileMetaData.Extension);
+                var deleteRequest = new DeleteObjectRequest
+                {
+                    BucketName = _settings.AwsBucketName,
+                    Key = s3Key
+                };
+
+                await _s3Client.DeleteObjectAsync(deleteRequest);
+            }
+            catch (AmazonS3Exception ex)
+            {
+                throw new Exception($"Erreur lors de la suppression du fichier sur AWS S3 : {ex.Message}");
+            }
+
+            // Delete from Database
+            _context.FileMetaDatas.Remove(fileMetaData);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
         private async Task<int> CreateFileMetaDataAsync(FileMetaData fileMetaData)
         {
             _context.FileMetaDatas.Add(fileMetaData);
