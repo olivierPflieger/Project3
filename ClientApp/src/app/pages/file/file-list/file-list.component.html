@@ -1,0 +1,27 @@
+<h2>Mes fichiers</h2>
+
+<div>
+    @if (message) {
+    <div class="alert" [ngClass]="{
+        'alert-danger': messageType === 'error',
+        'alert-success': messageType === 'success'
+    }" data-cy="studentlist-div-alert">
+        {{ message }}
+    </div>
+    }
+</div>
+
+<div>
+    <ul >
+    <li *ngFor="let fileMeta of fileMetaDataResponses">
+      
+      <span style="width: 30%;">{{ fileMeta.originalFileName }}</span>
+      <span style="width: 30%;">{{ fileMeta.fileSize }}</span>
+      <span style="width: 30%;">{{ fileMeta.isExpired }}</span>
+      <span style="width: 30%;">{{ fileMeta.expirationDays }}</span>
+      
+    </li>
+  </ul>
+</div>
+
+

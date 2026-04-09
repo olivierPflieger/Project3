@@ -13,12 +13,16 @@ export class FileService {
   private readonly apiUrl = "/api/files";
 
   constructor(private httpClient: HttpClient) { }
-    
+   
+  getAll(): Observable<HttpResponse<FileMetaDataResponse[]>> {
+     return this.httpClient.get<FileMetaDataResponse[]>(this.apiUrl, { observe: 'response' });
+  }
+  
   upload(formData: FormData): Observable<HttpResponse<TokenResponse>> {
     return this.httpClient.post<TokenResponse>(this.apiUrl, formData, { observe: 'response' })     
   }
 
-   downloadFile(token: string, request: DownloadFileRequest): Observable<Blob> {
+  downloadFile(token: string, request: DownloadFileRequest): Observable<Blob> {
     const url = this.apiUrl + `/download/${token}`;
     return this.httpClient.post(url, request, { responseType: 'blob' });
   }
