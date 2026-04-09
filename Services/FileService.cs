@@ -26,12 +26,12 @@ namespace Project3.Services
             _context = context;
         }
 
-        public async Task<FileMetaDataViewModel> UploadFileAsync(Stream requestBody, string contentType, int userId)
+        public async Task<UploadFileMetaDataViewModel> UploadFileAsync(Stream requestBody, string contentType, int userId)
         {
             // Check HTTP request content type
             if (!MultipartRequestHelper.IsMultipartContentType(contentType))
             {
-                return new FileMetaDataViewModel { IsSuccess = false, Message = "Le type de contenu attendu est 'multipart/form-data'." };
+                return new UploadFileMetaDataViewModel { IsSuccess = false, Message = "Le type de contenu attendu est 'multipart/form-data'." };
             }
 
             // Read the boundary from the Content-Type header
@@ -90,17 +90,17 @@ namespace Project3.Services
                     // Security : Extension validation          
                     if (string.IsNullOrEmpty(extension) || !(FileValidationHelper.GetAllowedExtensions().Contains(extension, StringComparer.OrdinalIgnoreCase)))
                     {
-                        return new FileMetaDataViewModel { IsSuccess = false, Message = "Type de fichier non autorisé" };
+                        return new UploadFileMetaDataViewModel { IsSuccess = false, Message = "Type de fichier non autorisé" };
                     }
 
                     // Security : Generate new file name for S3 bucket
                     var token = Guid.NewGuid().ToString();
-                    var generatedFileName = String.Format("{0}.{1}", token, extension);
+                    var generatedFileName = String.Format("{0}{1}", token, extension);
 
                     // Security : Validate file signature (magic number)                    
                     if (!await FileValidationHelper.IsValidFile_MagicNumberAsync(section.Body, extension))
                     {
-                        return new FileMetaDataViewModel { IsSuccess = false, Message = "Signature de fichier non autorisée" };
+                        return new UploadFileMetaDataViewModel { IsSuccess = false, Message = "Signature de fichier non autorisée" };
                     }
 
                     // Security : MIME type validation
@@ -109,7 +109,7 @@ namespace Project3.Services
                         !FileValidationHelper.ExpectedMimeTypes.TryGetValue(extension, out var expectedMime) ||
                         !sectionContentType.StartsWith(expectedMime, StringComparison.OrdinalIgnoreCase))
                     {
-                        return new FileMetaDataViewModel { IsSuccess = false, Message = "Le type de contenu (MIME) ne correspond pas à l'extension du fichier" };
+                        return new UploadFileMetaDataViewModel { IsSuccess = false, Message = "Le type de contenu (MIME) ne correspond pas à l'extension du fichier" };
                     }
 
                     try
@@ -148,7 +148,7 @@ namespace Project3.Services
                             CreateFileMetaDataAsync(fileMetaData).Wait();
 
                             // Finally return response
-                            return new FileMetaDataViewModel
+                            return new UploadFileMetaDataViewModel
                             {
                                 IsSuccess = true,
                                 Message = "Fichier correctement téléversé",
@@ -163,17 +163,17 @@ namespace Project3.Services
                     }
                     catch (AmazonS3Exception ex)
                     {
-                        return new FileMetaDataViewModel { IsSuccess = false, Message = $"Erreur S3 : {ex.Message}" };
+                        return new UploadFileMetaDataViewModel { IsSuccess = false, Message = $"Erreur S3 : {ex.Message}" };
                     }
                     catch (Exception ex)
                     {
                         if (!string.IsNullOrEmpty(ex.Message))
                         {
-                            return new FileMetaDataViewModel { IsSuccess = false, Message = $"Erreur serveur : {ex.Message}" };
+                            return new UploadFileMetaDataViewModel { IsSuccess = false, Message = $"Erreur serveur : {ex.Message}" };
                         }
                         else
                         {
-                            return new FileMetaDataViewModel { IsSuccess = false, Message = "Une erreur serveur est survenue lors de l'envoi du fichier" };
+                            return new UploadFileMetaDataViewModel { IsSuccess = false, Message = "Une erreur serveur est survenue lors de l'envoi du fichier" };
                         }
                     }
                 }
@@ -181,7 +181,7 @@ namespace Project3.Services
                 section = await reader.ReadNextSectionAsync();
             }
 
-            return new FileMetaDataViewModel { IsSuccess = false, Message = "Aucun fichier valide n'a été trouvé" };
+            return new UploadFileMetaDataViewModel { IsSuccess = false, Message = "Aucun fichier valide n'a été trouvé" };
         }
 
         public async Task<FileMetaData> GetFileMetaDataByTokenAsync(string token)

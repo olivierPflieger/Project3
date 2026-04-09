@@ -49,7 +49,7 @@ namespace Project3.Controllers
             int userId = 0;
             int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId);
 
-            FileMetaDataViewModel fileMetaData = await _fileService.UploadFileAsync(Request.Body, Request.ContentType, userId);
+            UploadFileMetaDataViewModel fileMetaData = await _fileService.UploadFileAsync(Request.Body, Request.ContentType, userId);
             
             if (!fileMetaData.IsSuccess)
             {
@@ -73,8 +73,6 @@ namespace Project3.Controllers
                         
             var fileMetaDataViewModel = new FileMetaDataViewModel
             {
-                IsSuccess = true,
-                Message = "Fichier trouvé",
                 OriginalFileName = fileMetaData.OriginalName,
                 FileSize = fileMetaData.Size,
                 Extension = fileMetaData.Extension,
@@ -99,8 +97,6 @@ namespace Project3.Controllers
 
                 List<FileMetaDataViewModel> fileMetaDataViewModels = fileMetaDatas.Select(f => new FileMetaDataViewModel
                 {
-                    IsSuccess = true,
-                    Message = "Fichier trouvé",
                     OriginalFileName = f.OriginalName,
                     FileSize = FileUtils.FormatFileSize(long.Parse(f.Size)),
                     Extension = f.Extension,
