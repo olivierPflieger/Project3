@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Project3.ViewModels
+namespace Project3.DTO
 {
-    public class LoginViewModel
+    public class LoginRequest
     {
         [Required(ErrorMessage = "L'email est requis.")]
         [EmailAddress(ErrorMessage = "Le format de l'email est invalide.")]

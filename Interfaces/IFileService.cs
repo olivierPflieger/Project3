@@ -1,11 +1,13 @@
-﻿using Project3.ViewModels;
+﻿using Project3.DTO;
 using Project3.Models;
 
 namespace Project3.Interfaces
 {
     public interface IFileService
     {
-        Task<UploadFileMetaDataViewModel> UploadFileAsync(Stream requestBody, string contentType, int userId);
+        Task<UploadFileResponse> UploadFileAsync(Stream requestBody, string contentType, int userId);
+
+        Task<DownloadFileResponse> DownloadFileAsync(string token, string? password);
 
         Task<List<FileMetaData>> GetAllFileMetaDatasAsync(int userId);
         

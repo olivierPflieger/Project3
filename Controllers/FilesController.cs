@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Project3.ViewModels;
+using Project3.DTO;
 using Project3.Filters;
 using Project3.Interfaces;
 using Project3.Models;
@@ -49,18 +49,37 @@ namespace Project3.Controllers
             int userId = 0;
             int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId);
 
-            UploadFileMetaDataViewModel fileMetaData = await _fileService.UploadFileAsync(Request.Body, Request.ContentType, userId);
+            UploadFileResponse uploadFileResponse = await _fileService.UploadFileAsync(Request.Body, Request.ContentType, userId);
             
-            if (!fileMetaData.IsSuccess)
+            if (!uploadFileResponse.IsSuccess)
             {
-                return BadRequest(fileMetaData.Message);
+                return BadRequest(uploadFileResponse.Message);
             }
 
-            return Ok(fileMetaData);
+            return Ok(uploadFileResponse);
+        }
+
+        [HttpPost("download/{token}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> DownloadFile(string token, [FromBody] DownloadFileRequest request)
+        {
+            var result = await _fileService.DownloadFileAsync(token, request?.Password);
+
+            if (!result.Success)
+            {
+                return result.ErrorCode switch
+                {
+                    404 => NotFound(new { message = result.ErrorMessage }),
+                    401 => Unauthorized(new { message = result.ErrorMessage }),
+                    _ => StatusCode(500, new { message = result.ErrorMessage })
+                };
+            }
+                        
+            return File(result.FileStream!, result.ContentType!, result.FileName!);
         }
 
         [HttpGet("{token}")]
-        public async Task<IActionResult> GetFileByToken(string token)
+        public async Task<IActionResult> GetFileMetaDataByToken(string token)
         {
             // 1. Appel de la méthode avec le paramètre reçu par l'URL
             var fileMetaData = await _fileService.GetFileMetaDataByTokenAsync(token);
@@ -71,7 +90,7 @@ namespace Project3.Controllers
                 return NotFound(new { message = "Fichier introuvable" });
             }
                         
-            var fileMetaDataViewModel = new FileMetaDataViewModel
+            var fileMetaDataResponse = new FileMetaDataResponse
             {
                 OriginalFileName = fileMetaData.OriginalName,
                 FileSize = fileMetaData.Size,
@@ -81,11 +100,11 @@ namespace Project3.Controllers
                 Expiration = fileMetaData.Expiration
             };
 
-            return Ok(fileMetaDataViewModel);
+            return Ok(fileMetaDataResponse);
         }
 
         [HttpGet()]
-        public async Task<IActionResult> GetAllFilesMetaDatas()
+        public async Task<IActionResult> GetAllFiles()
         {
             try
             {
@@ -95,7 +114,7 @@ namespace Project3.Controllers
 
                 var fileMetaDatas = await _fileService.GetAllFileMetaDatasAsync(userId);
 
-                List<FileMetaDataViewModel> fileMetaDataViewModels = fileMetaDatas.Select(f => new FileMetaDataViewModel
+                List<FileMetaDataResponse> FileMetaDataResponses = fileMetaDatas.Select(f => new FileMetaDataResponse
                 {
                     OriginalFileName = f.OriginalName,
                     FileSize = FileUtils.FormatFileSize(long.Parse(f.Size)),
@@ -106,12 +125,12 @@ namespace Project3.Controllers
                     Tags = f.Tags
                 }).ToList();
 
-                if (fileMetaDataViewModels.Count == 0)
+                if (FileMetaDataResponses.Count == 0)
                 {
                     return NotFound(new { message = "Aucun fichier trouvé pour cet utilisateur" });
                 }
 
-                return Ok(fileMetaDataViewModels);
+                return Ok(FileMetaDataResponses);
             }
             catch (Exception ex)
             {

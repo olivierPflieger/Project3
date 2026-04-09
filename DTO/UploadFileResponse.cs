@@ -1,6 +1,6 @@
-﻿namespace Project3.ViewModels
+﻿namespace Project3.DTO
 {
-    public class UploadFileMetaDataViewModel
+    public class UploadFileResponse
     {
         public bool IsSuccess { get; set; }
         public string Message { get; set; } = string.Empty;

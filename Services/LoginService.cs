@@ -1,5 +1,4 @@
 using Microsoft.IdentityModel.Tokens;
-using Project3.ViewModels;
 using Project3.Interfaces;
 using Project3.Models;
 using System.IdentityModel.Tokens.Jwt;

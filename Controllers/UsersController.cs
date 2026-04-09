@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Project3.ViewModels;
+using Project3.DTO;
 using Project3.Models;
 using Project3.Services;
 
@@ -18,17 +18,11 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserViewModel request)
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest createUserRequest)
     {
         try
-        {
-            User user = new User
-            {
-                Email = request.Email,
-                Password = request.Password
-            };
-
-            await _userService.CreateUserAsync(user);
+        {            
+            await _userService.CreateUserAsync(createUserRequest);
                 return CreatedAtAction(nameof(CreateUser), new { message = "Utilisateur correctement ajouté" });
         }
         catch (ArgumentException ex)
@@ -52,7 +46,7 @@ public class UsersController : ControllerBase
         {
             var users = await _userService.GetAllUsersAsync();
 
-            List<ListUserViewModel> usersViewModel = users.Select(u => new ListUserViewModel
+            List<ListUserResponse> usersViewModel = users.Select(u => new ListUserResponse
             {
                 Email = u.Email
             }).ToList();

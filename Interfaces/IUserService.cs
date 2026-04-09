@@ -1,11 +1,11 @@
-﻿using Project3.ViewModels;
+﻿using Project3.DTO;
 using Project3.Models;
 
 namespace Project3.Services;
 
 public interface IUserService
 {
-    Task<int> CreateUserAsync(User user);
+    Task<int> CreateUserAsync(CreateUserRequest createUserRequest);
 
     Task<List<User>> GetAllUsersAsync();
 

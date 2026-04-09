@@ -1,4 +1,5 @@
 ﻿using Amazon.S3;
+using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ using Project3.Helpers;
 using Project3.Interfaces;
 using Project3.Models;
 using Project3.Utils;
-using Project3.ViewModels;
+using Project3.DTO;
 using System.Globalization;
 
 namespace Project3.Services
@@ -26,12 +27,12 @@ namespace Project3.Services
             _context = context;
         }
 
-        public async Task<UploadFileMetaDataViewModel> UploadFileAsync(Stream requestBody, string contentType, int userId)
+        public async Task<UploadFileResponse> UploadFileAsync(Stream requestBody, string contentType, int userId)
         {
             // Check HTTP request content type
             if (!MultipartRequestHelper.IsMultipartContentType(contentType))
             {
-                return new UploadFileMetaDataViewModel { IsSuccess = false, Message = "Le type de contenu attendu est 'multipart/form-data'." };
+                return new UploadFileResponse { IsSuccess = false, Message = "Le type de contenu attendu est 'multipart/form-data'." };
             }
 
             // Read the boundary from the Content-Type header
@@ -90,7 +91,7 @@ namespace Project3.Services
                     // Security : Extension validation          
                     if (string.IsNullOrEmpty(extension) || !(FileValidationHelper.GetAllowedExtensions().Contains(extension, StringComparer.OrdinalIgnoreCase)))
                     {
-                        return new UploadFileMetaDataViewModel { IsSuccess = false, Message = "Type de fichier non autorisé" };
+                        return new UploadFileResponse { IsSuccess = false, Message = "Type de fichier non autorisé" };
                     }
 
                     // Security : Generate new file name for S3 bucket
@@ -100,7 +101,7 @@ namespace Project3.Services
                     // Security : Validate file signature (magic number)                    
                     if (!await FileValidationHelper.IsValidFile_MagicNumberAsync(section.Body, extension))
                     {
-                        return new UploadFileMetaDataViewModel { IsSuccess = false, Message = "Signature de fichier non autorisée" };
+                        return new UploadFileResponse { IsSuccess = false, Message = "Signature de fichier non autorisée" };
                     }
 
                     // Security : MIME type validation
@@ -109,7 +110,7 @@ namespace Project3.Services
                         !FileValidationHelper.ExpectedMimeTypes.TryGetValue(extension, out var expectedMime) ||
                         !sectionContentType.StartsWith(expectedMime, StringComparison.OrdinalIgnoreCase))
                     {
-                        return new UploadFileMetaDataViewModel { IsSuccess = false, Message = "Le type de contenu (MIME) ne correspond pas à l'extension du fichier" };
+                        return new UploadFileResponse { IsSuccess = false, Message = "Le type de contenu (MIME) ne correspond pas à l'extension du fichier" };
                     }
 
                     try
@@ -148,7 +149,7 @@ namespace Project3.Services
                             CreateFileMetaDataAsync(fileMetaData).Wait();
 
                             // Finally return response
-                            return new UploadFileMetaDataViewModel
+                            return new UploadFileResponse
                             {
                                 IsSuccess = true,
                                 Message = "Fichier correctement téléversé",
@@ -163,17 +164,17 @@ namespace Project3.Services
                     }
                     catch (AmazonS3Exception ex)
                     {
-                        return new UploadFileMetaDataViewModel { IsSuccess = false, Message = $"Erreur S3 : {ex.Message}" };
+                        return new UploadFileResponse { IsSuccess = false, Message = $"Erreur S3 : {ex.Message}" };
                     }
                     catch (Exception ex)
                     {
                         if (!string.IsNullOrEmpty(ex.Message))
                         {
-                            return new UploadFileMetaDataViewModel { IsSuccess = false, Message = $"Erreur serveur : {ex.Message}" };
+                            return new UploadFileResponse { IsSuccess = false, Message = $"Erreur serveur : {ex.Message}" };
                         }
                         else
                         {
-                            return new UploadFileMetaDataViewModel { IsSuccess = false, Message = "Une erreur serveur est survenue lors de l'envoi du fichier" };
+                            return new UploadFileResponse { IsSuccess = false, Message = "Une erreur serveur est survenue lors de l'envoi du fichier" };
                         }
                     }
                 }
@@ -181,7 +182,55 @@ namespace Project3.Services
                 section = await reader.ReadNextSectionAsync();
             }
 
-            return new UploadFileMetaDataViewModel { IsSuccess = false, Message = "Aucun fichier valide n'a été trouvé" };
+            return new UploadFileResponse { IsSuccess = false, Message = "Aucun fichier valide n'a été trouvé" };
+        }
+
+        public async Task<DownloadFileResponse> DownloadFileAsync(string token, string? password)
+        {
+            var fileMetaData = await _context.FileMetaDatas.SingleOrDefaultAsync(f => f.Token == token);
+
+            if (fileMetaData == null)
+            {
+                return new DownloadFileResponse { Success = false, ErrorCode = 404, ErrorMessage = "Fichier introuvable ou token invalide." };
+            }
+
+            if (!string.IsNullOrEmpty(fileMetaData.Password))
+            {
+                if (string.IsNullOrEmpty(password))
+                {
+                    return new DownloadFileResponse { Success = false, ErrorCode = 401, ErrorMessage = "Ce fichier est protégé par un mot de passe." };
+                }
+
+                if (fileMetaData.Password != password)
+                {
+                    return new DownloadFileResponse { Success = false, ErrorCode = 401, ErrorMessage = "Mot de passe incorrect." };
+                }
+            }
+
+            // Récupération depuis AWS S3
+            try
+            {
+                var request = new GetObjectRequest
+                {
+                    BucketName = _settings.AwsBucketName,
+                    Key = String.Format("{0}{1}", fileMetaData.Token, fileMetaData.Extension)
+                };
+
+                var response = await _s3Client.GetObjectAsync(request);
+
+                // On retourne le flux. Le contrôleur s'occupera de le lire et de le fermer.
+                return new DownloadFileResponse
+                {
+                    Success = true,
+                    FileStream = response.ResponseStream,
+                    ContentType = response.Headers.ContentType,
+                    FileName = fileMetaData.OriginalName
+                };
+            }
+            catch (AmazonS3Exception ex)
+            {
+                return new DownloadFileResponse { Success = false, ErrorCode = 500, ErrorMessage = $"Erreur AWS : {ex.Message}" };
+            }
         }
 
         public async Task<FileMetaData> GetFileMetaDataByTokenAsync(string token)

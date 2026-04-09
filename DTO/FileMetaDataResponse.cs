@@ -1,6 +1,6 @@
-﻿namespace Project3.ViewModels
+﻿namespace Project3.DTO
 {
-    public class FileMetaDataViewModel
+    public class FileMetaDataResponse
     {
         public string OriginalFileName { get; set; } = string.Empty;
         public string Token { get; set; } = string.Empty;

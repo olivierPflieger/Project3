@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project3.Models;
-using Project3.ViewModels;
+using Project3.DTO;
 
 namespace Project3.Services;
 
@@ -13,19 +13,19 @@ public class UserService : IUserService
         _context = context;
     }
 
-    public async Task<int> CreateUserAsync(User user)
+    public async Task<int> CreateUserAsync(CreateUserRequest createUserRequest)
     {        
-        if (await _context.Users.AnyAsync(u => u.Email == user.Email))
+        if (await _context.Users.AnyAsync(u => u.Email == createUserRequest.Email))
         {
             throw new ArgumentException("Un utilisateur existe déjà avec cet email");
         }
 
         // Encrypt password
-        string passwordHash = BCrypt.Net.BCrypt.HashPassword(user.Password);
+        string passwordHash = BCrypt.Net.BCrypt.HashPassword(createUserRequest.Password);
 
         var userToCreated = new User
         {
-            Email = user.Email,
+            Email = createUserRequest.Email,
             Password = passwordHash
         };
 

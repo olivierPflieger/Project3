@@ -86,10 +86,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+var maxFileSize = builder.Configuration.GetValue<long>("FileUploadSettings:MaxFileSize");
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    // Limite Kestrel à 1 Go
-    serverOptions.Limits.MaxRequestBodySize = 1073741824;
+    // Limite Kestrel à la taille maximale configurée
+    serverOptions.Limits.MaxRequestBodySize = maxFileSize;
 });
 
 var app = builder.Build();

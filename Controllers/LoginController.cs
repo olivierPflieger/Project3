@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Project3.ViewModels;
+using Project3.DTO;
 using Project3.Interfaces;
 
 namespace Project3.Controllers
@@ -16,7 +16,7 @@ namespace Project3.Controllers
         }
 
         [HttpPost()]
-        public IActionResult Login([FromBody] LoginViewModel request)
+        public IActionResult Login([FromBody] LoginRequest request)
         {
             try
             {

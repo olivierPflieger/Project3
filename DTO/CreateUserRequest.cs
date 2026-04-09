@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Project3.ViewModels
+namespace Project3.DTO
 {
-    public class CreateUserViewModel
+    public class CreateUserRequest
     {
         [Required]
         [EmailAddress(ErrorMessage = "Email invalide")] 
