@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { FileService } from '../../../core/service/file/file.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FileMetaData } from '../../../core/models/FileMetaData';
 import { DownloadFileRequest } from '../../../core/models/DownloadFileRequest';
+import { FileMetaDataResponse } from '../../../core/models/FileMetaDataResponse';
 
 @Component({
   selector: 'app-file-details.component',
@@ -16,7 +16,7 @@ import { DownloadFileRequest } from '../../../core/models/DownloadFileRequest';
 })
 
 export class FileDetailsComponent implements OnInit { 
-  fileMetaData: FileMetaData | null = null;
+  fileMetaDataResponse: FileMetaDataResponse | null = null;
   downloadDownloadFileRequest: DownloadFileRequest | null = null;
   message: string | null = null;
   messageType: 'success' | 'error' | null = null;  
@@ -34,9 +34,9 @@ export class FileDetailsComponent implements OnInit {
     this.fileService.findByToken(this.fileToken)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (fileMetaData) => {
+        next: (fileMetaDataResponse) => {
           this.messageType = 'success';
-          this.fileMetaData = fileMetaData;
+          this.fileMetaDataResponse = fileMetaDataResponse;
         },
         error: (err) => {
           if (err.error && err.error.message) {
@@ -55,7 +55,7 @@ export class FileDetailsComponent implements OnInit {
   }
 
   downloadFile() {    
-    const token = this.fileMetaData?.token || '';
+    const token = this.fileToken || '';
     this.isLoading = true;
     this.message = "";
     this.messageType = 'success';
@@ -66,7 +66,7 @@ export class FileDetailsComponent implements OnInit {
         
         const link = document.createElement('a');
         link.href = downloadUrl;
-        link.download = this.fileMetaData?.originalFileName || 'downloaded_file';
+        link.download = this.fileMetaDataResponse?.originalFileName || 'downloaded_file';
         
         // Simuler le clic
         document.body.appendChild(link); // Requis pour certains navigateurs anciens

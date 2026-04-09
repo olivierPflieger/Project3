@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TokenResponse } from '../../models/TokenResponse';
-import { FileMetaData } from '../../models/FileMetaData';
 import { DownloadFileRequest } from '../../models/DownloadFileRequest';
+import { FileMetaDataResponse } from '../../models/FileMetaDataResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,7 @@ export class FileService {
     return this.httpClient.post(url, request, { responseType: 'blob' });
   }
 
-  findByToken(token: string): Observable<FileMetaData> {
-     return this.httpClient.get<FileMetaData>(this.apiUrl + "/" + token);
+  findByToken(token: string): Observable<FileMetaDataResponse> {
+     return this.httpClient.get<FileMetaDataResponse>(this.apiUrl + "/" + token);
   }
 }

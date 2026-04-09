@@ -6,7 +6,7 @@ import { Router, RouterLink } from "@angular/router";
 import { FileService } from '../../../core/service/file/file.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
-import { FileMetaData } from '../../../core/models/FileMetaData';
+import { UploadFileResponse } from '../../../core/models/UploadFileResponse';
 
 @Component({
   selector: 'app-file-form.component',
@@ -26,7 +26,7 @@ export class FileFormComponent implements OnInit {
   messageType: 'success' | 'error' | null = null;
   selectedFile!: File;
   showForm: boolean = true;
-  fileMetaData: FileMetaData | null = null;
+  uploadFileResponse: UploadFileResponse | null = null;
 
   expirations = [
     { value: '1', viewValue: '1 journée' },
@@ -74,7 +74,7 @@ export class FileFormComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.showForm = false;
-          this.fileMetaData = response.body as FileMetaData;
+          this.uploadFileResponse = response.body as UploadFileResponse;
         },
         error: (err) => {                    
           if (err.error && err.error.errors) {

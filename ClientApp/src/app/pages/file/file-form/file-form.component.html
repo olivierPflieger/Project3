@@ -58,15 +58,15 @@
 
             <ng-template #uploadedBlock>
                 <div>                
-                    <span>{{ fileMetaData?.originalFileName }}</span>
-                    <span>{{ fileMetaData?.fileSize }}</span>
+                    <span>{{ uploadFileResponse?.originalFileName }}</span>
+                    <span>{{ uploadFileResponse?.fileSize }}</span>
                 </div>
                 <div>
                     Félicitations, ton fichier sera conservé chez nous 
-                    {{ fileMetaData?.expiration === 7 ? 'pendant 1 semaine' : 'pendant ' + fileMetaData?.expiration + ' jours' }} !
+                    {{ uploadFileResponse?.expirationDays === 7 ? 'pendant 1 semaine' : 'pendant ' + uploadFileResponse?.expirationDays + ' jours' }} !
                 </div>
                 <div>
-                    {{ 'http://localhost:4200/Files/' + fileMetaData?.token }}
+                    {{ 'http://localhost:4200/Files/' + uploadFileResponse?.token }}
                 </div>
             </ng-template>
         </div>
