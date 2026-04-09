@@ -28,8 +28,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group(
-      {        
-        email: ['', [Validators.required, Validators.email]],
+      {
+        email: ['', [Validators.required, Validators.email]],      
         password: ['', Validators.required]
       },
     );
@@ -68,8 +68,6 @@ export class LoginComponent implements OnInit {
             this.message = Object.values(apiErrors)
               .flat()
               .join('\n'); 
-
-            console.log("erreur: " + this.message);
             
           } else {
             if (err.error && err.error.message) {
@@ -78,7 +76,7 @@ export class LoginComponent implements OnInit {
               this.message = err.status + ' - ' + err.statusText;
             }
           }
-          this.messageType = 'error';
+          this.messageType = 'error';          
         }
       });
   }

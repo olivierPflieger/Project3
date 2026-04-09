@@ -1,0 +1,41 @@
+<div>
+    <div>
+        <div>
+            
+            <div *ngIf="message" 
+                [ngClass]="messageType" 
+                style="white-space: pre-line;">
+            {{ message }}
+            </div>
+
+            <div *ngIf="messageType === 'success'">
+                <h3>Télécharger un fichier</h3>
+                <div>                
+                    <span>{{ fileMetaData?.originalFileName }}</span>
+                </div>
+                <div>
+                    <span>{{ fileMetaData?.fileSize }}</span>                    
+                </div>
+                <div>
+                    Ce fichier expirera dans 
+                    {{ fileMetaData?.expiration === 7 ? ' 1 semaine' : fileMetaData?.expiration + ' jours' }} !
+                </div>
+                <div>
+                    <h3>Mot de passe</h3>
+                    <div *ngIf="isLoading" class="spinner"></div>
+                    <form [formGroup]="fileForm">
+
+                        <input class="loginInput" type="password" 
+                        formControlName="password" 
+                        placeholder="Saisissez votre mot de passe...">
+                        
+                        <button (click)="downloadFile()"
+                        [disabled]="isLoading">
+                            {{ isLoading ? 'Téléchargement...' : 'Télécharger' }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

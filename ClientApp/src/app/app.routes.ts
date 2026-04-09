@@ -4,6 +4,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/Register/register.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { FileFormComponent } from './pages/file/file-form/file-form.component';
+import { FileDetailsComponent } from './pages/file/file-details/file-details.component';
 
 export const routes: Routes = [  
   {
@@ -19,8 +20,12 @@ export const routes: Routes = [
     component: RegisterComponent
   },
   {
-    path: 'files/new',
+    path: 'files/upload',
     component: FileFormComponent,
     canActivate: [AuthGuard]
   },
+  {
+    path: 'file/:id',
+    component: FileDetailsComponent    
+  }
 ];

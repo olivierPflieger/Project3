@@ -1,50 +1,48 @@
 
-    <div class="frame-7">
-        
-        <div class="frame-22">
-            <h3>Connexion</h3>
-        </div>
-
-        <div *ngIf="message" 
-            [ngClass]="messageType" 
-            style="white-space: pre-line;">
-        {{ message }}
-        </div>
-        
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-            <div class="frame-10">
-                <label>Email</label>                
-                <input class="loginInput" type="text" 
-                formControlName="email" 
-                placeholder="Saisissez votre email...">
-                @if (submitted && form['email'].errors) {
-                    <div class="invalid-feedback">
-                        @if (form['email']?.errors?.['required']) {
-                            <div>Veuillez saisir votre email</div>
-                        }
-                        @if (form['email']?.errors?.['email']) {
-                            <div>Veuillez saisir une adresse email valide</div>
-                        }
-                    </div>
-                }            
-                
-                <label>Mot de passe</label>
-                <input class="loginInput" type="password" 
-                    formControlName="password" 
-                    placeholder="Saisissez votre mot de passe...">
-                @if (submitted && form['password'].errors) {
-                    <div class="invalid-feedback">
-                    @if (form['password']?.errors?.['required']) {
-                        <div>Veuillez saisir votre mot de passe</div>
-                    }                            
-                    </div>
-                }
-            </div>
-            <div class="frame-36">
-                <div class="divCreerCompte">
-                    <a routerLink="/register">Créer un compte</a>
-                </div>
-                <button class="btnConnexion">Connexion</button>
-            </div>
-        </form>
+<div class="frame-7">
+    
+    <div class="frame-22">
+        <h3>Connexion</h3>            
     </div>
+
+    <div>
+        {{ message }}
+    </div>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="frame-10">
+            <label>Email</label>                
+            <input class="loginInput" type="text" 
+            formControlName="email" 
+            placeholder="Saisissez votre email...">
+            @if (submitted && form['email'].errors) {
+                <div class="invalid-feedback">
+                    @if (form['email']?.errors?.['required']) {
+                        <div>Veuillez saisir votre email</div>
+                    }
+                    @if (form['email']?.errors?.['email']) {
+                        <div>Veuillez saisir une adresse email valide</div>
+                    }
+                </div>
+            }            
+            
+            <label>Mot de passe</label>
+            <input class="loginInput" type="password" 
+                formControlName="password" 
+                placeholder="Saisissez votre mot de passe...">
+            @if (submitted && form['password'].errors) {
+                <div class="invalid-feedback">
+                @if (form['password']?.errors?.['required']) {
+                    <div>Veuillez saisir votre mot de passe</div>
+                }                            
+                </div>
+            }
+        </div>
+        <div class="frame-36">
+            <div class="divCreerCompte">
+                <a routerLink="/register">Créer un compte</a>
+            </div>
+            <button class="btnConnexion">Connexion</button>
+        </div>
+    </form>
+</div>
