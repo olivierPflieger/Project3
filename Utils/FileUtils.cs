@@ -20,9 +20,13 @@
             var expirationDetails = new ExpirationDetails();
 
             expirationDetails.ExpirationDate = creationDate.AddDays(expirationDays);
-            expirationDetails.RemainingDays = (int)(expirationDetails.ExpirationDate.Date - DateTime.UtcNow.Date).TotalDays;
+            expirationDetails.RemainingDays = (int)(expirationDetails.ExpirationDate.Date - DateTime.Now.Date).TotalDays;
 
-            if (DateTime.UtcNow > creationDate.AddDays(7))
+            if (expirationDetails.RemainingDays < 0)
+                expirationDetails.RemainingDays = 0;
+            
+
+            if (DateTime.Now > creationDate.AddDays(expirationDays))
             {
                 expirationDetails.isExpired = true;
             } else
