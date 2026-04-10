@@ -17,6 +17,12 @@
                     <span>{{ fileMetaDataResponse?.fileSize }}</span>                    
                 </div>
                 <div>
+                    <span>{{ fileMetaDataResponse?.createdAt }}</span>
+                </div>
+                <div>
+                    <span>{{ fileMetaDataResponse?.createdAt }}</span>
+                </div>
+                <div>
                     {{ fileMetaDataResponse?.isExpired
                         ? 'Ce fichier n\'est plus disponible en téléchargement car il a expiré.'
                         : fileMetaDataResponse?.expirationDays === 1

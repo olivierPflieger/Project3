@@ -30,4 +30,8 @@ export class FileService {
   findByToken(token: string): Observable<FileMetaDataResponse> {
      return this.httpClient.get<FileMetaDataResponse>(this.apiUrl + "/" + token);
   }
+
+  delete(token: string): Observable<HttpResponse<void>> {
+      return this.httpClient.delete<void>(this.apiUrl + "/" + token, { observe: 'response' });
+  }
 }

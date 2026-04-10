@@ -5,22 +5,39 @@
     <div class="alert" [ngClass]="{
         'alert-danger': messageType === 'error',
         'alert-success': messageType === 'success'
-    }" data-cy="studentlist-div-alert">
+    }" data-cy="filelist-div-alert">
         {{ message }}
     </div>
     }
 </div>
 
+<button (click)="filter = 'all'; filterFiles(); ">Tous</button>
+<button (click)="filter = 'valid'; filterFiles(); ">Actifs</button>
+<button (click)="filter = 'expired'; filterFiles(); ">Expirés</button>
+
+<input
+  type="text"
+  placeholder="Filtrer par tag..."
+  [(ngModel)]="tagFilter"
+  (ngModelChange)="filterFiles()"
+/>
+
 <div>
-    <ul >
-    <li *ngFor="let fileMeta of fileMetaDataResponses">
+    <ul style="list-style: none;">
+        <li *ngFor="let fileMeta of filteredFiles" style="margin-bottom: 30px;">
       
-      <span style="width: 30%;">{{ fileMeta.originalFileName }}</span>
-      <span style="width: 30%;">{{ fileMeta.fileSize }}</span>
-      <span style="width: 30%;">{{ fileMeta.isExpired }}</span>
-      <span style="width: 30%;">{{ fileMeta.expirationDays }}</span>
-      
-    </li>
+          <div>{{ fileMeta.originalFileName }}</div>
+          <div>{{ fileMeta.tags }}</div>
+          <div>{{ fileMeta.fileSize }}</div>
+          <div>{{ fileMeta.isExpired ? 'Expiré' : 'Valide' }}</div>
+          <div>Créé le : {{ fileMeta.createdAt }}</div>
+          <div>Expire le : {{ fileMeta.expirationDate }}</div>
+          <div>{{ fileMeta.expirationDays }}</div>
+                    
+          <div>{{ domain + '/file/' + fileMeta.token }}</div>
+                    
+          <a href="#" (click)="deleteFile(fileMeta.token, $event)">Delete</a>
+        </li>
   </ul>
 </div>
 

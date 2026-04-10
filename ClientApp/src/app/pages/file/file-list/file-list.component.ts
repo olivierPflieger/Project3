@@ -7,17 +7,20 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DownloadFileRequest } from '../../../core/models/DownloadFileRequest';
 import { FileMetaDataResponse } from '../../../core/models/FileMetaDataResponse';
 import { HttpResponse } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-file-list.component',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, FormsModule],
   standalone: true,
   templateUrl: './file-list.component.html',
   styleUrl: './file-list.component.css',
 })
 
 export class FileListComponent implements OnInit { 
-  fileMetaDataResponses: FileMetaDataResponse[] = [];
+  fileMetaDatas: FileMetaDataResponse[] = [];
+  filteredFiles: any[] = [];  
+  tagFilter: string = '';
   downloadDownloadFileRequest: DownloadFileRequest | null = null;
   message: string | null = null;
   messageType: 'success' | 'error' | null = null;  
@@ -25,8 +28,12 @@ export class FileListComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   fileForm: FormGroup = new FormGroup({});
   isLoading: boolean = false;
+  domain: string = '';
+  filter: string = 'valid';
   
-  constructor(private router: Router, private route: ActivatedRoute, public fileService: FileService) {}
+  constructor(private router: Router, private route: ActivatedRoute, public fileService: FileService) {
+    this.domain = window.location.origin;
+  }
   
   ngOnInit() {
     this.loadFilesMetaDatas();
@@ -36,7 +43,8 @@ export class FileListComponent implements OnInit {
     this.fileService.getAll()
     .subscribe({
       next: (res: HttpResponse<FileMetaDataResponse[]>) => {
-        this.fileMetaDataResponses = res.body || [];
+        this.fileMetaDatas = res.body || [];
+        this.filteredFiles = this.fileMetaDatas.filter(s => !s.isExpired );        
       },
       error: (err) => {
         if (err.error && err.error.errors) {
@@ -57,4 +65,49 @@ export class FileListComponent implements OnInit {
     });
   }
   
+  deleteFile(token: string, event: Event) {
+    
+    event.preventDefault();
+    const confirmed = window.confirm('Etes vous sur de vouloir supprimer ce fichier?');
+
+    if (confirmed) {
+      
+      this.fileService.delete(token)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {            
+            this.filteredFiles = this.fileMetaDatas.filter(s => s.token !== token );
+            this.message = "Fichier correctement supprimé";
+            this.messageType = 'success';
+          },
+          error: (err) => {
+            if (err.error && err.error.message) {
+                this.message = err.statusText + ': ' + err.error.message;
+              } else {
+                this.message = err.statusText + ': ' + err.error;
+              }
+              this.messageType = 'error';            
+          }
+        });
+    }
+  }
+  
+  filterFiles() {
+    if (this.filter === 'expired') {
+      this.filteredFiles = this.fileMetaDatas.filter(f => f.isExpired);
+    } else if (this.filter === 'valid') {
+      this.filteredFiles = this.fileMetaDatas.filter(f => !f.isExpired);
+    } else {
+      this.filteredFiles = this.fileMetaDatas;
+    }
+
+    if (this.tagFilter) {
+      console.log(this.filteredFiles[0].tags);
+      this.filteredFiles = this.filteredFiles.filter(f =>
+        f.tags?.some((tag: string) =>
+          tag.toLowerCase().includes(this.tagFilter.toLowerCase())
+        )
+      );
+    }
+  }
 }
