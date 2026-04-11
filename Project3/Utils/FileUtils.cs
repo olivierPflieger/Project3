@@ -35,7 +35,7 @@
             }
 
             return expirationDetails;
-        }
+        }                
     }
 
     public class ExpirationDetails
@@ -43,5 +43,5 @@
         public bool isExpired { get; set; } = false;
         public DateTime ExpirationDate { get; set; }
         public int RemainingDays { get; set; }
-    }
+    }   
 }

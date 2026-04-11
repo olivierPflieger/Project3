@@ -2,8 +2,6 @@
 {
     public class UploadFileResponse
     {
-        public bool IsSuccess { get; set; }
-        public string Message { get; set; } = string.Empty;
         public string OriginalFileName { get; set; } = string.Empty;
         public string Token { get; set; } = string.Empty;
         public string Extension { get; set; } = string.Empty;

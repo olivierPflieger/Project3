@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
-using System.Linq;
 
 namespace Project3.Filters
 {

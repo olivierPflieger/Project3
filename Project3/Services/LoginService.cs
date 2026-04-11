@@ -22,19 +22,15 @@ namespace Project3.Services
         {
             var user = _context.Users.SingleOrDefault(u => u.Email == email);
 
-            if (user == null)
-            {
+            if (user == null)            
                 return null;
-            }
-
+            
             // 2. Validate password against the stored hash
             bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
 
-            if (!isPasswordValid)
-            {
+            if (!isPasswordValid)            
                 return null;
-            }
-
+            
             // 3. Generate and return JWT Token
             return GenerateJwtToken(user);
         }

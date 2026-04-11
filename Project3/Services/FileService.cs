@@ -5,12 +5,13 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
+using Project3.DTO;
+using Project3.Exceptions;
 using Project3.Helpers;
 using Project3.Interfaces;
 using Project3.Models;
 using Project3.Utils;
-using Project3.DTO;
-using System.Globalization;
+using System.Net;
 
 namespace Project3.Services
 {
@@ -31,158 +32,43 @@ namespace Project3.Services
         {
             // Check HTTP request content type
             if (!MultipartRequestHelper.IsMultipartContentType(contentType))
-            {
-                return new UploadFileResponse { IsSuccess = false, Message = "Le type de contenu attendu est 'multipart/form-data'." };
-            }
+                throw new CustomDatashareException(HttpStatusCode.BadRequest, "Le type de contenu attendu est 'multipart/form-data'.");
 
-            // Read the boundary from the Content-Type header
+            // Get boundary from the Content-Type header
             // Security : DoS mbLimit: 100
             var boundary = MultipartRequestHelper.GetBoundary(MediaTypeHeaderValue.Parse(contentType), mbLimit: 100);
 
             // Use MultipartReader to stream data to a destination
             var reader = new MultipartReader(boundary, requestBody);
-
             var section = await reader.ReadNextSectionAsync();
 
-            // Additional parameters (ex: password, expiration, tags)
-            string passwordHash = string.Empty;
-            int expirationDays = 7;
-            string[] tags = Array.Empty<string>();
+            // Additional inputs parameters from body
+            var uploadMetadata = new UploadMetadata();
 
             while (section != null)                        
             {
                 var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition);
 
-                // Additional parameters from body (ex: password, tags, etc.)
+                // Extract additional parameters from body (ex: password, tags, etc.)
                 if (hasContentDispositionHeader && contentDisposition.DispositionType.Equals("form-data"))                    
-                {
+                {                    
+                    // Extract additional parameters from body (ex: password, tags, etc.)
                     if (string.IsNullOrEmpty(contentDisposition.FileName.Value))
                     {
-                        var key = HeaderUtilities.RemoveQuotes(contentDisposition.Name).Value;
-                                                
-                        using var streamReader = new StreamReader(section.Body, System.Text.Encoding.UTF8);
-                        var value = await streamReader.ReadToEndAsync();
-
-                        if (key.Equals("password", StringComparison.OrdinalIgnoreCase))
-                        {                            
-                            if (!string.IsNullOrEmpty(value))
-                                passwordHash = BCrypt.Net.BCrypt.HashPassword(value);
-                        }
-
-                        if (key.Equals("expiration", StringComparison.OrdinalIgnoreCase))
-                        {
-                            int.TryParse(value, out expirationDays);
-                        }
-
-                        if (key.Equals("tags", StringComparison.OrdinalIgnoreCase))
-                        {
-                            tags = value.Trim().Split(",");
-                        }
+                        await ExtractFormMetadataAsync(section, contentDisposition, uploadMetadata);
                     }
+
+                    // Streaming & Processing file
+                    else if (!string.IsNullOrEmpty(contentDisposition.FileName.Value))
+                    {
+                        return await ProcessAndUploadFileAsync(section, contentDisposition.FileName.Value, uploadMetadata, userId);
+                    }                    
                 }
-
-                // Streaming
-                if (hasContentDispositionHeader && contentDisposition.DispositionType.Equals("form-data") &&
-                    !string.IsNullOrEmpty(contentDisposition.FileName.Value))
-                {
-                    var originalFileName = contentDisposition.FileName.Value;
-                    var extension = Path.GetExtension(originalFileName).ToLowerInvariant();
-
-                    // Security : Extension validation          
-                    if (string.IsNullOrEmpty(extension) || !(FileValidationHelper.GetAllowedExtensions().Contains(extension, StringComparer.OrdinalIgnoreCase)))
-                    {
-                        return new UploadFileResponse { IsSuccess = false, Message = "Type de fichier non autorisé" };
-                    }
-
-                    // Security : Generate new file name for S3 bucket
-                    var token = Guid.NewGuid().ToString();
-                    var generatedFileName = String.Format("{0}{1}", token, extension);
-
-                    // Security : Validate file signature (magic number)                    
-                    if (!await FileValidationHelper.IsValidFile_MagicNumberAsync(section.Body, extension))
-                    {
-                        return new UploadFileResponse { IsSuccess = false, Message = "Signature de fichier non autorisée" };
-                    }
-
-                    // Security : MIME type validation
-                    var sectionContentType = section.ContentType;
-                    if (string.IsNullOrEmpty(sectionContentType) ||
-                        !FileValidationHelper.ExpectedMimeTypes.TryGetValue(extension, out var expectedMime) ||
-                        !sectionContentType.StartsWith(expectedMime, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return new UploadFileResponse { IsSuccess = false, Message = "Le type de contenu (MIME) ne correspond pas à l'extension du fichier" };
-                    }
-
-                    try
-                    {
-                        // S3 Streaming
-                        using (var fileTransferUtility = new TransferUtility(_s3Client))
-                        {
-                            var uploadRequest = new TransferUtilityUploadRequest
-                            {
-                                InputStream = section.Body,
-                                Key = generatedFileName,
-                                BucketName = _settings.AwsBucketName,
-                                ContentType = section.ContentType
-                            };
-
-                            // S3 Upload
-                            await fileTransferUtility.UploadAsync(uploadRequest);
-
-                            // Get file metadata from S3 to retrieve the file size
-                            var s3ObjectMetadata = await _s3Client.GetObjectMetadataAsync(_settings.AwsBucketName, generatedFileName);
-                            
-                            // Create file metadata record in database
-                            var fileMetaData = new Models.FileMetaData
-                            {
-                                OriginalName = originalFileName,
-                                Token = token,
-                                Extension = extension,
-                                Size = s3ObjectMetadata.ContentLength.ToString(),
-                                Password = passwordHash,
-                                CreatedAt = DateTime.UtcNow,
-                                ExpirationDays = expirationDays,
-                                Tags = tags,
-                                UserId = userId
-                            };
-
-                            CreateFileMetaDataAsync(fileMetaData).Wait();
-
-                            // Finally return response
-                            return new UploadFileResponse
-                            {
-                                IsSuccess = true,
-                                Message = "Fichier correctement téléversé",
-                                OriginalFileName = originalFileName,
-                                Token = token,
-                                Extension = extension,                                
-                                FileSize = FileUtils.FormatFileSize(s3ObjectMetadata.ContentLength),
-                                CreatedAt = fileMetaData.CreatedAt,
-                                ExpirationDays = expirationDays
-                            };
-                        }
-                    }
-                    catch (AmazonS3Exception ex)
-                    {
-                        return new UploadFileResponse { IsSuccess = false, Message = $"Erreur S3 : {ex.Message}" };
-                    }
-                    catch (Exception ex)
-                    {
-                        if (!string.IsNullOrEmpty(ex.Message))
-                        {
-                            return new UploadFileResponse { IsSuccess = false, Message = $"Erreur serveur : {ex.Message}" };
-                        }
-                        else
-                        {
-                            return new UploadFileResponse { IsSuccess = false, Message = "Une erreur serveur est survenue lors de l'envoi du fichier" };
-                        }
-                    }
-                }
-                                
+                                                                
                 section = await reader.ReadNextSectionAsync();
             }
 
-            return new UploadFileResponse { IsSuccess = false, Message = "Aucun fichier valide n'a été trouvé" };
+            throw new CustomDatashareException(HttpStatusCode.BadRequest, "Aucun fichier valide n'a été trouvé");
         }
 
         public async Task<DownloadFileResponse> DownloadFileAsync(string token, string? password)
@@ -191,19 +77,19 @@ namespace Project3.Services
             var fileMetaData = await _context.FileMetaDatas.SingleOrDefaultAsync(f => f.Token == token);
 
             if (fileMetaData == null)
-                return new DownloadFileResponse { Success = false, ErrorCode = 404, ErrorMessage = "Fichier introuvable ou token invalide." };
+                throw new CustomDatashareException(HttpStatusCode.NotFound, "Fichier introuvable ou token invalide");
 
             if (!string.IsNullOrEmpty(fileMetaData.Password))
             {
                 if (string.IsNullOrEmpty(password))                
-                    return new DownloadFileResponse { Success = false, ErrorCode = 409, ErrorMessage = "Ce fichier est protégé par un mot de passe." };
+                    throw new CustomDatashareException(HttpStatusCode.Conflict, "Ce fichier est protégé par un mot de passe");
                 
                 bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, fileMetaData.Password);
                 if (!isPasswordValid)                
-                    return new DownloadFileResponse { Success = false, ErrorCode = 409, ErrorMessage = "Mot de passe incorrect." };                
+                    throw new CustomDatashareException(HttpStatusCode.Conflict, "Mot de passe incorrect");
             }
 
-            // Récupération depuis AWS S3
+            // Download depuis AWS S3
             try
             {
                 var request = new GetObjectRequest
@@ -214,7 +100,6 @@ namespace Project3.Services
 
                 var response = await _s3Client.GetObjectAsync(request);
 
-                // On retourne le flux. Le contrôleur s'occupera de le lire et de le fermer.
                 return new DownloadFileResponse
                 {
                     Success = true,
@@ -225,13 +110,18 @@ namespace Project3.Services
             }
             catch (AmazonS3Exception ex)
             {
-                return new DownloadFileResponse { Success = false, ErrorCode = 500, ErrorMessage = $"Erreur AWS : {ex.Message}" };
+                throw new CustomDatashareException(HttpStatusCode.InternalServerError, $"Erreur lors de la récupération du fichier depuis AWS S3 : {ex.Message}");
             }
         }
 
         public async Task<FileMetaData> GetFileMetaDataByTokenAsync(string token)
         {
-            return await _context.FileMetaDatas.FirstOrDefaultAsync(f=>f.Token == token);
+            var fileMetaData = await _context.FileMetaDatas.FirstOrDefaultAsync(f=>f.Token == token);
+
+            if (fileMetaData == null)
+                throw new CustomDatashareException(HttpStatusCode.NotFound, "Fichier introuvable");
+
+            return fileMetaData;
         }
 
         public async Task<List<FileMetaData>> GetAllFileMetaDatasAsync(int userId)
@@ -240,14 +130,15 @@ namespace Project3.Services
         }
 
         public async Task<bool> DeleteFileAsync(string token, int userId)
+
         {
             var fileMetaData = await _context.FileMetaDatas.SingleOrDefaultAsync(f => f.Token == token);
 
-            // File not found or user is not the owner (Security check)
+            // Security check - File not found or user is not the owner
             if (fileMetaData == null || fileMetaData.UserId != userId)
-                throw new Exception("Suppression impossible, ce fichier ne vous appartient pas");
+                throw new CustomDatashareException(HttpStatusCode.NotFound,"Suppression impossible, ce fichier n'existe pas ou ne vous appartient pas");
 
-            // Delete from AWS S3
+            // Delete from S3
             try
             {
                 var s3Key = String.Format("{0}{1}", fileMetaData.Token, fileMetaData.Extension);
@@ -275,6 +166,124 @@ namespace Project3.Services
         {
             _context.FileMetaDatas.Add(fileMetaData);
             return await _context.SaveChangesAsync();
-        }                
-    }
+        }
+
+        // File Upload : Extract additional parameters from body (ex: password, tags, etc.)
+        private async Task ExtractFormMetadataAsync(MultipartSection section, ContentDispositionHeaderValue contentDisposition, UploadMetadata uploadMetadata)
+        {
+            var key = HeaderUtilities.RemoveQuotes(contentDisposition.Name).Value;
+
+            using var streamReader = new StreamReader(section.Body, System.Text.Encoding.UTF8);
+            var value = await streamReader.ReadToEndAsync();
+
+            if (key.Equals("password", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(value))
+            {
+                uploadMetadata.PasswordHash = BCrypt.Net.BCrypt.HashPassword(value);
+            }
+            else if (key.Equals("expiration", StringComparison.OrdinalIgnoreCase))
+            {
+                int.TryParse(value, out int expirationDays);
+                uploadMetadata.ExpirationDays = expirationDays;
+            }
+            else if (key.Equals("tags", StringComparison.OrdinalIgnoreCase))
+            {
+                uploadMetadata.Tags = value.Trim().Split(",");
+            }
+        }
+
+        // File Upload : Validate file security (extension, magic number, MIME type)
+        private async Task ValidateFileSecurityAsync(Stream fileStream, string extension, string sectionContentType)
+        {
+            // Extension validation          
+            if (string.IsNullOrEmpty(extension) || !(FileValidationHelper.GetAllowedExtensions().Contains(extension, StringComparer.OrdinalIgnoreCase)))
+            {
+                throw new CustomDatashareException(HttpStatusCode.BadRequest, "Type de fichier non autorisé");
+            }
+
+            // File signature (magic number)                    
+            if (!await FileValidationHelper.IsValidFile_MagicNumberAsync(fileStream, extension))
+            {
+                throw new CustomDatashareException(HttpStatusCode.BadRequest, "Signature de fichier non autorisée");
+            }
+
+            // MIME type validation
+            if (string.IsNullOrEmpty(sectionContentType) ||
+                !FileValidationHelper.ExpectedMimeTypes.TryGetValue(extension, out var expectedMime) ||
+                !sectionContentType.StartsWith(expectedMime, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new CustomDatashareException(HttpStatusCode.BadRequest, "Le type de contenu (MIME) ne correspond pas à l'extension du fichier");
+            }
+        }
+
+        // File Upload : Process file and upload to S3
+        private async Task<UploadFileResponse> ProcessAndUploadFileAsync(MultipartSection section, string originalFileName, UploadMetadata metadata, int userId)
+        {
+            var extension = Path.GetExtension(originalFileName).ToLowerInvariant();
+
+            await ValidateFileSecurityAsync(section.Body, extension, section.ContentType);
+
+            // Security : Generate new file name for S3 bucket
+            var token = Guid.NewGuid().ToString();
+            var generatedFileName = String.Format("{0}{1}", token, extension);
+
+            try
+            {
+                // S3 Streaming
+                using (var fileTransferUtility = new TransferUtility(_s3Client))
+                {
+                    var uploadRequest = new TransferUtilityUploadRequest
+                    {
+                        InputStream = section.Body,
+                        Key = generatedFileName,
+                        BucketName = _settings.AwsBucketName,
+                        ContentType = section.ContentType
+                    };
+
+                    // S3 Upload
+                    await fileTransferUtility.UploadAsync(uploadRequest);
+
+                    // Get file metadata from S3 to retrieve the file size
+                    var s3ObjectMetadata = await _s3Client.GetObjectMetadataAsync(_settings.AwsBucketName, generatedFileName);
+
+                    // Create file metadata record in database
+                    var fileMetaData = new Models.FileMetaData
+                    {
+                        OriginalName = originalFileName,
+                        Token = token,
+                        Extension = extension,
+                        Size = s3ObjectMetadata.ContentLength.ToString(),
+                        Password = metadata.PasswordHash,
+                        CreatedAt = DateTime.UtcNow,
+                        ExpirationDays = metadata.ExpirationDays,
+                        Tags = metadata.Tags,
+                        UserId = userId
+                    };
+
+                    await CreateFileMetaDataAsync(fileMetaData);
+
+                    // Finally return response
+                    return new UploadFileResponse
+                    {
+                        OriginalFileName = originalFileName,
+                        Token = token,
+                        Extension = extension,
+                        FileSize = FileUtils.FormatFileSize(s3ObjectMetadata.ContentLength),
+                        CreatedAt = fileMetaData.CreatedAt,
+                        ExpirationDays = metadata.ExpirationDays
+                    };
+                }
+            }
+            catch (AmazonS3Exception ex)
+            {
+                throw new CustomDatashareException(HttpStatusCode.InternalServerError, $"Erreur lors de l'envoi du fichier vers AWS S3 : {ex.Message}");
+            }
+        }
+
+        private class UploadMetadata
+        {
+            public string PasswordHash { get; set; } = string.Empty;
+            public int ExpirationDays { get; set; } = 7;
+            public string[] Tags { get; set; } = Array.Empty<string>();
+        }
+    }        
 }

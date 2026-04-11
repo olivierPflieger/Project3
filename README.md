@@ -161,3 +161,17 @@ dotnet user-secrets set "AWS:AccessKey" "VOTRE_ACCESS_KEY_ICI"
 dotnet user-secrets set "AWS:SecretKey" "VOTRE_SECRET_KEY_ICI"
 dotnet user-secrets set "AWS:Region" "eu-west-3"
 ```
+
+### Tests unitaires et d'intégration backEnd
+
+Ouvrez un terminal à la racine du projet Project3.Tests et exécutez :
+
+```
+dotnet test
+```
+
+ou, avec le nom des tests 
+
+```
+dotnet test --logger "console;verbosity=normal"
+```

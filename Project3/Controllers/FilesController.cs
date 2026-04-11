@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Project3.DTO;
+using Project3.Exceptions;
 using Project3.Filters;
 using Project3.Interfaces;
 using Project3.Models;
-using System.Security.Claims;
 using Project3.Utils;
+using System.Net;
+using System.Security.Claims;
 
 namespace Project3.Controllers
 {
@@ -15,9 +17,9 @@ namespace Project3.Controllers
     [Authorize]
     [ApiController]
     public class FilesController : ControllerBase
-    {        
+    {
         private readonly IFileService _fileService;
-        private readonly FileUploadSettings _settings;        
+        private readonly FileUploadSettings _settings;
 
         // Injection des paramètres de configuration
         public FilesController(IFileService fileService, IOptions<FileUploadSettings> options)
@@ -31,83 +33,93 @@ namespace Project3.Controllers
         [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
         public async Task<IActionResult> UploadFile()
         {
-            // Security : Fix Kestrel server limit
-            // Block request before to read it and stop transfer
-            var maxRequestBodySizeFeature = HttpContext.Features.Get<IHttpMaxRequestBodySizeFeature>();
-            if (maxRequestBodySizeFeature != null)
+            try
             {
-                maxRequestBodySizeFeature.MaxRequestBodySize = _settings.MaxFileSize;
+                // Security : Fix Kestrel server limit
+                // Block request before to read it and stop transfer
+                var maxRequestBodySizeFeature = HttpContext.Features.Get<IHttpMaxRequestBodySizeFeature>();
+                if (maxRequestBodySizeFeature != null)
+                {
+                    maxRequestBodySizeFeature.MaxRequestBodySize = _settings.MaxFileSize;
+                }
+
+                // Security : Check File limit size
+                if (Request.ContentLength.HasValue && Request.ContentLength.Value > _settings.MaxFileSize)
+                {
+                    return BadRequest($"La taille de la requête dépasse la limite autorisée de {_settings.MaxFileSize} octets.");
+                }
+
+                // Get Connected User Id
+                int userId = 0;
+                int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId);
+
+                UploadFileResponse uploadFileResponse = await _fileService.UploadFileAsync(Request.Body, Request.ContentType, userId);
+                
+                return Ok(uploadFileResponse);
             }
-            
-            // Security : Check File limit size
-            if (Request.ContentLength.HasValue && Request.ContentLength.Value > _settings.MaxFileSize)
+            catch (CustomDatashareException ex)
             {
-                return BadRequest($"La taille de la requête dépasse la limite autorisée de {_settings.MaxFileSize} octets.");
+                return ResolveCustomException(ex);
             }
-
-            // Get Connected User Id
-            int userId = 0;
-            int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId);
-
-            UploadFileResponse uploadFileResponse = await _fileService.UploadFileAsync(Request.Body, Request.ContentType, userId);
-            
-            if (!uploadFileResponse.IsSuccess)
+            catch (Exception ex)
             {
-                return BadRequest(uploadFileResponse.Message);
+                return StatusCode(500, new { message = ex.Message });
             }
-
-            return Ok(uploadFileResponse);
         }
 
         [HttpPost("download/{token}")]
         [AllowAnonymous]
         public async Task<IActionResult> DownloadFile(string token, [FromBody] DownloadFileRequest request)
         {
-            var result = await _fileService.DownloadFileAsync(token, request?.Password);
-
-            if (!result.Success)
+            try
             {
-                return result.ErrorCode switch
-                {
-                    404 => NotFound(new { message = result.ErrorMessage }),
-                    409 => Conflict(new { message = result.ErrorMessage }),
-                    _ => StatusCode(500, new { message = result.ErrorMessage })
-                };
+                var result = await _fileService.DownloadFileAsync(token, request?.Password);
+
+                return File(result.FileStream!, result.ContentType!, result.FileName!);
             }
-                        
-            return File(result.FileStream!, result.ContentType!, result.FileName!);
+            catch (CustomDatashareException ex)
+            {
+                return ResolveCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpGet("{token}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetFileMetaDataByToken(string token)
         {
-            // 1. Appel de la méthode avec le paramètre reçu par l'URL
-
-            var fileMetaData = await _fileService.GetFileMetaDataByTokenAsync(token);
-
-            // 2. Vérification si le fichier existe
-            if (fileMetaData == null)
+            try
             {
-                return NotFound(new { message = "Fichier introuvable" });
+                var fileMetaData = await _fileService.GetFileMetaDataByTokenAsync(token);
+
+                var expirationDetails = FileUtils.CalculateExpirationDetails(fileMetaData.CreatedAt, fileMetaData.ExpirationDays);
+
+                var fileMetaDataResponse = new FileMetaDataResponse
+                {
+                    OriginalFileName = fileMetaData.OriginalName,
+                    FileSize = FileUtils.FormatFileSize(long.Parse(fileMetaData.Size)),
+                    Extension = fileMetaData.Extension,
+                    Token = fileMetaData.Token,
+                    CreatedAt = fileMetaData.CreatedAt,
+                    IsExpired = expirationDetails.isExpired,
+                    ExpirationDays = expirationDetails.RemainingDays,
+                    ExpirationDate = expirationDetails.ExpirationDate,
+                    Tags = fileMetaData.Tags
+                };
+
+                return Ok(fileMetaDataResponse);
             }
-            
-            var expirationDetails = FileUtils.CalculateExpirationDetails(fileMetaData.CreatedAt, fileMetaData.ExpirationDays);
-
-            var fileMetaDataResponse = new FileMetaDataResponse
+            catch (CustomDatashareException ex)
             {
-                OriginalFileName = fileMetaData.OriginalName,
-                FileSize = FileUtils.FormatFileSize(long.Parse(fileMetaData.Size)),
-                Extension = fileMetaData.Extension,
-                Token = fileMetaData.Token,
-                CreatedAt = fileMetaData.CreatedAt,
-                IsExpired = expirationDetails.isExpired,
-                ExpirationDays = expirationDetails.RemainingDays,
-                ExpirationDate = expirationDetails.ExpirationDate,
-                Tags = fileMetaData.Tags
-            };
-
-            return Ok(fileMetaDataResponse);
+                return ResolveCustomException(ex);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpGet()]
@@ -140,7 +152,7 @@ namespace Project3.Controllers
                     };
                     FileMetaDataResponses.Add(fileMetaDataResponse);
                 }
-                
+
                 if (FileMetaDataResponses.Count == 0)
                 {
                     return NotFound(new { message = "Aucun fichier trouvé pour cet utilisateur" });
@@ -148,16 +160,19 @@ namespace Project3.Controllers
 
                 return Ok(FileMetaDataResponses);
             }
+            catch (CustomDatashareException ex)
+            {
+                return ResolveCustomException(ex);
+            }
             catch (Exception ex)
             {
-                string errorMessage = $"Une erreur s'est produite durant la lecture des fichiers: {ex.Message}";
-                return StatusCode(500, new { message = errorMessage });
+                return StatusCode(500, new { message = ex.Message });
             }
         }
 
         [HttpDelete("{token}")]
         public async Task<IActionResult> DeleteFile(string token)
-        { 
+        {
             try
             {
                 int userId = 0;
@@ -168,14 +183,33 @@ namespace Project3.Controllers
 
                 bool isDeleted = await _fileService.DeleteFileAsync(token, userId);
 
-                if (!isDeleted)            
+                if (!isDeleted)
                     return BadRequest(new { message = "Impossible de supprimer ce fichier." });
-            
+
                 return Ok(new { message = "Fichier supprimé avec succès." });
+            }
+            catch (CustomDatashareException ex)
+            {
+                return ResolveCustomException(ex);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        private IActionResult ResolveCustomException(CustomDatashareException ex)
+        {
+            switch (ex.Code)
+            {
+                case HttpStatusCode.NotFound:
+                    return NotFound(new { message = ex.Message });
+                case HttpStatusCode.Conflict:
+                    return Conflict(new { message = ex.Message });
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(new { message = ex.Message });
+                default:
+                    return StatusCode(500, new { message = ex.Message });
             }
         }
     }

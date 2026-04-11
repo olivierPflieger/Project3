@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Project3.Models;
 using Project3.DTO;
+using Project3.Exceptions;
+using Project3.Models;
+using System.Net;
 
 namespace Project3.Services;
 
@@ -17,7 +19,7 @@ public class UserService : IUserService
     {        
         if (await _context.Users.AnyAsync(u => u.Email == createUserRequest.Email))
         {
-            throw new ArgumentException("Un utilisateur existe déjà avec cet email");
+            throw new CustomDatashareException(HttpStatusCode.Conflict, "Un utilisateur existe déjà avec cet email");
         }
 
         // Encrypt password
@@ -36,11 +38,5 @@ public class UserService : IUserService
     public async Task<User> FindById(int id)
     {
         return await _context.Users.FindAsync(id);
-    }
-
-    // TEMP !! TO DELETE
-    public async Task<List<User>> GetAllUsersAsync()
-    {
-        return await _context.Users.ToListAsync();
-    }
+    }        
 }

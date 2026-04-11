@@ -17,8 +17,11 @@
                 
                 @if (loginService.isAuthenticated()) {
                     <span>{{ loginService.getUserName() }}</span>
-                    <button class="btnConnexion" (click)="logout()">Se déconnecter</button>                
+                    <button class="btnConnexion" (click)="logout()">Se déconnecter</button>
+                    <button class="btnFileUpload" routerLink="/files/upload">Téléverser</button>
+                    <button class="btnFiles" routerLink="/files">Voir les fichiers</button>
                 }
+
             </div>
         </div>
         

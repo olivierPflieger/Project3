@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Project3.DTO;
-using Project3.Models;
+using Project3.Exceptions;
 using Project3.Services;
+using System.Net;
 
 namespace Project3.Controllers;
 
@@ -25,10 +25,9 @@ public class UsersController : ControllerBase
             await _userService.CreateUserAsync(createUserRequest);
                 return CreatedAtAction(nameof(CreateUser), new { message = "Utilisateur correctement ajouté" });
         }
-        catch (ArgumentException ex)
+        catch (CustomDatashareException ex)
         {
-            string errorMessage = $"{ex.Message}";
-            return Conflict(new { message = errorMessage });
+            return ResolveCustomException(ex);
         }        
         catch (Exception ex)
         {
@@ -36,27 +35,19 @@ public class UsersController : ControllerBase
             return StatusCode(500, new { message = errorMessage });
         }                
     }
-
-    // TEMP !! TO DELETE
-    [HttpGet]
-    [Authorize]
-    public async Task<IActionResult> GetAllUsers()
+        
+    private IActionResult ResolveCustomException(CustomDatashareException ex)
     {
-        try
+        switch (ex.Code)
         {
-            var users = await _userService.GetAllUsersAsync();
-
-            List<ListUserResponse> usersViewModel = users.Select(u => new ListUserResponse
-            {
-                Email = u.Email
-            }).ToList();
-
-            return Ok(usersViewModel);
-        }
-        catch (Exception ex)
-        {
-            string errorMessage = $"Une erreur s'est produite durant la lecture des utilisateurs: {ex.Message}";
-            return StatusCode(500, new { message = errorMessage });
+            case HttpStatusCode.NotFound:
+                return NotFound(new { message = ex.Message });
+            case HttpStatusCode.Conflict:
+                return Conflict(new { message = ex.Message });
+            case HttpStatusCode.BadRequest:
+                return BadRequest(new { message = ex.Message });
+            default:
+                return StatusCode(500, new { message = ex.Message });
         }
     }
 }
