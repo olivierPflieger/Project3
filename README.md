@@ -92,7 +92,7 @@ docker exec -it postgres_db psql -U admin -d datashare -W
 
 #### Via Docker Desktop
 
-- Dans Docker Desktop, développez l'arborescence du conteneur `project3-backend`.
+- Dans Docker Desktop, développez l'arborescence du conteneur `datashare_api`.
 - Cliquez sur le conteneur `postgres_db`, puis allez dans l'onglet Exec pour ouvrir une session terminal.
 - Exécutez : 
 
@@ -121,7 +121,7 @@ npm install
 
 ## Development server
 
-Ouvrez un terminal sur le répertoire Project3/ClientApp et exécutez :
+Ouvrez un terminal sur le répertoire ClientApp et exécutez :
 
 ```bash
 ng serve
@@ -164,7 +164,7 @@ dotnet user-secrets set "AWS:Region" "eu-west-3"
 
 ### Tests unitaires et d'intégration backEnd
 
-Ouvrez un terminal à la racine du projet Project3.Tests et exécutez :
+Ouvrez un terminal à la racine du projet DataShare_Tests et exécutez :
 
 ```
 dotnet test
