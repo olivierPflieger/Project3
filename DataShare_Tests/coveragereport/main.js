@@ -296,11 +296,11 @@ var assemblies = [
       { "name": "DataShare_API.Exceptions.CustomDatashareException", "rp": "Datashare_API_CustomDatashareException.html", "cl": 7, "ucl": 0, "cal": 7, "tl": 17, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "DataShare_API.Helpers.FileValidationHelper", "rp": "Datashare_API_FileValidationHelper.html", "cl": 70, "ucl": 1, "cal": 71, "tl": 99, "cb": 6, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "DataShare_API.Helpers.MultipartRequestHelper", "rp": "Datashare_API_MultipartRequestHelper.html", "cl": 9, "ucl": 4, "cal": 13, "tl": 26, "cb": 3, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "DataShare_API.Services.FileService", "rp": "Datashare_API_FileService.html", "cl": 153, "ucl": 17, "cal": 170, "tl": 289, "cb": 40, "tb": 50, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "DataShare_API.Services.FileService", "rp": "Datashare_API_FileService.html", "cl": 153, "ucl": 28, "cal": 181, "tl": 305, "cb": 38, "tb": 48, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "DataShare_API.Services.LoginService", "rp": "Datashare_API_LoginService.html", "cl": 36, "ucl": 1, "cal": 37, "tl": 68, "cb": 5, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "DataShare_API.Services.UserService", "rp": "Datashare_API_UserService.html", "cl": 20, "ucl": 0, "cal": 20, "tl": 42, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "DataShare_API.Utils.ExpirationDetails", "rp": "Datashare_API_ExpirationDetails.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 47, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "DataShare_API.Utils.FileUtils", "rp": "Datashare_API_FileUtils.html", "cl": 22, "ucl": 4, "cal": 26, "tl": 47, "cb": 6, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "DataShare_API.Utils.FileUtils", "rp": "Datashare_API_FileUtils.html", "cl": 26, "ucl": 0, "cal": 26, "tl": 47, "cb": 8, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
     ]},
 ];
 
