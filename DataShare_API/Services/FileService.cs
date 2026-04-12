@@ -152,7 +152,7 @@ namespace DataShare_API.Services
             }
             catch (AmazonS3Exception ex)
             {
-                throw new Exception($"Erreur lors de la suppression du fichier sur AWS S3 : {ex.Message}");
+                throw new CustomDatashareException(HttpStatusCode.InternalServerError, $"Erreur lors de la suppression du fichier sur AWS S3 : {ex.Message}");
             }
 
             // Delete from Database
@@ -275,6 +275,22 @@ namespace DataShare_API.Services
             }
             catch (AmazonS3Exception ex)
             {
+                // Suppression du fichier orphelin sur S3
+                try
+                {
+                    var deleteRequest = new DeleteObjectRequest
+                    {
+                        BucketName = _settings.AwsBucketName,
+                        Key = generatedFileName
+                    };
+                    await _s3Client.DeleteObjectAsync(deleteRequest);
+                }
+                catch
+                {
+                    // On capture silencieusement l'erreur de nettoyage.
+                    // On ne veut pas que cette erreur masque la VRAIE erreur qui a causé le crash initial.
+                }
+
                 throw new CustomDatashareException(HttpStatusCode.InternalServerError, $"Erreur lors de l'envoi du fichier vers AWS S3 : {ex.Message}");
             }
         }

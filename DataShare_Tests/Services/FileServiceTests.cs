@@ -368,7 +368,7 @@ namespace DataShare_API.Tests.Services
         }
 
         [Fact]
-        public async Task DeleteFile_S3_ThrowsException()
+        public async Task DeleteFile_S3_Throws_CustomDatashareException()
         {
             // Arrange
             _context.FileMetaDatas.Add(_testFileMetaData);
@@ -379,7 +379,7 @@ namespace DataShare_API.Tests.Services
                          .ThrowsAsync(new AmazonS3Exception(awsSecretMessage));
 
             // Act & Assert
-            var ex = await Assert.ThrowsAsync<Exception>(() => 
+            var ex = await Assert.ThrowsAsync<CustomDatashareException>(() => 
             _fileService.DeleteFileAsync(_testFileMetaData.Token, userId: 1));
 
             Assert.Contains($"Erreur lors de la suppression du fichier sur AWS S3 : {awsSecretMessage}", ex.Message);
