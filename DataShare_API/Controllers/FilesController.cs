@@ -159,11 +159,7 @@ namespace DataShare_API.Controllers
                 }
 
                 return Ok(FileMetaDataResponses);
-            }
-            catch (CustomDatashareException ex)
-            {
-                return ResolveCustomException(ex);
-            }
+            }            
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = ex.Message });

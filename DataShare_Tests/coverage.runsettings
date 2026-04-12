@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+	<DataCollectionRunSettings>
+		<DataCollectors>
+			<DataCollector friendlyName="XPlat Code Coverage">
+				<Configuration>
+					<Format>cobertura</Format>
+					<!-- Exclusion par fichier : le double étoile ** est crucial ici -->
+					<ExcludeByFile>**/Migrations/**/*.cs,**/Models/**/*.cs,**/DTO/**/*.cs,**/Filters/**/*.cs,**/Program.cs</ExcludeByFile>
+				</Configuration>
+			</DataCollector>
+		</DataCollectors>
+	</DataCollectionRunSettings>
+</RunSettings>

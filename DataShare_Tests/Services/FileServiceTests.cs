@@ -1,11 +1,12 @@
 using Amazon.S3;
 using Amazon.S3.Model;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Moq;
 using DataShare_API.Exceptions;
 using DataShare_API.Models;
 using DataShare_API.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Moq;
+using System.Net;
 
 namespace DataShare_API.Tests.Services
 {
@@ -71,7 +72,7 @@ namespace DataShare_API.Tests.Services
         }
                 
         [Fact]
-        public async Task UploadFileAsync_InvalidContentType_ThrowsException()
+        public async Task UploadFileAsync_InvalidContentType_Throws_CustomDatashareException()
         {
             // Arrange
             using var stream = new MemoryStream();
@@ -81,11 +82,12 @@ namespace DataShare_API.Tests.Services
             var ex = await Assert.ThrowsAsync<CustomDatashareException>(() =>
                 _fileService.UploadFileAsync(stream, invalidContentType, userId: 1));
 
+            Assert.Equal(HttpStatusCode.BadRequest, ex.Code);
             Assert.Equal("Le type de contenu attendu est 'multipart/form-data'.", ex.Message);
         }
 
         [Fact]
-        public async Task UploadFileAsync_EmptyMultipart_ThrowsException()
+        public async Task UploadFileAsync_EmptyMultipart_Throws_CustomDatashareException()
         {
             // Arrange
             var boundary = "----TestBoundary123";
@@ -102,11 +104,12 @@ namespace DataShare_API.Tests.Services
             var ex = await Assert.ThrowsAsync<CustomDatashareException>(() =>
                 _fileService.UploadFileAsync(stream, contentType, userId: 1));
 
+            Assert.Equal(HttpStatusCode.BadRequest, ex.Code);
             Assert.Equal("Aucun fichier valide n'a été trouvé", ex.Message);
         }
 
         [Fact]
-        public async Task UploadFileAsync_InvalidExtension_ThrowsException()
+        public async Task UploadFileAsync_InvalidExtension_Throws_CustomDatashareException()
         {
             // Arrange
             // On simule l'envoi d'un fichier .exe
@@ -116,12 +119,13 @@ namespace DataShare_API.Tests.Services
             var ex = await Assert.ThrowsAsync<CustomDatashareException>(() => 
             _fileService.UploadFileAsync(stream, contentType, userId: 1));
 
+            Assert.Equal(HttpStatusCode.BadRequest, ex.Code);
             Assert.Equal("Type de fichier non autorisé", ex.Message);
             stream.Dispose();
         }
 
         [Fact]
-        public async Task UploadFileAsync_MimeTypeMismatch_ThrowsException()
+        public async Task UploadFileAsync_MimeTypeMismatch_Throws_CustomDatashareException()
         {
             // Arrange
             // On déclare une extension .txt, mais on envoie un MIME type d'image
@@ -132,12 +136,13 @@ namespace DataShare_API.Tests.Services
             var ex = await Assert.ThrowsAsync<CustomDatashareException>(() =>
                 _fileService.UploadFileAsync(stream, contentType, userId: 1));
 
+            Assert.Equal(HttpStatusCode.BadRequest, ex.Code);
             Assert.Contains("Le type de contenu (MIME) ne correspond pas", ex.Message);
             stream.Dispose();
         }
 
         [Fact]
-        public async Task UploadFileAsync_InvalidSignatureMagicNumber_ThrowsException()
+        public async Task UploadFileAsync_InvalidSignatureMagicNumber_Throws_CustomDatashareException()
         {
             // Arrange
             var maliciousContent = "Ceci n'est pas un PNG, c'est juste du texte ou du code malveillant.";
@@ -147,6 +152,7 @@ namespace DataShare_API.Tests.Services
             var ex = await Assert.ThrowsAsync<CustomDatashareException>(() =>
                 _fileService.UploadFileAsync(stream, contentType, userId: 1));
 
+            Assert.Equal(HttpStatusCode.BadRequest, ex.Code);
             Assert.Equal("Signature de fichier non autorisée", ex.Message);
 
             stream.Dispose();
@@ -187,17 +193,18 @@ namespace DataShare_API.Tests.Services
         }
 
         [Fact]
-        public async Task DownloadFileAsync_TokenNotFound_ThrowsException()
+        public async Task DownloadFileAsync_TokenNotFound_Throws_CustomDatashareException()
         {
             // Act
             var ex = await Assert.ThrowsAsync<CustomDatashareException>(() =>
                     _fileService.DownloadFileAsync("invalid-token", null));
 
+            Assert.Equal(HttpStatusCode.NotFound, ex.Code);
             Assert.Contains("Fichier introuvable ou token invalide", ex.Message);
         }
 
         [Fact]
-        public async Task DownloadFileAsync_FileIsProtected_NoPasswordProvided_ThrowsException()
+        public async Task DownloadFileAsync_FileIsProtected_NoPasswordProvided_Throws_CustomDatashareException()
         {
             // Arrange
             var token = Guid.NewGuid().ToString();
@@ -219,11 +226,12 @@ namespace DataShare_API.Tests.Services
             var ex = await Assert.ThrowsAsync<CustomDatashareException>(() =>
                 _fileService.DownloadFileAsync(token, null)); // password null ou vide
 
+            Assert.Equal(HttpStatusCode.Conflict, ex.Code);
             Assert.Equal("Ce fichier est protégé par un mot de passe", ex.Message);            
         }
 
         [Fact]
-        public async Task DownloadFileAsync_FileIsProtected_WrongPassword_ThrowsException()
+        public async Task DownloadFileAsync_FileIsProtected_WrongPassword_Throws_CustomDatashareException()
         {
             // Arrange
             var token = Guid.NewGuid().ToString();
@@ -245,6 +253,7 @@ namespace DataShare_API.Tests.Services
             var ex = await Assert.ThrowsAsync<CustomDatashareException>(() =>
                 _fileService.DownloadFileAsync(token, "MauvaisMotDePasse"));
 
+            Assert.Equal(HttpStatusCode.Conflict, ex.Code);
             Assert.Equal("Mot de passe incorrect", ex.Message);
         }
 
@@ -293,7 +302,7 @@ namespace DataShare_API.Tests.Services
         }
 
         [Fact]
-        public async Task Get_FileMetaData_ByWrongToken_ThrowsException()
+        public async Task Get_FileMetaData_ByWrongToken_Throws_CustomDatashareException()
         {
             // Arrange
             _context.FileMetaDatas.Add(_testFileMetaData);
@@ -304,6 +313,7 @@ namespace DataShare_API.Tests.Services
             var ex = await Assert.ThrowsAsync<CustomDatashareException>(() => 
                 _fileService.GetFileMetaDataByTokenAsync(wrongToken));
 
+            Assert.Equal(HttpStatusCode.NotFound, ex.Code);
             Assert.Equal("Fichier introuvable", ex.Message);
         }
 
@@ -324,7 +334,7 @@ namespace DataShare_API.Tests.Services
         }
 
         [Fact]
-        public async Task Delete_File_UserNotOwner_ThrowsException()
+        public async Task Delete_File_UserNotOwner_Throws_CustomDatashareException()
         {
             // Arrange
             _context.FileMetaDatas.Add(_testFileMetaData);
@@ -334,6 +344,7 @@ namespace DataShare_API.Tests.Services
             var ex = await Assert.ThrowsAsync<CustomDatashareException>(() => 
             _fileService.DeleteFileAsync(_testFileMetaData.Token, userId: 9));
 
+            Assert.Equal(HttpStatusCode.NotFound, ex.Code);
             Assert.Equal("Suppression impossible, ce fichier n'existe pas ou ne vous appartient pas", ex.Message);
         }
 
@@ -357,7 +368,7 @@ namespace DataShare_API.Tests.Services
         }
 
         [Fact]
-        public async Task DeleteFile_S3ThrowsException_ThrowsExceptionWithCorrectMessage()
+        public async Task DeleteFile_S3_ThrowsException()
         {
             // Arrange
             _context.FileMetaDatas.Add(_testFileMetaData);

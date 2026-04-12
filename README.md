@@ -175,3 +175,10 @@ ou, avec le nom des tests
 ```
 dotnet test --logger "console;verbosity=normal"
 ```
+
+Couverture de tests
+
+```
+dotnet test --collect:"XPlat Code Coverage" --settings coverage.runsettings
+reportgenerator -reports:TestResults/**/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:Html
+```
