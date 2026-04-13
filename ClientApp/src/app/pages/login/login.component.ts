@@ -17,13 +17,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export class LoginComponent implements OnInit {  
   private loginService = inject(LoginService);
-  private formBuilder = inject(FormBuilder);
+  private formBuilder = inject(FormBuilder);  
   private destroyRef = inject(DestroyRef);
   loginForm: FormGroup = new FormGroup({});
   submitted: boolean = false;
   message: string | null = null;
   messageType: 'success' | 'error' | null = null;
-
+  
+  // Spinner
+  isLoading: boolean = false;
+  private timeout: any;
+  
   constructor(private router: Router) {}
 
   ngOnInit() {
@@ -40,19 +44,21 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.submitted = true;
+    this.submitted = true;    
     if (this.loginForm.invalid) {
       return;
     }
     const loginUser: Login = {
       email: this.loginForm.get('email')?.value,
       password: this.loginForm.get('password')?.value
-    };    
-    
+    };
+
+    this.startLoading();
     this.loginService.login(loginUser)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {
+          this.stopLoading();
           const token = res.body?.token.toString();
           if (token) {
             this.loginService.setToken(token);
@@ -63,6 +69,7 @@ export class LoginComponent implements OnInit {
           }                    
         },
         error: (err) => {                    
+          this.stopLoading();
           if (err.error && err.error.errors) {
             const apiErrors = err.error?.errors;
             this.message = Object.values(apiErrors)
@@ -84,5 +91,16 @@ export class LoginComponent implements OnInit {
   onReset(): void {
     this.submitted = false;
     this.loginForm.reset();
+  }
+
+  startLoading() {
+    // lance un timer de 1s
+    this.timeout = setTimeout(() => {
+      this.isLoading = true;
+    }, 1000);
+  }
+
+  stopLoading() {
+    this.isLoading = false;    
   }
 }

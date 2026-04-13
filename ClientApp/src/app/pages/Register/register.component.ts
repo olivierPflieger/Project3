@@ -24,6 +24,11 @@ export class RegisterComponent implements OnInit {
   submitted: boolean = false;
   message: string | null = null;
   messageType: 'success' | 'error' | null = null;
+  isRegistering: boolean = false;
+
+  // Spinner
+  isLoading: boolean = false;
+  private timeout: any;
 
   constructor(private router: Router) {}
 
@@ -53,15 +58,18 @@ export class RegisterComponent implements OnInit {
       email: this.userForm.get('email')?.value,
       password: this.userForm.get('password')?.value
     };    
-    
+
+    this.startLoading();
     this.userService.register(newUser)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {
+          this.stopLoading();
           this.message = 'Inscription réussie !';
           this.messageType = 'success';
         },
         error: (err) => {                    
+          this.stopLoading();
           if (err.error && err.error.errors) {
             const apiErrors = err.error?.errors;
             this.message = Object.values(apiErrors)
@@ -85,5 +93,16 @@ export class RegisterComponent implements OnInit {
   onReset(): void {
     this.submitted = false;
     this.userForm.reset();
+  }
+
+  startLoading() {
+    // lance un timer de 1s
+    this.timeout = setTimeout(() => {
+      this.isLoading = true;
+    }, 1000);
+  }
+
+  stopLoading() {
+    this.isLoading = false;    
   }
 }

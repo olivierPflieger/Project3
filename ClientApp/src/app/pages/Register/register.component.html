@@ -1,73 +1,86 @@
-<div class="frame-18">
-    <div class="frame-37">
-        <div class="frame-8">
+
+<div class="register-container">    
             
-            <div class="frame-22">
-                <h3>Créer un compte</h3>
-            </div>
-
-            <div *ngIf="message" 
-                [ngClass]="messageType" 
-                style="white-space: pre-line;">
-            {{ message }}
-            </div>
-
-            
-            <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-                
-                <div class="frame-10">
-                    <label>Email</label>                
-                    <input type="email" 
-                        formControlName="email" 
-                        placeholder="Saisissez votre email..."
-                    />
-                    @if (submitted && form['email'].errors) {
-                        <div class="invalid-feedback">
-                        @if (form['email']?.errors?.['required']) {
-                            <div>Veuillez saisir votre email</div>
-                        }
-                        @if (form['email']?.errors?.['email']) {
-                            <div>Veuillez saisir une adresse email valide</div>
-                        }
-                        </div>
-                    }
-                    
-                    <label>Mot de passe</label>
-                    <input type="password" 
-                        formControlName="password" 
-                        placeholder="Saisissez votre mot de passe...">
-                    @if (submitted && form['password'].errors) {
-                        <div class="invalid-feedback">
-                        @if (form['password']?.errors?.['required']) {
-                            <div>Veuillez saisir votre mot de passe</div>
-                        }
-                        @if (form['password']?.errors?.['minlength']) {
-                            <div>Veuillez saisir un mot de passe d'au moins 8 caractères</div>
-                        }
-                        </div>
-                    }
-
-                    <label>Vérification du mot de passe</label>
-                    <input type="password" 
-                        formControlName="confirmPassword" 
-                        placeholder="Saisissez-le à nouveau">
-                    @if (submitted && userForm?.errors?.['passwordMismatch']) {
-                        <div>Les mots de passe ne correspondent pas</div>
-                    }
-                    @if (submitted && form['confirmPassword'].errors) {
-                        <div class="invalid-feedback">
-                        @if (form['confirmPassword']?.errors?.['required']) {
-                            <div>Veuillez ressaisir votre mot de passe</div>
-                        }                        
-                        </div>
-                    }
-
-                </div>
-                <div class="frame-36">
-                    <button type="reset" (click)="onReset()" routerLink="/login">J'ai déjà un compte</button>
-                    <button>Créer mon compte</button>
-                </div>
-            </form>
-        </div>
+    <div class="register-title">
+        Créer un compte
     </div>
+
+    <!-- Message -->
+    <div>
+        @if (message) {
+        <div class="alert" [ngClass]="{
+          'alert-danger': messageType === 'error',
+          'alert-success': messageType === 'success'
+        }" data-cy="register-div-alert">
+          {{ message }}
+        </div>
+      }
+  </div>
+
+    <div class="spinner-container" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p class="spinner-text">Traitement en cours, veuillez patienter...</p>
+    </div>
+    
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        
+        <div class="register-main-content">
+            
+            <label>Email</label>                
+            <input type="email" class="register-input" 
+                formControlName="email" 
+                placeholder="Saisissez votre email..."/>                
+                @if (submitted && form['email'].errors) {
+                    <div class="invalid-feedback">
+                    @if (form['email']?.errors?.['required']) {
+                        <div>Veuillez saisir votre email</div>
+                    }
+                    @if (form['email']?.errors?.['email']) {
+                        <div>Veuillez saisir une adresse email valide</div>
+                    }
+                    </div>
+                }
+            
+            <label>Mot de passe</label>
+            <input type="password" class="register-input"
+                formControlName="password" 
+                placeholder="Saisissez votre mot de passe...">
+                @if (submitted && form['password'].errors) {
+                    <div class="invalid-feedback">
+                    @if (form['password']?.errors?.['required']) {
+                        <div>Veuillez saisir votre mot de passe</div>
+                    }
+                    @if (form['password']?.errors?.['minlength']) {
+                        <div>Veuillez saisir un mot de passe d'au moins 8 caractères</div>
+                    }
+                    </div>
+                }
+
+            <label>Vérification du mot de passe</label>
+            <input type="password" class="register-input"
+                formControlName="confirmPassword" 
+                placeholder="Saisissez-le à nouveau">
+                @if (submitted && userForm?.errors?.['passwordMismatch']) {
+                    <div class="invalid-feedback">
+                        <div>Les mots de passe ne correspondent pas</div>
+                    </div>
+                }
+                @if (submitted && form['confirmPassword'].errors) {
+                    <div class="invalid-feedback">
+                    @if (form['confirmPassword']?.errors?.['required']) {
+                        <div>Veuillez ressaisir votre mot de passe</div>
+                    }                        
+                    </div>
+                }
+
+        </div>
+
+        <div class="register-buttons">
+            <div class="register-button-reset">
+                <a routerLink="/login" (click)="onReset()">J'ai déjà un compte</a>
+            </div>
+            <button class="register-button-connexion">Créer mon compte</button>
+        </div>
+    </form>
+      
 </div>

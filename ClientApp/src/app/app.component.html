@@ -1,28 +1,26 @@
 <div class="app-container">
 
-    <header class="header">
+    <header class="header">        
         
-        <div class="header-left">
-            <div class="header-left-content">
-                <h1>DataShare</h1>
-            </div>
+        <div class="appTitle">
+            DataShare
         </div>
         
-        <div class="header-right">
-            <div class="header-right-content">
-                
-                @if (!(loginService.isAuthenticated())) {
-                    <button class="btnConnexion" routerLink="/login">Se connecter</button>
-                }
-                
-                @if (loginService.isAuthenticated()) {
-                    <span>{{ loginService.getUserName() }}</span>
-                    <button class="btnConnexion" (click)="logout()">Se déconnecter</button>
-                    <button class="btnFileUpload" routerLink="/files/upload">Téléverser</button>
-                    <button class="btnFiles" routerLink="/files">Voir les fichiers</button>
-                }
-
-            </div>
+        <div>
+            @if (loginService.isAuthenticated()) {
+                <span>{{ loginService.getUserName() }}</span>                
+            }
+                        
+            <button class="btnHome" routerLink="/">Accueil</button>
+            
+            @if (!(loginService.isAuthenticated())) {
+                <button class="btnConnexion" routerLink="/login">Se connecter</button>
+            }
+            
+            @if (loginService.isAuthenticated()) {
+                <button class="btnConnexion" (click)="logout()">Se déconnecter</button>
+                <button class="btnFiles" routerLink="/files">Voir les fichiers</button>                
+            }
         </div>
         
     </header>
