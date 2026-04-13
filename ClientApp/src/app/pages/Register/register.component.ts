@@ -104,5 +104,6 @@ export class RegisterComponent implements OnInit {
 
   stopLoading() {
     this.isLoading = false;    
+    clearTimeout(this.timeout);
   }
 }

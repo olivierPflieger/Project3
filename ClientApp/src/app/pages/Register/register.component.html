@@ -5,17 +5,16 @@
         Créer un compte
     </div>
 
-    <!-- Message -->
-    <div>
-        @if (message) {
+    <!-- Message -->    
+    @if (message) {
         <div class="alert" [ngClass]="{
-          'alert-danger': messageType === 'error',
-          'alert-success': messageType === 'success'
+            'alert-danger': messageType === 'error',
+            'alert-success': messageType === 'success'
         }" data-cy="register-div-alert">
-          {{ message }}
+            {{ message }}
         </div>
-      }
-  </div>
+    }
+
 
     <div class="spinner-container" *ngIf="isLoading">
         <div class="spinner"></div>
@@ -26,8 +25,8 @@
         
         <div class="register-main-content">
             
-            <label>Email</label>                
-            <input type="email" class="register-input" 
+            <label class="form-input-label">Email</label>                
+            <input type="email" class="form-input" 
                 formControlName="email" 
                 placeholder="Saisissez votre email..."/>                
                 @if (submitted && form['email'].errors) {
@@ -41,8 +40,8 @@
                     </div>
                 }
             
-            <label>Mot de passe</label>
-            <input type="password" class="register-input"
+            <label class="form-input-label">Mot de passe</label>
+            <input type="password" class="form-input"
                 formControlName="password" 
                 placeholder="Saisissez votre mot de passe...">
                 @if (submitted && form['password'].errors) {
@@ -56,8 +55,8 @@
                     </div>
                 }
 
-            <label>Vérification du mot de passe</label>
-            <input type="password" class="register-input"
+            <label class="form-input-label">Vérification du mot de passe</label>
+            <input type="password" class="form-input"
                 formControlName="confirmPassword" 
                 placeholder="Saisissez-le à nouveau">
                 @if (submitted && userForm?.errors?.['passwordMismatch']) {

@@ -1,77 +1,110 @@
-<div>
-    <div>
-        <div>
-            
-            <div>
-                <h3>Ajouter un fichier</h3>
-            </div>
 
-            <div *ngIf="message" 
-                [ngClass]="messageType" 
-                style="white-space: pre-line;">
-            {{ message }}
-            </div>
-
-            <div *ngIf="showForm; else uploadedBlock">
-                <div *ngIf="isUploading" class="spinner"></div>
-                <form [formGroup]="fileForm" (ngSubmit)="onSubmit()" (keydown.enter)="$event.preventDefault()">
-                    
-                    <input type="file" (change)="onFileSelected($event)">
-
-                    <div>
-                        <label>Mot de passe</label>
-                        <input type="password" 
-                            formControlName="password" 
-                            placeholder="Optionnel"
-                        />
-                        @if (submitted && form['password'].errors) {
-                            <div class="invalid-feedback">
-                            @if (form['password']?.errors?.['minlength']) {
-                                <div>Veuillez saisir un mot de passe d'au moins 6 caractères</div>
-                            }                        
-                            </div>
-                        }
-                        
-                        <select [formControl]="selectExpiration">
-                            <option *ngFor="let option of expirations" [value]="option.value">
-                                {{ option.viewValue }}
-                            </option>
-                        </select>
-
-                        <input
-                            type="text"
-                            [formControl]="tagInput"
-                            (keyup)="onKeyUp($event)"
-                            placeholder="Ajouter des tags (séparés par une virgule)"
-                        />
-                        
-                        <span *ngFor="let tag of tags; let i = index">
-                            {{ tag }}
-                            <button type="button" (click)="removeTag(i)">x</button>
-                        </span>
-
-                    </div>
-                    <div>
-                        <button type="submit" [disabled]="isUploading">
-                            {{ isUploading ? 'Téléversement en cours...' : 'Téléverser' }}
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <ng-template #uploadedBlock>
-                <div>                
-                    <span>{{ uploadFileResponse?.originalFileName }}</span>
-                    <span>{{ uploadFileResponse?.fileSize }}</span>
-                </div>
-                <div>
-                    Félicitations, ton fichier sera conservé chez nous 
-                    {{ uploadFileResponse?.expirationDays === 7 ? 'pendant 1 semaine' : 'pendant ' + uploadFileResponse?.expirationDays + ' jours' }} !
-                </div>
-                <div>
-                    {{ 'http://localhost:4200/Files/' + uploadFileResponse?.token }}
-                </div>
-            </ng-template>
-        </div>
+<div class="fileForm-container">
+    
+    <div class="fileForm-title">
+        Ajouter un fichier
     </div>
+
+    <!-- Message -->
+    
+    @if (message) {
+        <div class="alert" [ngClass]="{
+            'alert-danger': messageType === 'error',
+            'alert-success': messageType === 'success'
+        }" data-cy="login-div-alert">
+            {{ message }}
+        </div>
+    }
+    
+    <div class="spinner-container" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p class="spinner-text">Traitement en cours, veuillez patienter...</p>
+    </div>
+
+    <div *ngIf="showForm; else uploadedBlock">
+            
+        <form [formGroup]="fileForm" (ngSubmit)="onSubmit()" (keydown.enter)="$event.preventDefault()">
+            
+            <!--
+            <input class="fileForm-input" type="file" (change)="onFileSelected($event)">
+            -->
+
+            <div class="fileForm-select-container">
+                
+                <div class="fileForm-select-upload" (click)="fileInput.click()">
+                    Changer
+                </div>
+                <input #fileInput type="file" hidden (change)="onFileSelected($event)">
+                
+                <div class="fileForm-select-fileInfos-container" *ngIf="selectedFileName">
+                    <div class="fileForm-select-icon"></div>
+                    <div class="fileForm-select-fileInfos">
+                        <div class="fileForm-select-fileName">{{ selectedFileName }}</div>
+                        <div class="fileForm-select-fileSize">{{ selectedFileSize }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fileForm-main-content">
+                
+                <label class="form-input-label">Mot de passe</label>
+                <input type="password" class="form-input"                        
+                    formControlName="password" 
+                    placeholder="Optionnel"
+                />
+                @if (submitted && form['password'].errors) {
+                    <div class="invalid-feedback">
+                    @if (form['password']?.errors?.['minlength']) {
+                        <div>Veuillez saisir un mot de passe d'au moins 6 caractères</div>
+                    }                        
+                    </div>
+                }
+                
+                <label class="form-input-label">Expiration</label>
+                <select class="fileForm-expiration" [formControl]="selectExpiration">
+                    <option *ngFor="let option of expirations" [value]="option.value">
+                        {{ option.viewValue }}
+                    </option>
+                </select>
+               
+                <label class="form-input-label">Ajouter des tags</label>
+                <input type="text" class="form-input"
+                    [formControl]="tagInput"
+                    (keyup)="onTagKeyUp($event)"
+                    placeholder="Séparez les tags par un espace"
+                     maxlength="150"
+                />
+
+                <div class="fileForm-tags-container" >
+                    <div class="fileForm-tags" *ngFor="let tag of tags; let i = index">
+                        {{ tag }}
+                        <button type="button" (click)="removeTag(i)">x</button>                
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="fileForm-buttons">
+                <button class="fileForm-button-televerser" type="submit" [disabled]="isLoading">
+                    {{ isLoading ? 'Téléversement en cours...' : 'Téléverser' }}
+                </button>
+            </div>
+            
+        </form>
+    </div>
+
+    <ng-template #uploadedBlock>
+        <div>                
+            <span>{{ uploadFileResponse?.originalFileName }}</span>
+            <span>{{ uploadFileResponse?.fileSize }}</span>
+        </div>
+        <div>
+            Félicitations, ton fichier sera conservé chez nous 
+            {{ uploadFileResponse?.expirationDays === 7 ? 'pendant 1 semaine' : 'pendant ' + uploadFileResponse?.expirationDays + ' jours' }} !
+        </div>
+        <div>
+            {{ 'http://localhost:4200/Files/' + uploadFileResponse?.token }}
+        </div>
+    </ng-template>
 </div>
+    

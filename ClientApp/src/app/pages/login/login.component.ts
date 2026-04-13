@@ -101,6 +101,7 @@ export class LoginComponent implements OnInit {
   }
 
   stopLoading() {
-    this.isLoading = false;    
+    this.isLoading = false;
+    clearTimeout(this.timeout); 
   }
 }

@@ -27,7 +27,14 @@ export class FileFormComponent implements OnInit {
   selectedFile!: File;
   showForm: boolean = true;
   uploadFileResponse: UploadFileResponse | null = null;
-  isUploading: boolean = false;
+  
+  // Selected file info
+  selectedFileName: string | null = null;  
+  selectedFileSize: string | null = null;
+
+    // Spinner
+  isLoading: boolean = false;
+  private timeout: any;
 
   expirations = [
     { value: '1', viewValue: '1 journée' },
@@ -40,8 +47,8 @@ export class FileFormComponent implements OnInit {
   ];
   selectExpiration = new FormControl<string>('7', { nonNullable: true });
 
+  // tags
   tagInput = new FormControl<string>('', { nonNullable: true });
-
   tags: string[] = [];
 
   constructor(private router: Router) {}
@@ -64,23 +71,24 @@ export class FileFormComponent implements OnInit {
       return;
     }
 
+    this.message = null;
     const formData = new FormData();
     formData.append('password', this.fileForm.get('password')?.value);
     formData.append('tags', this.tags.join(','));
     formData.append('expiration', this.selectExpiration.value);
     formData.append('file', this.selectedFile);
 
-    this.isUploading = true;
+    this.startLoading();
     this.fileService.upload(formData)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
-          this.isUploading = false;
+          this.stopLoading();
           this.showForm = false;
           this.uploadFileResponse = response.body as UploadFileResponse;
         },
         error: (err) => {                    
-          this.isUploading = false;
+          this.stopLoading();
           if (err.error && err.error.errors) {
             const apiErrors = err.error?.errors;
             this.message = Object.values(apiErrors)
@@ -113,21 +121,35 @@ export class FileFormComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
+      this.selectedFileName = file.name;
+
+      const bytes = file.size;
+      const kb = bytes / 1024;
+      const mb = kb / 1024;
+      const gb = mb / 1024;
+
+      if (gb >= 1) {
+        this.selectedFileSize = `${gb.toFixed(2)} Go`;
+      } else if (mb >= 1) {
+        this.selectedFileSize = `${mb.toFixed(2)} Mo`;
+      } else {
+        this.selectedFileSize = `${kb.toFixed(2)} Ko`;
+      }
     }
   }
 
-  onKeyUp(event: KeyboardEvent) {
+  onTagKeyUp(event: KeyboardEvent) {
     const value = this.tagInput.value;
 
-    if (value.includes(',')) {
+    if (value.includes(' ')) {
       const parts = value.split(',');
 
       parts.forEach(part => this.addTag(part));
-
       this.tagInput.setValue('');
     }
   }
 
+  
   addTag(rawTag: string) {
     const tag = rawTag.trim();
     
@@ -143,5 +165,17 @@ export class FileFormComponent implements OnInit {
 
   removeTag(index: number) {
     this.tags.splice(index, 1);
+  }
+
+  startLoading() {
+    // lance un timer de 1s
+    this.timeout = setTimeout(() => {
+      this.isLoading = true;
+    }, 1000);
+  }
+
+  stopLoading() {
+    this.isLoading = false;
+    clearTimeout(this.timeout);
   }
 }

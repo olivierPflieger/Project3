@@ -6,16 +6,14 @@
     </div>
 
     <!-- Message -->
-    <div>
-        @if (message) {
+    @if (message) {    
         <div class="alert" [ngClass]="{
-          'alert-danger': messageType === 'error',
-          'alert-success': messageType === 'success'
+            'alert-danger': messageType === 'error',
+            'alert-success': messageType === 'success'
         }" data-cy="login-div-alert">
-          {{ message }}
+            {{ message }}
         </div>
-      }
-    </div>
+    }    
         
     <div class="spinner-container" *ngIf="isLoading">
         <div class="spinner"></div>
@@ -26,8 +24,8 @@
         
         <div class="login-main-content">
 
-            <label>Email</label>                
-            <input class="login-input" type="text" 
+            <label class="form-input-label">Email</label>                
+            <input class="form-input" type="text" 
                 formControlName="email" 
                 placeholder="Saisissez votre email...">
                 @if (submitted && form['email'].errors) {
@@ -41,8 +39,8 @@
                     </div>
                 }            
             
-            <label>Mot de passe</label>
-            <input class="login-input" type="password" 
+            <label class="form-input-label">Mot de passe</label>
+            <input class="form-input" type="password" 
                 formControlName="password" 
                 placeholder="Saisissez votre mot de passe...">
                 @if (submitted && form['password'].errors) {
