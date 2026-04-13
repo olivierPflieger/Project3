@@ -27,6 +27,7 @@ export class FileFormComponent implements OnInit {
   selectedFile!: File;
   showForm: boolean = true;
   uploadFileResponse: UploadFileResponse | null = null;
+  linkCopied: string | null = null;
   
   // Selected file info
   selectedFileName: string | null = null;  
@@ -177,5 +178,19 @@ export class FileFormComponent implements OnInit {
   stopLoading() {
     this.isLoading = false;
     clearTimeout(this.timeout);
+  }
+
+  copyLink() {
+    const link = 'http://localhost:4200/Files/' + this.uploadFileResponse?.token;
+
+    if (!link) return;
+
+    navigator.clipboard.writeText(link)
+      .then(() => {
+        this.linkCopied = 'Lien copié !';
+      })
+      .catch(err => {
+        console.error('Erreur de copie', err);
+      });
   }
 }

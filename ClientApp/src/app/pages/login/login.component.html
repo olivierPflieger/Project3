@@ -1,7 +1,7 @@
 
-<div class="login-container">
+<div class="form-container">
     
-    <div class="login-title">
+    <div class="form-title">
         Connexion
     </div>
 
@@ -22,41 +22,46 @@
     
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         
-        <div class="login-main-content">
+        <div class="form-io-container">
 
-            <label class="form-input-label">Email</label>                
-            <input class="form-input" type="text" 
-                formControlName="email" 
-                placeholder="Saisissez votre email...">
-                @if (submitted && form['email'].errors) {
-                    <div class="invalid-feedback">
-                        @if (form['email']?.errors?.['required']) {
-                            <div>Veuillez saisir votre email</div>
-                        }
-                        @if (form['email']?.errors?.['email']) {
-                            <div>Veuillez saisir une adresse email valide</div>
-                        }
-                    </div>
-                }            
-            
-            <label class="form-input-label">Mot de passe</label>
-            <input class="form-input" type="password" 
-                formControlName="password" 
-                placeholder="Saisissez votre mot de passe...">
-                @if (submitted && form['password'].errors) {
-                    <div class="invalid-feedback">
-                    @if (form['password']?.errors?.['required']) {
-                        <div>Veuillez saisir votre mot de passe</div>
-                    }                            
-                    </div>
-                }
+            <div class="form-io">
+                <label class="form-input-label">Email</label>                
+                <input class="form-input" type="text" 
+                    formControlName="email" 
+                    placeholder="Saisissez votre email...">
+                    @if (submitted && form['email'].errors) {
+                        <div class="invalid-feedback">
+                            @if (form['email']?.errors?.['required']) {
+                                <div>Veuillez saisir votre email</div>
+                            }
+                            @if (form['email']?.errors?.['email']) {
+                                <div>Veuillez saisir une adresse email valide</div>
+                            }
+                        </div>
+                    }            
+            </div>
+
+            <div class="form-io">
+                <label class="form-input-label">Mot de passe</label>
+                <input class="form-input" type="password" 
+                    formControlName="password" 
+                    placeholder="Saisissez votre mot de passe...">
+                    @if (submitted && form['password'].errors) {
+                        <div class="invalid-feedback">
+                        @if (form['password']?.errors?.['required']) {
+                            <div>Veuillez saisir votre mot de passe</div>
+                        }                            
+                        </div>
+                    }
+            </div>
         </div>
 
-        <div class="login-buttons">
+        <div class="form-button-container">
             <div class="login-button-creer-compte">
                 <a routerLink="/register">Créer un compte</a>
             </div>
-            <button class="login-button-connexion">Connexion</button>
+            <button class="form-button">Connexion</button>
         </div>
+        
     </form>
 </div>

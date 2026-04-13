@@ -1,51 +1,60 @@
-<div>
-    <div>
-        <div>
-            
-            <div *ngIf="message" 
-                [ngClass]="messageType" 
-                style="white-space: pre-line;">
+
+<div class="form-container">
+    
+    <div class="form-title">
+        Télécharger un fichier
+    </div>
+
+    <!-- Message -->    
+    @if (message) {
+        <div class="alert" [ngClass]="{
+            'alert-danger': messageType === 'error',
+            'alert-success': messageType === 'success'
+        }" data-cy="login-div-alert">
             {{ message }}
-            </div>
+        </div>
+    }
 
-            <div *ngIf="messageType === 'success'">
-                <h3>Télécharger un fichier</h3>
-                <div>                
-                    <span>{{ fileMetaDataResponse?.originalFileName }}</span>
-                </div>
-                <div>
-                    <span>{{ fileMetaDataResponse?.fileSize }}</span>                    
-                </div>
-                <div>
-                    <span>{{ fileMetaDataResponse?.createdAt }}</span>
-                </div>
-                <div>
-                    <span>{{ fileMetaDataResponse?.createdAt }}</span>
-                </div>
-                <div>
-                    {{ fileMetaDataResponse?.isExpired
-                        ? 'Ce fichier n\'est plus disponible en téléchargement car il a expiré.'
-                        : fileMetaDataResponse?.expirationDays === 1
-                            ? 'Attention, ce fichier expirera dans 1 jour !'
-                            : 'Ce fichier expirera dans ' + fileMetaDataResponse?.expirationDays + ' jour(s) !'
-                    }}
-                </div>
-                <div>
-                    <h3>Mot de passe</h3>
-                    <div *ngIf="isLoading" class="spinner"></div>
-                    <form [formGroup]="fileForm">
+    <div class="spinner-container" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p class="spinner-text">Traitement en cours, veuillez patienter...</p>
+    </div>
 
-                        <input class="loginInput" type="password" 
-                        formControlName="password" 
-                        placeholder="Saisissez votre mot de passe...">
-                        
-                        <button (click)="downloadFile()"
-                        [disabled]="isLoading">
-                            {{ isLoading ? 'Téléchargement...' : 'Télécharger' }}
-                        </button>
-                    </form>
-                </div>
+    <div *ngIf="messageType === 'success'" class="form-io-container">
+        
+        <div class="form-io">
+            <div class="file-infos-icon"></div>
+            <div class="file-infos-container">
+                <div class="file-infos-name">{{ fileMetaDataResponse?.originalFileName }}</div>
+                <div class="file-infos-size">{{ fileMetaDataResponse?.fileSize }}</div>
             </div>
         </div>
+
+        <div class="form-io">
+            {{ fileMetaDataResponse?.isExpired
+                ? 'Ce fichier n\'est plus disponible en téléchargement car il a expiré.'
+                : fileMetaDataResponse?.expirationDays === 1
+                    ? 'Attention, ce fichier expirera dans 1 jour !'
+                    : 'Ce fichier expirera dans ' + fileMetaDataResponse?.expirationDays + ' jour(s) !'
+            }}
+        </div>
+        
+        <div class="form-io">
+
+            <form [formGroup]="fileForm">
+
+                <label class="form-input-label">Mot de passe</label>
+                <input class="form-input" type="password" 
+                formControlName="password" 
+                placeholder="Saisissez votre mot de passe...">
+            </form>
+        </div>        
+    </div>
+
+    <div *ngIf="messageType === 'success'" class="form-button-container">
+        <button class="form-button" (click)="downloadFile()"
+            [disabled]="isLoading">
+            {{ isLoading ? 'Téléchargement...' : 'Télécharger' }}
+        </button>
     </div>
 </div>

@@ -1,7 +1,7 @@
 
-<div class="register-container">    
+<div class="form-container">
             
-    <div class="register-title">
+    <div class="form-title">
         Créer un compte
     </div>
 
@@ -23,40 +23,45 @@
     
     <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
         
-        <div class="register-main-content">
+        <div class="form-io-container">
             
-            <label class="form-input-label">Email</label>                
-            <input type="email" class="form-input" 
+            <div class="form-io">
+
+                <label class="form-input-label">Email</label>                
+                <input type="email" class="form-input" 
                 formControlName="email" 
                 placeholder="Saisissez votre email..."/>                
                 @if (submitted && form['email'].errors) {
                     <div class="invalid-feedback">
-                    @if (form['email']?.errors?.['required']) {
-                        <div>Veuillez saisir votre email</div>
-                    }
-                    @if (form['email']?.errors?.['email']) {
-                        <div>Veuillez saisir une adresse email valide</div>
-                    }
+                        @if (form['email']?.errors?.['required']) {
+                            <div>Veuillez saisir votre email</div>
+                        }
+                        @if (form['email']?.errors?.['email']) {
+                            <div>Veuillez saisir une adresse email valide</div>
+                        }
                     </div>
                 }
+            </div>
             
-            <label class="form-input-label">Mot de passe</label>
-            <input type="password" class="form-input"
+            <div class="form-io">
+                
+                <label class="form-input-label">Mot de passe</label>
+                <input type="password" class="form-input"
                 formControlName="password" 
                 placeholder="Saisissez votre mot de passe...">
                 @if (submitted && form['password'].errors) {
                     <div class="invalid-feedback">
-                    @if (form['password']?.errors?.['required']) {
-                        <div>Veuillez saisir votre mot de passe</div>
-                    }
-                    @if (form['password']?.errors?.['minlength']) {
-                        <div>Veuillez saisir un mot de passe d'au moins 8 caractères</div>
-                    }
+                        @if (form['password']?.errors?.['required']) {
+                            <div>Veuillez saisir votre mot de passe</div>
+                        }
+                        @if (form['password']?.errors?.['minlength']) {
+                            <div>Veuillez saisir un mot de passe d'au moins 8 caractères</div>
+                        }
                     </div>
                 }
-
-            <label class="form-input-label">Vérification du mot de passe</label>
-            <input type="password" class="form-input"
+                
+                <label class="form-input-label">Vérification du mot de passe</label>
+                <input type="password" class="form-input"
                 formControlName="confirmPassword" 
                 placeholder="Saisissez-le à nouveau">
                 @if (submitted && userForm?.errors?.['passwordMismatch']) {
@@ -66,19 +71,20 @@
                 }
                 @if (submitted && form['confirmPassword'].errors) {
                     <div class="invalid-feedback">
-                    @if (form['confirmPassword']?.errors?.['required']) {
-                        <div>Veuillez ressaisir votre mot de passe</div>
-                    }                        
+                        @if (form['confirmPassword']?.errors?.['required']) {
+                            <div>Veuillez ressaisir votre mot de passe</div>
+                        }                        
                     </div>
                 }
+            </div>
 
         </div>
 
-        <div class="register-buttons">
+        <div class="form-button-container">
             <div class="register-button-reset">
                 <a routerLink="/login" (click)="onReset()">J'ai déjà un compte</a>
             </div>
-            <button class="register-button-connexion">Créer mon compte</button>
+            <button class="form-button">Créer mon compte</button>
         </div>
     </form>
       

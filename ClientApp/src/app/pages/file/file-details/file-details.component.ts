@@ -39,12 +39,11 @@ export class FileDetailsComponent implements OnInit {
           this.fileMetaDataResponse = fileMetaDataResponse;
         },
         error: (err) => {
+          this.messageType = 'error';
           if (err.error && err.error.message) {
             this.message = err.error.message;
-            this.messageType = 'error';
           } else {
             this.message = err.status + ' - ' + err.statusText;
-            this.messageType = 'error';
           }
         }
       });
