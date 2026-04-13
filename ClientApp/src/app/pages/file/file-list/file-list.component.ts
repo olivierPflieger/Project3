@@ -8,6 +8,7 @@ import { DownloadFileRequest } from '../../../core/models/DownloadFileRequest';
 import { FileMetaDataResponse } from '../../../core/models/FileMetaDataResponse';
 import { HttpResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { LoginService } from '../../../core/service/login/login.service';
 
 @Component({
   selector: 'app-file-list.component',
@@ -31,7 +32,7 @@ export class FileListComponent implements OnInit {
   domain: string = '';
   filter: string = 'valid';
   
-  constructor(private router: Router, private route: ActivatedRoute, public fileService: FileService) {
+  constructor(private router: Router, private route: ActivatedRoute, public fileService: FileService, public loginService: LoginService) {
     this.domain = window.location.origin;
   }
   
@@ -109,5 +110,10 @@ export class FileListComponent implements OnInit {
         )
       );
     }
+  }
+
+  logout() {
+      this.loginService.logout();      
+      this.router.navigate(['/']);     
   }
 }

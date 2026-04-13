@@ -1,0 +1,37 @@
+<div class="app-container">
+
+    <header class="header">        
+        
+        <div class="appTitle">
+            DataShare
+        </div>
+        
+        <div>
+            @if (loginService.isAuthenticated()) {
+                <span>{{ loginService.getUserName() }}</span>
+            }
+            
+            <!--
+            <button class="btnMenu" routerLink="/">Accueil</button>
+            -->
+            
+            @if (!(loginService.isAuthenticated())) {
+                <button class="btnMenu" routerLink="/login">Se connecter</button>
+            }
+            
+            @if (loginService.isAuthenticated()) {
+                <button class="btnMenu" (click)="logout()">Déconnection</button>
+                <button class="btnMenu" routerLink="/files">Mon espace</button>
+            }
+        </div>
+        
+    </header>
+    
+    <div class="main-content">    
+        <router-outlet/>
+    </div>
+    
+    <footer class="footer">
+        <p>Copyright DataShare© 2025</p>
+    </footer>
+</div>

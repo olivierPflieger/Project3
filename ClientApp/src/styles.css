@@ -69,7 +69,7 @@ html, body {
   letter-spacing: var(--Static-Headline-Large-Tracking);
 }
 
-.btnHome {
+.btnMenu {
   border: none;
   border-radius: var(--sds-size-radius-200);
   background: #2C2C2C;
@@ -77,16 +77,6 @@ html, body {
   padding: 12px;
   cursor: pointer;
   margin-right: 0.5rem;
-  margin-left: 0.5rem;
-}
-
-.btnConnexion {
-  border: none;
-  border-radius: var(--sds-size-radius-200);
-  background: #2C2C2C;
-  color: #F3EEEA;  
-  padding: 12px;
-  cursor: pointer;
 }
 
 .footer{
