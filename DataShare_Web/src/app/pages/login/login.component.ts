@@ -70,7 +70,8 @@ export class LoginComponent implements OnInit {
           }                    
         },
         error: (err) => {  
-          this.submitted = false;                  
+          this.submitted = false;     
+          this.message = '';
           this.stopLoading();
           if (err.error && err.error.errors) {
             const apiErrors = err.error?.errors;

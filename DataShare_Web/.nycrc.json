@@ -2,16 +2,21 @@
   "all": false,
   "temp-dir": ".nyc_output",
   "report-dir": "coverage/combined",
-  "excludeAfterRemap": false,
+  "excludeAfterRemap": true,
+  "include": [
+    "src/app/**",
+    ".cypress-coverage-dist/src/app/**"
+  ],
   "exclude": [
     "**/*.spec.ts",
     "**/*.cy.ts",
     "**/node_modules/**",
+    "node_modules/**",
     "cypress/**",
     "coverage/**",
     "dist/**",
     "setup-jest.ts",
     "src/main.ts",
-    ".cypress-coverage-dist/src/main.ts"
+    ".cypress-coverage-dist/src/main.ts"    
   ]
 }

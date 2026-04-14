@@ -63,14 +63,15 @@ export class RegisterComponent implements OnInit {
     this.userService.register(newUser)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (res) => {
+        next: (res) => {          
           this.stopLoading();
           this.message = 'Inscription réussie !';
           this.messageType = 'success';
           this.submitted = false;
         },
         error: (err) => {  
-          this.submitted = false;                  
+          this.submitted = false;
+          this.message = '';
           this.stopLoading();
           if (err.error && err.error.errors) {
             const apiErrors = err.error?.errors;

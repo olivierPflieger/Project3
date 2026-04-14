@@ -27,10 +27,11 @@
             <div class="form-io">
                 <label class="form-input-label">Email</label>                
                 <input class="form-input" type="text" 
-                    formControlName="email" 
+                    formControlName="email"
+                    data-cy="login-input-email" 
                     placeholder="Saisissez votre email...">
                     @if (submitted && form['email'].errors) {
-                        <div class="invalid-feedback">
+                        <div class="invalid-feedback" data-cy="invalid-feedback-email">
                             @if (form['email']?.errors?.['required']) {
                                 <div>Veuillez saisir votre email</div>
                             }
@@ -45,6 +46,7 @@
                 <label class="form-input-label">Mot de passe</label>
                 <input class="form-input" type="password" 
                     formControlName="password" 
+                    data-cy="login-input-password"
                     placeholder="Saisissez votre mot de passe...">
                     @if (submitted && form['password'].errors) {
                         <div class="invalid-feedback">
@@ -57,10 +59,10 @@
         </div>
 
         <div class="form-button-container">
-            <div class="button-link">
+            <div class="button-link" data-cy="login-link-register">
                 <a routerLink="/register">Créer un compte</a>
             </div>
-            <button class="form-button">Connexion</button>
+            <button class="form-button" data-cy="login-button-submit">Connexion</button>
         </div>
         
     </form>

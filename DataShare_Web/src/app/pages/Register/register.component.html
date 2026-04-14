@@ -29,12 +29,13 @@
 
                 <label class="form-input-label">Email</label>                
                 <input type="email" class="form-input" 
-                formControlName="email" 
+                formControlName="email"
+                data-cy="register-input-email"
                 placeholder="Saisissez votre email..."/>                
                 @if (submitted && form['email'].errors) {
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback" data-cy="invalid-feedback-email">
                         @if (form['email']?.errors?.['required']) {
-                            <div>Veuillez saisir votre email</div>
+                            <div>Veuillez saisir une adresse email</div>
                         }
                         @if (form['email']?.errors?.['email']) {
                             <div>Veuillez saisir une adresse email valide</div>
@@ -48,9 +49,10 @@
                 <label class="form-input-label">Mot de passe</label>
                 <input type="password" class="form-input"
                 formControlName="password" 
+                data-cy="register-input-password"
                 placeholder="Saisissez votre mot de passe...">
                 @if (submitted && form['password'].errors) {
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback" data-cy="invalid-feedback-password">
                         @if (form['password']?.errors?.['required']) {
                             <div>Veuillez saisir votre mot de passe</div>
                         }
@@ -63,14 +65,15 @@
                 <label class="form-input-label">Vérification du mot de passe</label>
                 <input type="password" class="form-input"
                 formControlName="confirmPassword" 
+                data-cy="register-input-confirmPassword"
                 placeholder="Saisissez-le à nouveau">
                 @if (submitted && userForm?.errors?.['passwordMismatch']) {
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback" data-cy="invalid-feedback-passwordMismatch">
                         <div>Les mots de passe ne correspondent pas</div>
                     </div>
                 }
                 @if (submitted && form['confirmPassword'].errors) {
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback" data-cy="invalid-feedback-confirmPassword">
                         @if (form['confirmPassword']?.errors?.['required']) {
                             <div>Veuillez ressaisir votre mot de passe</div>
                         }                        
@@ -81,10 +84,13 @@
         </div>
 
         <div class="form-button-container">
-            <div class="register-button-reset">
+            <div class="register-button-reset" data-cy="register-link-reset">
                 <a routerLink="/login" (click)="onReset()">J'ai déjà un compte</a>
             </div>
-            <button class="form-button">Créer mon compte</button>
+            <button class="form-button" 
+                data-cy="register-button-submit">
+                Créer mon compte
+            </button>
         </div>
     </form>
       
