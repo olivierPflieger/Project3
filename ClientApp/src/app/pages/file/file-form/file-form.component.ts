@@ -85,10 +85,12 @@ export class FileFormComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.stopLoading();
+          this.submitted = false;
           this.showForm = false;
           this.uploadFileResponse = response.body as UploadFileResponse;
         },
-        error: (err) => {                    
+        error: (err) => {
+          this.submitted = false;                    
           this.stopLoading();
           if (err.error && err.error.errors) {
             const apiErrors = err.error?.errors;
@@ -149,7 +151,6 @@ export class FileFormComponent implements OnInit {
       this.tagInput.setValue('');
     }
   }
-
   
   addTag(rawTag: string) {
     const tag = rawTag.trim();

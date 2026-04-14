@@ -11,6 +11,7 @@ import { LoginService } from './core/service/login/login.service';
 })
 export class AppMainComponent {
   title = 'datashare';
+  isMenuHamburgerOpen = false;
   
   constructor(private router: Router, public loginService: LoginService) {}
 
@@ -24,4 +25,9 @@ export class AppMainComponent {
       this.loginService.logout();      
       this.router.navigate(['/']);     
   }
+
+  toggleMenuHamburger() {
+    this.isMenuHamburgerOpen = !this.isMenuHamburgerOpen;
+  }
+
 }

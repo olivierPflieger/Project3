@@ -5,7 +5,8 @@ export interface FileMetaDataResponse {
   token: string,
   createdAt: string,
   isExpired: boolean,
-  expirationDays: number,
+  isProtected: boolean,
+  remainingDays: number,
   expirationDate: string,
   tags: string
 }

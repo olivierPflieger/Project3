@@ -105,7 +105,8 @@ namespace DataShare_API.Controllers
                     Token = fileMetaData.Token,
                     CreatedAt = fileMetaData.CreatedAt,
                     IsExpired = expirationDetails.isExpired,
-                    ExpirationDays = expirationDetails.RemainingDays,
+                    IsProtected = string.IsNullOrEmpty(fileMetaData.Password) ? false : true,
+                    RemainingDays = expirationDetails.RemainingDays,
                     ExpirationDate = expirationDetails.ExpirationDate,
                     Tags = fileMetaData.Tags
                 };
@@ -146,7 +147,8 @@ namespace DataShare_API.Controllers
                         Token = fileMetaData.Token,
                         CreatedAt = fileMetaData.CreatedAt,
                         IsExpired = expirationDetails.isExpired,
-                        ExpirationDays = expirationDetails.RemainingDays,
+                        IsProtected = string.IsNullOrEmpty(fileMetaData.Password) ? false : true,
+                        RemainingDays = expirationDetails.RemainingDays,
                         ExpirationDate = expirationDetails.ExpirationDate,
                         Tags = fileMetaData.Tags
                     };

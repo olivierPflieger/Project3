@@ -15,7 +15,9 @@
     
         <header class="header">
             <button class="btnMenu" routerLink="/files/upload">Ajouter des fichiers</button>
-            <a class="logout" (click)="logout()">Déconnexion</a>
+            <div class="button-link button-logout">
+                <a (click)="logout()">Déconnexion</a>
+            </div>
         </header>
 
         <div class="content">
@@ -28,9 +30,67 @@
                     {{ message }}
                 </div>
             }
-            
-            <h2>Mes fichiers</h2>
+                        
+            <div class="file-list-container">
 
+                <div class="form-title">
+                    Mes fichiers
+                </div>
+
+                <div class="form-io-row">
+                    <div class="filtres">
+                        <div class="filtres-item active"
+                        [class.active]="filter === 'all'"
+                        (click)="filter = 'all'; filterFiles();">
+                            Tous
+                        </div>
+                        <div class="filtres-item"
+                        [class.active]="filter === 'valid'"
+                        (click)="filter = 'valid'; filterFiles();">
+                            Actifs
+                        </div>
+                        <div class="filtres-item"
+                        [class.active]="filter === 'expired'"
+                        (click)="filter = 'expired'; filterFiles();">
+                            Expirés
+                        </div>
+                    </div>
+                </div>
+
+                <div class="file-list-item" *ngFor="let fileMeta of filteredFiles">
+                                        
+                    <div class="form-io-row">
+                        <div class="file-infos-icon"></div>
+                        <div class="file-infos-container">
+                            <div class="file-infos-name">{{ fileMeta.originalFileName }}</div>
+                            <div class="file-infos-size">Expire dans {{ fileMeta.remainingDays }} jours</div>
+                        </div>                    
+                    </div>
+
+                    <div class="file-actions">
+                        
+                        <div *ngIf="fileMeta.isProtected" class="file-action file-lock">
+                        </div>
+
+                        <div class="file-action">
+                            <div class="file-action-button file-action-delete"
+                                (click)="deleteFile(fileMeta.token, $event)">
+                                Supprimer
+                            </div>
+                        </div>
+
+                         <div class="file-action">
+                            <div class="file-action-button file-action-access" [routerLink]="['/file', fileMeta.token]">
+                                Accéder
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+            </div>
+
+            <!--
             <div class="tabs">
                 <span class="tab active">Tous</span>
                 <span class="tab">Actifs</span>
@@ -49,6 +109,7 @@
 
             </div>
         
+            
             <div class="file-list" *ngFor="let fileMeta of filteredFiles">
                 <div class="file-item">
                 <div class="file-info">
@@ -58,9 +119,10 @@
                 <div class="file-actions">
                     <a href="#" (click)="deleteFile(fileMeta.token, $event)">Delete</a>
                     <button [routerLink]="['/file', fileMeta.token]">Accéder</button>
-                </div>
-                </div>
+                </div>                
             </div>
+            -->
+            
         </div>
   </div>
 </div>

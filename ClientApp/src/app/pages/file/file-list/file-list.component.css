@@ -46,6 +46,20 @@
   background: rgba(255, 255, 255, 0.40);
 }
 
+.button-logout a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.button-logout a::before {
+  content: "";
+  width: var(--sds-size-space-300);
+  height: var(--sds-size-space-300);  
+  background: url("../../../../../public/images/logout.svg") no-repeat center;
+  background-size: contain;
+}
+
 .footer {
   display: flex;
   justify-content: center;
@@ -53,74 +67,156 @@
 }
 
 /* Main */
+
 .main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: #f4f4f4;
 }
 
-/* Header */
 .header {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  padding: 16px;
-  background: #fff;
+  padding-left: var(--sds-size-space-800);
+  padding-right: var(--sds-size-space-800);
+  background: #FFEEE3;
   border-bottom: 1px solid #ddd;
 }
 
-/* Content */
 .content {
   padding: 20px;
 }
 
-/* Tabs */
-.tabs {
+/* Filtes */
+.filtres {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  align-items: center;  
+  border-radius: 24px;  
 }
 
-.tab {
-  padding: 6px 12px;
-  border-radius: 12px;
-  background: #eee;
-  cursor: pointer;
+.filtres-item {
+  display: flex; 
+  padding: var(--sds-size-space-200) var(--sds-size-space-400);
+  justify-content: center;
+  align-items: center;
+  gap: var(--sds-size-space-300);
+  cursor: pointer;  
+  background: rgba(255, 193, 145, 0.16);  
+  border: 1px solid rgba(215, 99, 11, 0.20); 
 }
 
-.tab.active {
-  background: #e57373;
-  color: white;
+.filtres-item.active {
+  background-color: #E77A6E;  
+  color: #FFF;
+}
+
+.filtres-item:first-child {
+  border-radius: 24px 0 0 24px;
+  border-right:none;
+}
+
+.filtres-item:nth-child(2) {
+  border-right:none;
+  border-left:none;
+}
+
+.filtres-item:last-child {
+  border-radius: 0 24px 24px 0; 
+  border-left:none; 
 }
 
 /* File list */
-.file-list {
+.file-list-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: flex-start;
+  gap: var(--sds-size-space-600);
 }
 
-/* File item */
-.file-item {
+.file-list-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: white;
-  padding: 12px;
+  flex-direction: row;
+  justify-content: space-between; 
+  gap: var(--sds-size-space-400);
+  align-self: stretch;
   border-radius: 8px;
-}
-
-.file-info {
-  display: flex;
-  flex-direction: column;
+  border: 1px solid rgba(215, 99, 11, 0.20);
+  background: rgba(255, 193, 145, 0.05);
+  padding-top:var(--sds-size-space-200);
+  padding-bottom: var(--sds-size-space-200);
+  padding-left: var(--sds-size-space-400);
+  padding-right: var(--sds-size-space-400);
 }
 
 .file-actions {
   display: flex;
-  gap: 8px;
+  gap: var(--sds-size-space-200);  
 }
 
-.logout {
-  cursor:pointer;
+.file-action {
+  display: flex;
+  flex-direction: row;
+  padding: var(--sds-size-space-200) var(--sds-size-space-300);
+  justify-content: center;
+  align-items: center;
+  gap: var(--sds-size-space-200);
+  border-radius: var(--sds-size-radius-200);
+  border: var(--sds-size-stroke-border) solid #FFA569;
+}
+
+.file-lock {
+  border: none;
+}
+
+.file-lock::before {
+  content: "";
+  width: var(--sds-size-space-400);
+  height: var(--sds-size-space-400);  
+  background: url("../../../../../public/images/file-lock.svg") no-repeat center;
+  background-size: contain;
+}
+
+.file-action-button {  
+  cursor: pointer;
+  color: #E27F29;
+  font-family: var(--Main-Font, "DM Sans");
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px; /* 100% */
+}
+
+.file-action-delete,
+.file-action-access {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sds-size-space-200);
+}
+
+.file-action-delete::before {
+  content: "";
+  width: var(--sds-size-space-400);
+  height: var(--sds-size-space-400);  
+  background: url("../../../../../public/images/file-delete.svg") no-repeat center;
+  background-size: contain;
+}
+
+.file-action-access::after {
+  content: "";
+  width: var(--sds-size-space-400);
+  height: var(--sds-size-space-400);  
+  background: url("../../../../../public/images/file-access.svg") no-repeat center;
+  background-size: contain;
+}
+
+/* Responsive design */
+
+@media (max-width: 640px) {
+  
+  .sidebar{
+    display: none;
+    visibility: hidden
+  }
+
 }

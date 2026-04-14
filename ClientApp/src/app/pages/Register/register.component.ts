@@ -67,8 +67,10 @@ export class RegisterComponent implements OnInit {
           this.stopLoading();
           this.message = 'Inscription réussie !';
           this.messageType = 'success';
+          this.submitted = false;
         },
-        error: (err) => {                    
+        error: (err) => {  
+          this.submitted = false;                  
           this.stopLoading();
           if (err.error && err.error.errors) {
             const apiErrors = err.error?.errors;

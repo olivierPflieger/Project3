@@ -40,19 +40,21 @@
   flex-direction: column;
   align-items: flex-start;  
   gap: var(--sds-size-space-200);
-  flex: 1 0 0;
+  flex: 1 0 0;  
 }
 
 .form-io-row { 
   display: flex;
-  flex-direction: row;  
+  flex-direction: row;
+  width: 100%;
 }
 
 .form-button-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  align-self: stretch;
+  align-self: stretch;  
+  margin-top: var(--sds-size-space-600);
 }
 
 .form-button {
@@ -66,20 +68,39 @@
   border-radius: var(--sds-size-radius-200);
   border: var(--sds-size-stroke-border) solid rgba(205, 94, 20, 0.50);
   font-family: var(--Main-Font, "DM Sans");
-  font-size: 16px;
+  font-size: var(--sds-typography-body-size-medium);
   font-style: normal;
-  font-weight: 400;
-  line-height: 16px; /* 100% */
+  font-weight: var(--sds-typography-body-font-weight-regular);
+  line-height: var(--Static-Headline-Small-Size);
   cursor: pointer;
+}
+
+.button-link {
+    padding: var(--sds-size-space-300);
+    justify-content: center;
+    align-items: center;
+    gap: var(--sds-size-space-200);
+    align-self: stretch;
+    cursor: pointer;
+}
+
+.button-link a {
+    color: #E27F29;
+    font-family: var(--Main-Font);
+    font-size: var(--sds-typography-body-size-medium);
+    font-style: normal;
+    font-weight: var(--sds-typography-body-font-weight-regular);
+    line-height: var(--sds-size-space-400);
+    text-decoration: none;
 }
 
 /* Inputs */
 .form-input-label {
     color: var(--sds-color-text-default-default);    
     font-family: Inter;
-    font-size: 16px;
+    font-size: var(--sds-typography-body-size-medium);
     font-style: normal;
-    font-weight: 400;
+    font-weight: var(--sds-typography-body-font-weight-regular);
     line-height: 150%;
 }
 
@@ -111,7 +132,7 @@
 .file-infos-icon {
   width: 24px;
   height: 24px;
-  background-image: url("../public/images/fileSelect.svg");
+  background-image: url("../public/images/file-selector.svg");
   background-size: contain;
   margin-top: 7px;
 }
@@ -119,12 +140,13 @@
 .file-infos-container {
   display: flex;
   flex-direction: column;
-  padding-left: var(--sds-size-space-200);
+  padding-left: var(--sds-size-space-300);
+  padding-right: var(--sds-size-space-300);
   align-items: flex-start;
 }
 
 .file-infos-name {
-  max-width: 250px;
+  max-width: 200px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -1,12 +1,18 @@
 .button-select-file {
+  margin-bottom: var(--sds-size-space-600);
+  margin-left: auto;
+  flex-shrink: 0;
   cursor: pointer;
   padding: var(--sds-size-space-200) var(--sds-size-space-300);
-  justify-content: center;
-  align-items: center;
   gap: var(--sds-size-space-200);
   border-radius: var(--sds-size-radius-200);
   border: var(--sds-size-stroke-border) solid #FFA569;
   color: #E27F29;  
+}
+
+.file-placeholder {
+  display: flex;
+  padding-top: var(--sds-size-space-200);
 }
 
 .fileForm-uploaded-fileInfos-container {
@@ -24,24 +30,15 @@
 
 .file-url a {
   color: #FFB88C;
-  margin-left: var(--sds-size-space-400);
+  padding-left: var(--sds-size-space-400);
 }
 
-.fileForm-expiration {
-  display: flex;
-  height: 40px;
-  min-width: 240px;
-  padding: var(--sds-size-space-300) var(--sds-size-space-300) var(--sds-size-space-300) var(--sds-size-space-400);
-  align-items: center;
-  gap: var(--sds-size-space-200);
-  flex-shrink: 0;
-  align-self: stretch;
-  border-radius: var(--sds-size-radius-200);
-  border: var(--sds-size-stroke-border) solid var(--sds-color-border-default-default);
-  background: var(--sds-color-background-default-default);
+.form-expiration {
   width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
+}
+
+.expiration {
+  color: var(--sds-color-text-default-default);  
 }
 
 .fileForm-tags-container {
@@ -57,24 +54,39 @@
   padding: 4px 4px;
 }
 
-.fileForm-button-televerser,
-.fileForm-button-copier {
+.form-button-nostretch {    
     display: flex;
     padding: var(--sds-size-space-300);
     justify-content: center;
-    align-items: center;
-    gap: var(--sds-size-space-200);
-    align-self: stretch;
+    align-items: center;      
     color: #BA681F;
     background: rgba(255, 129, 45, 0.13);
     border-radius: var(--sds-size-radius-200);
     border: var(--sds-size-stroke-border) solid rgba(205, 94, 20, 0.50);
-    font-family: var(--Main-Font);
-    font-size: var(--sds-typography-body-size-small);
+    font-family: var(--Main-Font, "DM Sans");
+    font-size: var(--sds-typography-body-size-medium);
     font-style: normal;
-    font-weight: 400;
-    line-height: 16px; /* 100% */
+    font-weight: var(--sds-typography-body-font-weight-regular);
+    line-height: var(--Static-Headline-Small-Size);
     cursor: pointer;
+}
+
+.form-button-televerser::before {
+  content: "";
+  width: var(--sds-size-space-400);
+  height: var(--sds-size-space-400);
+  padding-right: var(--sds-size-space-400);
+  background: url("../../../../../public/images/televerser-dark.svg") no-repeat center;
+  background-size: contain;
+}
+
+.form-button-copier::before {
+  content: "";
+  width: var(--sds-size-space-400);
+  height: var(--sds-size-space-400);
+  padding-right: var(--sds-size-space-400);
+  background: url("../../../../../public/images/file-copy.svg") no-repeat center;
+  background-size: contain;
 }
 
 .link-copied {

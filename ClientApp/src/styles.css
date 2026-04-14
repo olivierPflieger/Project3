@@ -9,6 +9,7 @@
   --sds-size-space-300: 12px;
   --sds-size-space-400:16px;
   --sds-size-space-600:24px;
+  --sds-size-space-800:32px;
   --sds-size-stroke-border: 1px;
   --sds-color-border-default-default: #D9D9D9;
   --sds-color-background-default-default: #FFF;
@@ -18,6 +19,7 @@
   --sds-typography-body-size-medium: 16px;
   --sds-typography-body-font-weight-regular: 400;
   --sds-typography-body-font-weight-bold: 700;
+  --Static-Headline-Small-Size: 16px;
   --Static-Headline-Medium-Size: 28px;
   --Static-Headline-Large-Size: 32px;
   --Static-Headline-Large-Line-Height: 40px;
@@ -39,14 +41,11 @@ html, body {
 }
 
 .header {
-  display: flex;
-  /* pousse gauche et droite aux extrémités */
+  display: flex;  
   justify-content: space-between; 
-  align-items: center;
-  padding-left: 3rem;
-  padding-right: 3rem;
+  align-items: center;  
   flex-shrink: 0;
-  padding-top: 1rem;
+  padding: var(--sds-size-space-400);  
 }
 
 .main-content {
@@ -64,17 +63,17 @@ html, body {
   font-family: var(--Main-Font);
   font-size: var(--Static-Headline-Large-Size);
   font-style: normal;
-  font-weight: 700;
+  font-weight: var(--sds-typography-body-font-weight-bold);
   line-height: var(--Static-Headline-Large-Line-Height);
   letter-spacing: var(--Static-Headline-Large-Tracking);
 }
 
 .btnMenu {
   border: none;
-  border-radius: var(--sds-size-radius-200);
+  border-radius: var(--sds-size-space-300);
   background: #2C2C2C;
   color: #F3EEEA;  
-  padding: 12px;
+  padding: var(--sds-size-space-300);
   cursor: pointer;
   margin-right: 0.5rem;
 }
@@ -82,11 +81,11 @@ html, body {
 .footer{
   color: #FFF;
   font-family: Inter;
-  font-size: 1rem;
+  font-size: var(--sds-typography-body-size-medium);
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--sds-typography-body-font-weight-regular);
   line-height: 150%;
-  padding-left: 3rem;
+  padding-left: var(--sds-size-space-400);
 }
 
 .invalid-feedback {
@@ -113,7 +112,7 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: var(--sds-size-space-400);
 }
 
 .spinner {
@@ -135,6 +134,8 @@ html, body {
   100% { transform: rotate(360deg); }
 }
 
+/* Responsive design */
+
 @media (max-width: 640px) {
   .main-frame {
     width: min(100%, calc(100vw - 2rem));
@@ -145,12 +146,13 @@ html, body {
   }
 
   .header {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: var(--sds-size-space-400);
+    padding-right: var(--sds-size-space-400);
   }
 
   .footer {
-    padding-left: 1rem;
+    display: none;
+    padding-left: var(--sds-size-space-400);
   }
 
   .gardeDataShare {
@@ -162,4 +164,3 @@ html, body {
     font-size: clamp(1rem, 5vw, 1.5rem);
   }
 }
-

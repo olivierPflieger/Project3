@@ -1,0 +1,39 @@
+.form-button-telecharger {
+    color: #AEA49B;
+    font-family: var(--Main-Font);
+    font-size: var(--sds-typography-body-size-medium);
+    font-style: normal;
+    font-weight: var(--sds-typography-body-font-weight-regular);
+    line-height: var(--Static-Headline-Small-Size);
+    border-radius: var(--sds-size-radius-200);
+    border: var(--sds-size-stroke-border) solid rgba(183, 167, 156, 0.20);
+    background: rgba(183, 167, 156, 0.20);
+}
+
+.form-button-telecharger::before {
+  content: "";
+  width: var(--sds-size-space-400);
+  height: var(--sds-size-space-400);  
+  background: url("../../../../../public/images/file-download.svg") no-repeat center;
+  background-size: contain;
+  margin-right: var(--sds-size-space-200);
+}
+
+.expiration-notification {
+    display: flex;
+    flex-direction: row;;
+    padding: var(--sds-size-radius-200);
+    align-items: center;
+    align-self: stretch;
+    border-radius: var(--sds-size-radius-200);
+    border: 1px solid #B1C9F5;
+    background: #E2ECFF;
+}
+
+.expiration-notification::before {
+  content: "";
+  width: var(--sds-size-space-400);
+  height: var(--sds-size-space-400);  
+  background: url("../../../../../public/images/information.svg") no-repeat center;
+  background-size: contain;
+}

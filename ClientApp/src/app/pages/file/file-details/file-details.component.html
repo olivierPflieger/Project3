@@ -22,7 +22,7 @@
 
     <div *ngIf="messageType === 'success'" class="form-io-container">
         
-        <div class="form-io">
+        <div class="form-io-row">
             <div class="file-infos-icon"></div>
             <div class="file-infos-container">
                 <div class="file-infos-name">{{ fileMetaDataResponse?.originalFileName }}</div>
@@ -30,29 +30,29 @@
             </div>
         </div>
 
-        <div class="form-io">
+        <div class="form-io expiration-notification">            
+                
             {{ fileMetaDataResponse?.isExpired
                 ? 'Ce fichier n\'est plus disponible en téléchargement car il a expiré.'
-                : fileMetaDataResponse?.expirationDays === 1
-                    ? 'Attention, ce fichier expirera dans 1 jour !'
-                    : 'Ce fichier expirera dans ' + fileMetaDataResponse?.expirationDays + ' jour(s) !'
+                : fileMetaDataResponse?.remainingDays === 1
+                ? 'Attention, ce fichier expirera dans 1 jour !'
+                : 'Ce fichier expirera dans ' + fileMetaDataResponse?.remainingDays + ' jours.'
             }}
+               
         </div>
         
-        <div class="form-io">
-
-            <form [formGroup]="fileForm">
-
+        <form [formGroup]="fileForm" style="width: 100%;">
+            <div class="form-io">
                 <label class="form-input-label">Mot de passe</label>
                 <input class="form-input" type="password" 
                 formControlName="password" 
-                placeholder="Saisissez votre mot de passe...">
-            </form>
-        </div>        
+                placeholder="Saisissez le mot de passe...">
+            </div>
+        </form>
     </div>
 
     <div *ngIf="messageType === 'success'" class="form-button-container">
-        <button class="form-button" (click)="downloadFile()"
+        <button class="form-button form-button-telecharger" (click)="downloadFile()"
             [disabled]="isLoading">
             {{ isLoading ? 'Téléchargement...' : 'Télécharger' }}
         </button>

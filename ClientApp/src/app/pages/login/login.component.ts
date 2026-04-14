@@ -59,6 +59,7 @@ export class LoginComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.stopLoading();
+          this.submitted = false;
           const token = res.body?.token.toString();
           if (token) {
             this.loginService.setToken(token);
@@ -68,7 +69,8 @@ export class LoginComponent implements OnInit {
             alert ('The returned token is empty !');            
           }                    
         },
-        error: (err) => {                    
+        error: (err) => {  
+          this.submitted = false;                  
           this.stopLoading();
           if (err.error && err.error.errors) {
             const apiErrors = err.error?.errors;

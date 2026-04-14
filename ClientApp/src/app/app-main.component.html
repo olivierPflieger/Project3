@@ -7,11 +7,12 @@
         </div>
         
         <div>
+            <!--
             @if (loginService.isAuthenticated()) {
                 <span>{{ loginService.getUserName() }}</span>
             }
             
-            <!--
+            
             <button class="btnMenu" routerLink="/">Accueil</button>
             -->
             
@@ -20,11 +21,12 @@
             }
             
             @if (loginService.isAuthenticated()) {
+                <!--
                 <button class="btnMenu" (click)="logout()">Déconnection</button>
+                -->
                 <button class="btnMenu" routerLink="/files">Mon espace</button>
             }
         </div>
-        
     </header>
     
     <div class="main-content">    
