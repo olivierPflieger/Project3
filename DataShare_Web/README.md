@@ -69,11 +69,21 @@ For end-to-end (e2e) testing with coverage, run:
 npm run cy:coverage
 ```
 
+This command builds the app in development mode, instruments the generated JavaScript, serves the instrumented build on `http://127.0.0.1:4201`, and runs Cypress against it.
+
 Additionally, if you need to clean the coverage report, run :
 
 ```bash
 npm run coverage:clean
 ```
+
+To generate the merged report after `npm run jest` and `npm run cy:coverage`, run:
+
+```bash
+npm run coverage:report
+```
+
+The combined coverage report is generated in `coverage/combined`.
 
 In order to open Cypress console, run : 
 
