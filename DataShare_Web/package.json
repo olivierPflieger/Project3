@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "jest",
     "test:watch": "jest --watch",
-    "jest": "npm run test -- --coverage"
+    "jest": "npm run test -- --coverage",
+    "e2e": "npx cypress run"
   },
   "private": true,
   "packageManager": "npm@11.12.0",
