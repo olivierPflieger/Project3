@@ -16,7 +16,10 @@
     "instrument:coverage": "node scripts/instrument-dist-for-cypress.cjs",
     "coverage:clean": "node scripts/clean-coverage-artifacts.cjs",
     "coverage:report": "nyc report --temp-dir .nyc_output --report-dir coverage/combined --reporter=html --reporter=text-summary",
-    "cy:coverage": "start-server-and-test start:coverage http://localhost:4201 \"cypress run --config baseUrl=http://localhost:4201\""
+    "cy:coverage": "start-server-and-test start:coverage http://localhost:4201 \"cypress run --config baseUrl=http://localhost:4201\"",
+    "perf:smoke": "node scripts/run-k6.cjs smoke",
+    "perf:load": "node scripts/run-k6.cjs load",
+    "perf:k6": "node scripts/run-k6.cjs"
   },
   "private": true,
   "packageManager": "npm@11.12.0",
