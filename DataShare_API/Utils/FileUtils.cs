@@ -28,10 +28,10 @@
 
             if (DateTime.Now > creationDate.AddDays(expirationDays))
             {
-                expirationDetails.isExpired = true;
+                expirationDetails.IsExpired = true;
             } else
             {
-                expirationDetails.isExpired = false;                
+                expirationDetails.IsExpired = false;                
             }
 
             return expirationDetails;
@@ -40,7 +40,7 @@
 
     public class ExpirationDetails
     {
-        public bool isExpired { get; set; } = false;
+        public bool IsExpired { get; set; } = false;
         public DateTime ExpirationDate { get; set; }
         public int RemainingDays { get; set; }
     }   

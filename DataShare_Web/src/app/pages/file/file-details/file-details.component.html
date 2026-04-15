@@ -22,7 +22,7 @@
 
     <div *ngIf="isFileFound" class="form-io-container">
         
-        <div class="form-io-row">
+        <div class="form-io-row" *ngIf="!isExpired">
             <div class="file-infos-icon"></div>
             <div class="file-infos-container">
                 <div class="file-infos-name">{{ fileMetaDataResponse?.originalFileName }}</div>
@@ -30,18 +30,13 @@
             </div>
         </div>
 
-        <div class="form-io expiration-notification">            
-                
-            {{ fileMetaDataResponse?.isExpired
-                ? 'Ce fichier n\'est plus disponible en téléchargement car il a expiré.'
-                : fileMetaDataResponse?.remainingDays === 1
-                ? 'Attention, ce fichier expirera dans 1 jour !'
-                : 'Ce fichier expirera dans ' + fileMetaDataResponse?.remainingDays + ' jours.'
-            }}
+        <div class="form-io-row-noWidth" [ngClass]="getExpirationClass(fileMetaDataResponse?.isExpired, fileMetaDataResponse?.remainingDays)">            
+           
+               {{ getExpirationLabel(fileMetaDataResponse?.isExpired, fileMetaDataResponse?.remainingDays) }}
                
         </div>
         
-        <form [formGroup]="fileForm" style="width: 100%;">
+        <form [formGroup]="fileForm" *ngIf="!isExpired && fileMetaDataResponse?.isProtected" style="width: 100%;">
             <div class="form-io">
                 <label class="form-input-label">Mot de passe</label>
                 <input class="form-input" type="password" 
@@ -51,7 +46,7 @@
         </form>
     </div>
 
-    <div *ngIf="isFileFound" class="form-button-container">
+    <div *ngIf="isFileFound && !isExpired" class="form-button-container">
         <button class="form-button form-button-telecharger" (click)="downloadFile()"
             [disabled]="isLoading" data-cy="file-details-button-telecharger">
             {{ isLoading ? 'Téléchargement...' : 'Télécharger' }}

@@ -25,6 +25,7 @@ export class FileDetailsComponent implements OnInit {
   fileForm: FormGroup = new FormGroup({});
   isLoading: boolean = false;
   isFileFound: boolean = false;
+  isExpired: boolean = false;
   
   constructor(private router: Router, private route: ActivatedRoute, public fileService: FileService) {}
   
@@ -38,6 +39,7 @@ export class FileDetailsComponent implements OnInit {
         next: (fileMetaDataResponse) => {
           this.isFileFound = true;
           this.fileMetaDataResponse = fileMetaDataResponse;
+          this.isExpired = fileMetaDataResponse.isExpired;
         },
         error: (err) => {
           this.messageType = 'error';          
@@ -94,5 +96,33 @@ export class FileDetailsComponent implements OnInit {
         })                
       }
     });
+  }
+
+  getExpirationLabel(isExpired?: boolean, remainingDays?: number): string {
+    
+    if (isExpired)      
+      return 'Ce fichier n\'est plus disponible en téléchargement car il a expiré.';
+    
+    if (remainingDays === 0 && !isExpired) return 'Ce fichier expirera aujourd\'hui'; 
+    if (remainingDays === 1) return 'Ce fichier expirera demain';
+    if (remainingDays === 7) return 'Ce fichier expirera dans 1 semaine';
+
+    return `Ce fichier expirera dans ${remainingDays} jours`;
+  }
+  
+  getExpirationClass(isExpired?: boolean, remainingDays?: number): string {    
+    
+    if (isExpired)
+      return 'expiration-div-danger';
+    
+    if (remainingDays === 0 || remainingDays === 1) {
+        return 'expiration-div-warning';
+    } else {
+      return 'expiration-notification';
+    }
+  }
+
+  IsFileExpired(isExpired?: boolean): boolean {
+    return isExpired || false;
   }
 }

@@ -74,7 +74,7 @@ namespace DataShare_API.Controllers
             try
             {
                 var result = await _fileService.DownloadFileAsync(token, request?.Password);
-
+                                
                 return File(result.FileStream!, result.ContentType!, result.FileName!);
             }
             catch (CustomDatashareException ex)
@@ -104,7 +104,7 @@ namespace DataShare_API.Controllers
                     Extension = fileMetaData.Extension,
                     Token = fileMetaData.Token,
                     CreatedAt = fileMetaData.CreatedAt,
-                    IsExpired = expirationDetails.isExpired,
+                    IsExpired = expirationDetails.IsExpired,
                     IsProtected = string.IsNullOrEmpty(fileMetaData.Password) ? false : true,
                     RemainingDays = expirationDetails.RemainingDays,
                     ExpirationDate = expirationDetails.ExpirationDate,
@@ -146,7 +146,7 @@ namespace DataShare_API.Controllers
                         Extension = fileMetaData.Extension,
                         Token = fileMetaData.Token,
                         CreatedAt = fileMetaData.CreatedAt,
-                        IsExpired = expirationDetails.isExpired,
+                        IsExpired = expirationDetails.IsExpired,
                         IsProtected = string.IsNullOrEmpty(fileMetaData.Password) ? false : true,
                         RemainingDays = expirationDetails.RemainingDays,
                         ExpirationDate = expirationDetails.ExpirationDate,

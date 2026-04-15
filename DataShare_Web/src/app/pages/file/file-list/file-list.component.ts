@@ -116,4 +116,28 @@ export class FileListComponent implements OnInit {
       this.loginService.logout();      
       this.router.navigate(['/']);     
   }
+
+  getExpirationLabel(isExpired: boolean, remainingDays: number): string {
+    
+    if (isExpired)      
+      return 'Expiré';
+    
+    if (remainingDays === 0 && !isExpired) return 'Expire aujourd\'hui'; 
+    if (remainingDays === 1) return 'Expire demain';
+    if (remainingDays === 7) return 'Expire dans 1 semaine';
+
+    return `Expire dans ${remainingDays} jours`;
+  }
+  
+  getExpirationClass(isExpired: boolean, remainingDays: number): string {    
+    
+    if (isExpired)
+      return 'expiration-text-danger';
+    
+    if (remainingDays === 0 || remainingDays === 1) {
+        return 'expiration-text-warning';      
+    } else {
+      return 'expiration-text-normal';
+    }
+  }
 }

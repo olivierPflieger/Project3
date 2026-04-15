@@ -57,24 +57,26 @@
                     </div>
                 </div>
 
-                <div class="file-list-item" data-cy="file-list-items" *ngFor="let fileMeta of filteredFiles">
+                <div class="file-list-item" data-cy="file-list-items" *ngFor="let fileMetaData of filteredFiles">
                                         
                     <div class="form-io-row">
                         <div class="file-infos-icon"></div>
                         <div class="file-infos-container">
-                            <div class="file-infos-name">{{ fileMeta.originalFileName }}</div>
-                            <div class="file-infos-size">Expire dans {{ fileMeta.remainingDays }} jours</div>
+                            <div class="file-infos-name">{{ fileMetaData.originalFileName }}</div>
+                            <div class="file-infos-size" [ngClass]="getExpirationClass(fileMetaData.isExpired, fileMetaData.remainingDays)">
+                                {{ getExpirationLabel(fileMetaData.isExpired, fileMetaData.remainingDays) }}
+                            </div>
                         </div>                    
                     </div>
 
                     <div class="file-actions">
                         
-                        <div *ngIf="fileMeta.isProtected" class="file-action file-lock">
+                        <div *ngIf="fileMetaData.isProtected" class="file-action file-lock">
                         </div>
 
                         <div class="file-action">
                             <div class="file-action-button file-action-delete"
-                                (click)="deleteFile(fileMeta.token, $event)"
+                                (click)="deleteFile(fileMetaData.token, $event)"
                                 data-cy="file-list-div-delete">
                                 Supprimer
                             </div>
@@ -82,7 +84,7 @@
 
                          <div class="file-action">
                             <div class="file-action-button file-action-access" 
-                                        [routerLink]="['/file', fileMeta.token]"
+                                        [routerLink]="['/file', fileMetaData.token]"
                                         data-cy="file-list-div-access">
                                 Accéder
                             </div>

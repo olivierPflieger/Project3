@@ -7,6 +7,7 @@ import { FileService } from '../../../core/service/file/file.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { UploadFileResponse } from '../../../core/models/UploadFileResponse';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-file-form.component',
@@ -28,6 +29,7 @@ export class FileFormComponent implements OnInit {
   showForm: boolean = true;
   uploadFileResponse: UploadFileResponse | null = null;
   linkCopied: string | null = null;
+  baseUrl: string = environment.baseUrl;
   
   // Selected file info
   selectedFileName: string | null = null;  
@@ -182,7 +184,8 @@ export class FileFormComponent implements OnInit {
   }
 
   copyLink() {
-    const link = 'http://localhost:4200/Files/' + this.uploadFileResponse?.token;
+
+    const link = `${environment.baseUrl}/file/${this.uploadFileResponse?.token}`;
 
     if (!link) return;
 

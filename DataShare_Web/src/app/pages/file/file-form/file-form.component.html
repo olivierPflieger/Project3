@@ -125,8 +125,8 @@
                 {{ uploadFileResponse?.expirationDays === 7 ? 'pendant 1 semaine' : 'pendant ' + uploadFileResponse?.expirationDays + ' jour(s)' }} !
             </div>
             <div class="file-url">
-                <a href="{{ 'http://localhost:4200/File/' + uploadFileResponse?.token }}" target="_blank">
-                    {{ 'http://localhost:4200/File/' + uploadFileResponse?.token }}
+                <a href="{{ baseUrl }}/file/{{ uploadFileResponse?.token }}" target="_blank">
+                    {{ baseUrl }}/file/{{ uploadFileResponse?.token }}
                 </a>
             </div>
         </div>

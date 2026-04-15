@@ -1,8 +1,7 @@
 /* Form */
 
 .form-container {
-  display: flex;
-  max-width: 640px;
+  display: flex;  
   padding: var(--sds-size-space-600);
   flex-direction: column;
   align-items: center;    
@@ -46,7 +45,14 @@
 .form-io-row { 
   display: flex;
   flex-direction: row;
+  gap: var(--sds-size-space-200);
   width: 100%;
+}
+
+.form-io-row-noWidth { 
+  display: flex;
+  flex-direction: row;
+  gap: var(--sds-size-space-200);
 }
 
 .form-button-container {
@@ -139,8 +145,7 @@
 
 .file-infos-container {
   display: flex;
-  flex-direction: column;
-  padding-left: var(--sds-size-space-300);
+  flex-direction: column;  
   padding-right: var(--sds-size-space-300);
   align-items: flex-start;
 }

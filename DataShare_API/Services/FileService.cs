@@ -89,6 +89,10 @@ namespace DataShare_API.Services
                     throw new CustomDatashareException(HttpStatusCode.Conflict, "Mot de passe incorrect");
             }
 
+            var expirationDetails = FileUtils.CalculateExpirationDetails(fileMetaData.CreatedAt, fileMetaData.ExpirationDays);
+            if (expirationDetails.IsExpired)
+                throw new CustomDatashareException(HttpStatusCode.Gone, $"Ce fichier a expiré et n'est plus disponible en téléchargement.");
+
             // Download depuis AWS S3
             try
             {
