@@ -4,6 +4,7 @@ const { createInstrumenter } = require('istanbul-lib-instrument');
 
 const rootDir = path.resolve(__dirname, '..');
 const outputDir = path.join(rootDir, '.cypress-coverage-dist');
+const sourceDir = path.join(rootDir, 'src');
 
 function resolveBuildDir() {
   const candidates = [
@@ -68,4 +69,5 @@ function instrumentDirectory(directoryPath, sourceRoot) {
 const buildDir = resolveBuildDir();
 fs.rmSync(outputDir, { recursive: true, force: true });
 fs.cpSync(buildDir, outputDir, { recursive: true });
+fs.cpSync(sourceDir, path.join(outputDir, 'src'), { recursive: true });
 instrumentDirectory(outputDir, outputDir);
