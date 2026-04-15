@@ -1,7 +1,7 @@
 name: "CodeQL custom configuration"
 
 paths-ignore:
-  - 'DataShare_Web\cypress'
-  - 'DataShare_Web\perf'
+  - 'DataShare_Web/cypress'
+  - 'DataShare_Web/perf'
   - 'DataShare_Tests'
   - '**/*.test.cs'
