@@ -107,6 +107,12 @@ psql -U admin -d datashare -W
 - `SELECT * FROM "table";` : Voir les données d'une table
 - `\q` : Quitter
 
+### Cleaning de la base
+```
+cd Scripts
+.\clean_database_and_bucket.ps1
+```
+
 #### SWAGGER
 Accédez à l'interface Swagger à l'adresse suivante :  
 [http://localhost:5051/swagger/](http://localhost:5051/swagger/)
@@ -182,3 +188,5 @@ Couverture de tests
 dotnet test --collect:"XPlat Code Coverage" --settings coverage.runsettings
 reportgenerator -reports:TestResults/**/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:Html
 ```
+
+
