@@ -1,7 +1,7 @@
 
 <div class="form-container">
     
-    <div class="form-title">
+    <div class="form-title" data-cy="file-details-title">
         Télécharger un fichier
     </div>
 
@@ -10,7 +10,7 @@
         <div class="alert" [ngClass]="{
             'alert-danger': messageType === 'error',
             'alert-success': messageType === 'success'
-        }" data-cy="login-div-alert">
+        }" data-cy="file-details-div-alert">
             {{ message }}
         </div>
     }
@@ -20,7 +20,7 @@
         <p class="spinner-text">Traitement en cours, veuillez patienter...</p>
     </div>
 
-    <div *ngIf="messageType === 'success'" class="form-io-container">
+    <div *ngIf="isFileFound" class="form-io-container">
         
         <div class="form-io-row">
             <div class="file-infos-icon"></div>
@@ -45,15 +45,15 @@
             <div class="form-io">
                 <label class="form-input-label">Mot de passe</label>
                 <input class="form-input" type="password" 
-                formControlName="password" 
+                formControlName="password" data-cy="file-details-input-password"
                 placeholder="Saisissez le mot de passe...">
             </div>
         </form>
     </div>
 
-    <div *ngIf="messageType === 'success'" class="form-button-container">
+    <div *ngIf="isFileFound" class="form-button-container">
         <button class="form-button form-button-telecharger" (click)="downloadFile()"
-            [disabled]="isLoading">
+            [disabled]="isLoading" data-cy="file-details-button-telecharger">
             {{ isLoading ? 'Téléchargement...' : 'Télécharger' }}
         </button>
     </div>

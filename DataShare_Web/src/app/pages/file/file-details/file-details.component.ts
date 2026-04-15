@@ -19,11 +19,12 @@ export class FileDetailsComponent implements OnInit {
   fileMetaDataResponse: FileMetaDataResponse | null = null;
   downloadDownloadFileRequest: DownloadFileRequest | null = null;
   message: string | null = null;
-  messageType: 'success' | 'error' | null = null;  
+  messageType: 'success' | 'error' | null = null; 
   fileToken : string | null = null;
   private destroyRef = inject(DestroyRef);
   fileForm: FormGroup = new FormGroup({});
   isLoading: boolean = false;
+  isFileFound: boolean = false;
   
   constructor(private router: Router, private route: ActivatedRoute, public fileService: FileService) {}
   
@@ -35,11 +36,11 @@ export class FileDetailsComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (fileMetaDataResponse) => {
-          this.messageType = 'success';
+          this.isFileFound = true;
           this.fileMetaDataResponse = fileMetaDataResponse;
         },
         error: (err) => {
-          this.messageType = 'error';
+          this.messageType = 'error';          
           if (err.error && err.error.message) {
             this.message = err.error.message;
           } else {
@@ -80,7 +81,7 @@ export class FileDetailsComponent implements OnInit {
         this.messageType = 'success';
       },
       error: (err) => {        
-        
+        this.messageType = 'error';
         // Récupération du message d'erreur envoyé par le backend (puisqu'on récupère un blob)
         err.error.text().then((text: string) => {
           this.isLoading = false;

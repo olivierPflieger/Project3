@@ -26,7 +26,7 @@
                 <div class="alert" [ngClass]="{
                     'alert-danger': messageType === 'error',
                     'alert-success': messageType === 'success'
-                }" data-cy="filelist-div-alert">
+                }" data-cy="file-list-div-alert">
                     {{ message }}
                 </div>
             }
@@ -57,7 +57,7 @@
                     </div>
                 </div>
 
-                <div class="file-list-item" *ngFor="let fileMeta of filteredFiles">
+                <div class="file-list-item" data-cy="file-list-items" *ngFor="let fileMeta of filteredFiles">
                                         
                     <div class="form-io-row">
                         <div class="file-infos-icon"></div>
@@ -74,13 +74,16 @@
 
                         <div class="file-action">
                             <div class="file-action-button file-action-delete"
-                                (click)="deleteFile(fileMeta.token, $event)">
+                                (click)="deleteFile(fileMeta.token, $event)"
+                                data-cy="file-list-div-delete">
                                 Supprimer
                             </div>
                         </div>
 
                          <div class="file-action">
-                            <div class="file-action-button file-action-access" [routerLink]="['/file', fileMeta.token]">
+                            <div class="file-action-button file-action-access" 
+                                        [routerLink]="['/file', fileMeta.token]"
+                                        data-cy="file-list-div-access">
                                 Accéder
                             </div>
                         </div>

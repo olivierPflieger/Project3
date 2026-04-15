@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 
-describe('Register tests', () => {
+describe('Login tests', () => {
    
   it('Register new user then login should work', () => {
     

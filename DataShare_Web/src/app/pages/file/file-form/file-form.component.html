@@ -35,7 +35,8 @@
                     <div class="button-select-file" (click)="fileInput.click()">
                         Changer
                     </div>
-                    <input #fileInput type="file" hidden (change)="onFileSelected($event)">
+                    <input #fileInput data-cy="file-form-input-file"
+                           type="file" hidden (change)="onFileSelected($event)">
                 </div>
 
                 <!-- Message -->    
@@ -43,7 +44,7 @@
                     <div class="alert" [ngClass]="{
                         'alert-danger': messageType === 'error',
                         'alert-success': messageType === 'success'
-                    }" data-cy="login-div-alert">
+                    }" data-cy="file-form-div-alert">
                         {{ message }}
                     </div>
                 }
@@ -54,9 +55,10 @@
                     <input type="password" class="form-input"                        
                     formControlName="password" 
                     placeholder="Optionnel"
+                    data-cy="file-form-input-password"
                     />
                     @if (submitted && form['password'].errors) {
-                        <div class="invalid-feedback">
+                        <div class="invalid-feedback" data-cy="file-form-div-password-error">
                             @if (form['password']?.errors?.['minlength']) {
                                 <div>Veuillez saisir un mot de passe d'au moins 6 caractères</div>
                             }                        
@@ -67,7 +69,7 @@
                 <div class="form-io form-expiration">
                     
                     <label class="form-input-label">Expiration</label>
-                    <select class="form-input expiration" [formControl]="selectExpiration">
+                    <select class="form-input expiration" [formControl]="selectExpiration" data-cy="file-form-select-expiration">
                         <option *ngFor="let option of expirations" [value]="option.value">
                             {{ option.viewValue }}
                         </option>
@@ -82,6 +84,7 @@
                     (keyup)="onTagKeyUp($event)"
                     placeholder="Séparez les tags par un espace"
                     maxlength="150"
+                    data-cy="file-form-input-tags"
                     />
                     
                     <div class="fileForm-tags-container" >
@@ -96,7 +99,7 @@
             </div>
 
             <div class="form-button-container" style="align-items: center;">
-                <button class="form-button-nostretch form-button-televerser" [disabled]="isLoading">
+                <button class="form-button-nostretch form-button-televerser" [disabled]="isLoading" data-cy="file-form-button-televerser">
                     {{ isLoading ? 'Téléversement en cours...' : 'Téléverser' }}
                 </button>
             </div>
@@ -118,8 +121,8 @@
 
         <div class="form-io">
 
-            <div>Félicitations, ton fichier sera conservé chez nous 
-                {{ uploadFileResponse?.expirationDays === 7 ? 'pendant 1 semaine' : 'pendant ' + uploadFileResponse?.expirationDays + ' jours' }} !
+            <div data-cy="file-form-div-success">Félicitations, ton fichier sera conservé chez nous 
+                {{ uploadFileResponse?.expirationDays === 7 ? 'pendant 1 semaine' : 'pendant ' + uploadFileResponse?.expirationDays + ' jour(s)' }} !
             </div>
             <div class="file-url">
                 <a href="{{ 'http://localhost:4200/File/' + uploadFileResponse?.token }}" target="_blank">
@@ -129,10 +132,11 @@
         </div>
 
         <div class="form-button-container" style="align-items: center;">
-            <button class="form-button-nostretch form-button-copier" (click)="copyLink()">Copier le lien</button>
+            <button class="form-button-nostretch form-button-copier" 
+                    (click)="copyLink()" data-cy="file-form-button-copyLink">Copier le lien</button>
         </div>
         @if (linkCopied) {
-             <span class="link-copied">{{ linkCopied }}</span>                
+             <span class="link-copied" data-cy="file-form-span-linkCopied">{{ linkCopied }}</span>                
         }
     </ng-template>    
 </div>
