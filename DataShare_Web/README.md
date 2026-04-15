@@ -115,12 +115,14 @@ These commands run the scenario defined in `perf/upload-download.js` against the
 - password-protected file download
 
 By default, Docker reaches the host backend through `http://host.docker.internal:5051`.
+Each run also exports an HTML report to `perf/reports/` with a timestamped filename.
 
 Supported environment variables:
 
 ```bash
 K6_BASE_URL=http://host.docker.internal:5051
 K6_UPLOAD_FILE=perf/fixtures/upload-test.txt
+K6_REPORT_FILE=perf/reports/custom-report.html
 K6_VUS=5
 K6_DURATION=1m
 K6_ITERATIONS=1
@@ -136,7 +138,14 @@ Examples:
 ```bash
 npm run perf:smoke
 $env:K6_VUS=10; $env:K6_DURATION='2m'; npm run perf:load
+$env:K6_REPORT_FILE='perf/reports/load-latest.html'; npm run perf:load
 $env:K6_UPLOAD_FILE='perf/fixtures/upload-test.txt'; npm run perf:k6 -- load
+```
+
+Open the generated report on Windows with:
+
+```bash
+start .\perf\reports\k6-smoke-YYYYMMDD-HHmmss.html
 ```
 
 Interpreting the results:

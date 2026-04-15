@@ -88,7 +88,7 @@ export function setup() {
   );
 
   const registerOk = check(registerResponse, {
-    'register returns 2xx': (response) => response.status >= 200 && response.status < 300
+    'register returns HTTP Status2xx': (response) => response.status >= 200 && response.status < 300
   });
 
   if (!registerOk) {
@@ -140,7 +140,7 @@ export default function runUploadDownloadScenario(setupData) {
   const uploadToken = uploadBody && uploadBody.token;
 
   const uploadOk = check(uploadResponse, {
-    'upload returns 2xx': (response) => response.status >= 200 && response.status < 300,
+    'upload returns HTTP Status 2xx': (response) => response.status >= 200 && response.status < 300,
     'upload returns a file token': () => Boolean(uploadToken)
   });
 
@@ -162,7 +162,7 @@ export default function runUploadDownloadScenario(setupData) {
   );
 
   const downloadOk = check(downloadResponse, {
-    'download returns 200': (response) => response.status === 200,
+    'download returns HTTP Status 200': (response) => response.status === 200,
     'download returns file content': (response) => response.body && response.body.byteLength > 0
   });
 
@@ -178,7 +178,7 @@ export default function runUploadDownloadScenario(setupData) {
   });
 
   const deleteOk = check(deleteResponse, {
-    'delete returns 2xx': (response) => response.status >= 200 && response.status < 300
+    'delete returns HTTP Status 2xx': (response) => response.status >= 200 && response.status < 300
   });
 
   if (!deleteOk) {
