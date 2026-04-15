@@ -18,7 +18,7 @@ namespace DataShare_Tests.Utils
             var details = FileUtils.CalculateExpirationDetails(creationDate, expirationDays);
 
             // Assert
-            Assert.False(details.isExpired);
+            Assert.False(details.IsExpired);
             Assert.Equal(creationDate.AddDays(7).Date, details.ExpirationDate.Date);
             Assert.Equal(5, details.RemainingDays);
         }
@@ -36,7 +36,7 @@ namespace DataShare_Tests.Utils
             var details = FileUtils.CalculateExpirationDetails(creationDate, expirationDays);
 
             // Assert
-            Assert.False(details.isExpired);
+            Assert.False(details.IsExpired);
             Assert.Equal(0, details.RemainingDays);
         }
 
@@ -53,7 +53,7 @@ namespace DataShare_Tests.Utils
             var details = FileUtils.CalculateExpirationDetails(creationDate, expirationDays);
 
             // Assert
-            Assert.True(details.isExpired);
+            Assert.True(details.IsExpired);
             Assert.Equal(0, details.RemainingDays);
         }
 
@@ -69,7 +69,7 @@ namespace DataShare_Tests.Utils
             var details = FileUtils.CalculateExpirationDetails(creationDate, expirationDays);
 
             // Assert
-            Assert.True(details.isExpired);
+            Assert.True(details.IsExpired);
             Assert.Equal(0, details.RemainingDays);
             Assert.Equal(creationDate.AddDays(5).Date, details.ExpirationDate.Date);
         }
