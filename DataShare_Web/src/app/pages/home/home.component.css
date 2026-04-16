@@ -38,7 +38,7 @@
 .televerser-icon {
   width: 48px;
   height: 48px;
-  background-image: url("../../../../public/images/televerser.svg");
+  background-image: url("/images/televerser.svg");
 }
 
 .gardeDataShare {

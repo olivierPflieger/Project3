@@ -138,7 +138,7 @@
 .file-infos-icon {
   width: 24px;
   height: 24px;
-  background-image: url("../public/images/file-selector.svg");
+  background-image: url("/images/file-selector.svg");
   background-size: contain;
   margin-top: 7px;
 }

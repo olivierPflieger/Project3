@@ -161,7 +161,7 @@ html, body {
   content: "";
   width: var(--sds-size-space-400);
   height: var(--sds-size-space-400);  
-  background: url("../public/images/danger.svg") no-repeat center;
+  background: url("/images/danger.svg") no-repeat center;
   background-size: contain;
 }
 
@@ -190,7 +190,7 @@ html, body {
   content: "";
   width: var(--sds-size-space-400);
   height: var(--sds-size-space-400);  
-  background: url("../public/images/warning.svg") no-repeat center;
+  background: url("/images/warning.svg") no-repeat center;
   background-size: contain;
 }
 
@@ -213,7 +213,7 @@ html, body {
   content: "";
   width: var(--sds-size-space-400);
   height: var(--sds-size-space-400);  
-  background: url("../public/images/information.svg") no-repeat center;
+  background: url("/images/information.svg") no-repeat center;
   background-size: contain;
 }
 

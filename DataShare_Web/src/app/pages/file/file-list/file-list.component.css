@@ -56,7 +56,7 @@
   content: "";
   width: var(--sds-size-space-300);
   height: var(--sds-size-space-300);  
-  background: url("../../../../../public/images/logout.svg") no-repeat center;
+  background: url("/images/logout.svg") no-repeat center;
   background-size: contain;
 }
 
@@ -173,7 +173,7 @@
   content: "";
   width: var(--sds-size-space-400);
   height: var(--sds-size-space-400);  
-  background: url("../../../../../public/images/file-lock.svg") no-repeat center;
+  background: url("/images/file-lock.svg") no-repeat center;
   background-size: contain;
 }
 
@@ -198,7 +198,7 @@
   content: "";
   width: var(--sds-size-space-400);
   height: var(--sds-size-space-400);  
-  background: url("../../../../../public/images/file-delete.svg") no-repeat center;
+  background: url("/images/file-delete.svg") no-repeat center;
   background-size: contain;
 }
 
@@ -206,7 +206,7 @@
   content: "";
   width: var(--sds-size-space-400);
   height: var(--sds-size-space-400);  
-  background: url("../../../../../public/images/file-access.svg") no-repeat center;
+  background: url("/images/file-access.svg") no-repeat center;
   background-size: contain;
 }
 
@@ -329,7 +329,7 @@
     stroke-width: 2.5px;
     stroke: var(--sds-color-icon-default-default);
     background: rgba(255, 193, 145, 0.05);
-    background: url('/images/menu-burger.svg') no-repeat center;
+    background: url("/images/menu-burger.svg") no-repeat center;
   }
 
   .mobile-menu-item {
@@ -381,7 +381,7 @@
     content: "";
     width: var(--sds-size-space-300);
     height: var(--sds-size-space-300);  
-    background: url("../../../../../public/images/menu-actions.svg") no-repeat center;
+    background: url("/images/menu-actions.svg") no-repeat center;
     background-size: contain;
   }
 
