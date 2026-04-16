@@ -214,7 +214,12 @@
   border: none;    
 }
 
-.menu-actions-mobile {
+.file-action-mobile-container {
+  display: none;
+  visibility: hidden;
+}
+
+.menu-hamburger-mobile-container {
   display: none;
   visibility: hidden;
 }
@@ -225,15 +230,17 @@
   
   .sidebar{
     display: none;
-    visibility: hidden
-  }
-    
-  .file-action-mobile {
-    display: none;
     visibility: hidden;
   }
 
-  .menu-actions-mobile {
+  .sidebar.sidebar-visible {
+    display: flex;
+    visibility: visible;
+  }
+    
+  /* Menu Hamburger for mobile */
+
+  .menu-hamburger-mobile-container {
     display: flex;
     visibility: visible;    
     cursor: pointer;
@@ -242,9 +249,41 @@
     justify-content: center;
     gap: 5px;
     padding: 0;
+    width: 24px;
+    height: 24px;
   }
 
-  .hamburger-btn {
+  .menu-hamburger-mobile-btn {    
+    padding: var(--sds-size-space-200);
+    justify-content: center;
+    align-items: center;
+    gap: var(--sds-size-space-200);
+    border: none;
+    stroke-width: 2.5px;
+    stroke: var(--sds-color-icon-default-default);
+    background: rgba(255, 193, 145, 0.05);
+    background: url('/images/menu-burger.svg') no-repeat center;
+  }
+  
+  /* Menu actions list for mobile */
+
+  .file-action-container {
+    display: none;
+    visibility: hidden;  
+  }
+
+  .file-action-mobile-container {
+    display: flex;
+    visibility: visible;    
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    padding: 0;    
+  }
+
+  .file-action-mobile-btn {
     display: flex;
     padding: var(--sds-size-space-200);
     justify-content: center;
@@ -255,7 +294,7 @@
     background: rgba(255, 193, 145, 0.05);
   }
   
- .hamburger-btn::before {
+ .file-action-mobile-btn::before {
     content: "";
     width: var(--sds-size-space-300);
     height: var(--sds-size-space-300);  
@@ -263,7 +302,7 @@
     background-size: contain;
   }
 
-  .popup-menu {
+  .file-action-mobile-popup {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -275,15 +314,16 @@
     padding: var(--sds-size-space-200);  
     z-index: 1000;
   }
-
-  .popup-menu a {
+  
+  .file-action-mobile-popup a {
     display: block;
     padding: var(--sds-size-space-200);
-    text-decoration: none;    
+    text-decoration: none;
+    color: #000;
     font-size: var(--Static-Headline-Small-Size);
   }
 
-  .popup-menu a:hover {
+  .file-action-mobile-popup a:hover {
     background: #f5f5f5;
   }
 }

@@ -1,7 +1,7 @@
 <div class="layout">
    
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" [class.sidebar-visible]="isSidebarVisible">
         <div class="title">DataShare</div>
 
         <nav class="menu">
@@ -14,6 +14,13 @@
     <div class="main">
     
         <header class="header">
+
+            <div class="menu-hamburger-mobile-container">
+                <button class="menu-hamburger-mobile-btn"
+                    (click)="toggleSidebar()" aria-label="Ouvrir le menu">
+                </button>                            
+            </div>
+
             <button class="btnMenu" routerLink="/files/upload">Ajouter des fichiers</button>
             <div class="button-link button-logout">
                 <a (click)="logout()">Déconnexion</a>
@@ -74,7 +81,7 @@
                         <div *ngIf="fileMetaData.isProtected" class="file-action file-lock">
                         </div>
 
-                        <div class="file-action file-action-mobile">
+                        <div class="file-action file-action-container">
                             <div class="file-action-button file-action-delete"
                                 (click)="deleteFile(fileMetaData.token, $event)"
                                 data-cy="file-list-div-delete">
@@ -82,7 +89,7 @@
                             </div>
                         </div>
 
-                         <div class="file-action file-action-mobile">
+                         <div class="file-action file-action-container">
                             <div class="file-action-button file-action-access" 
                                         [routerLink]="['/file', fileMetaData.token]"
                                         data-cy="file-list-div-access">
@@ -90,12 +97,12 @@
                             </div>
                         </div>
                         
-                        <div class="menu-actions-mobile">
-                            <button class="hamburger-btn" 
+                        <div class="file-action-mobile-container">
+                            <button class="file-action-mobile-btn" 
                                     (click)="toggleMenuActionsMobile(fileMetaData.token)" aria-label="Ouvrir le menu">
                             </button>
                             
-                            <div class="popup-menu" *ngIf="openedMenuToken === fileMetaData.token">
+                            <div class="file-action-mobile-popup" *ngIf="openedMenuToken === fileMetaData.token">
                                 <a (click)="deleteFile(fileMetaData.token, $event)">Supprimer</a>
                                 <a [routerLink]="['/file', fileMetaData.token]" (click)="closeMenuActionsMobile()">Accéder</a>                                
                             </div>                        

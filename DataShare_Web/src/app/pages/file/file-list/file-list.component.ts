@@ -33,6 +33,7 @@ export class FileListComponent implements OnInit {
   filter: string = 'valid';
   isMenuActionsOpen: boolean = false;
   openedMenuToken: string | null = null;
+  isSidebarVisible = false;
   
   constructor(private router: Router, private route: ActivatedRoute, public fileService: FileService, public loginService: LoginService) {
     this.domain = window.location.origin;
@@ -47,9 +48,13 @@ export class FileListComponent implements OnInit {
     .subscribe({
       next: (res: HttpResponse<FileMetaDataResponse[]>) => {
         this.fileMetaDatas = res.body || [];
-        this.filteredFiles = this.fileMetaDatas.filter(s => !s.isExpired );        
+        this.filterFiles();
       },
       error: (err) => {
+        if (err && err.status === 404) {
+          this.fileMetaDatas = [];
+          this.filteredFiles = [];
+        }
         if (err.error && err.error.errors) {
             const apiErrors = err.error?.errors;
             this.message = Object.values(apiErrors)
@@ -79,10 +84,11 @@ export class FileListComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {            
-            this.filteredFiles = this.fileMetaDatas.filter(s => s.token !== token );
             this.message = "Fichier correctement supprimé";
             this.messageType = 'success';
             this.closeMenuActionsMobile();
+            // List refresh
+            this.loadFilesMetaDatas();
           },
           error: (err) => {
             if (err.error && err.error.message) {
@@ -150,5 +156,9 @@ export class FileListComponent implements OnInit {
 
   closeMenuActionsMobile(): void {
     this.openedMenuToken = null;
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarVisible = !this.isSidebarVisible;
   }
 }
