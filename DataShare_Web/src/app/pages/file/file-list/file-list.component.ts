@@ -110,7 +110,6 @@ export class FileListComponent implements OnInit {
     }
 
     if (this.tagFilter) {
-      console.log(this.filteredFiles[0].tags);
       this.filteredFiles = this.filteredFiles.filter(f =>
         f.tags?.some((tag: string) =>
           tag.toLowerCase().includes(this.tagFilter.toLowerCase())

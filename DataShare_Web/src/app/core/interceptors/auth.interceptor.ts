@@ -22,9 +22,7 @@ export function authInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn):
   })
 
   return next(newReq).pipe(
-    catchError(error => {
-      console.log(error)
-
+    catchError(error => {      
       if (error.status === 401) {
         loginService.logout() 
         router.navigate(['/login']);
