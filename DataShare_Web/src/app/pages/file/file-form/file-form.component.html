@@ -12,10 +12,6 @@
 
     <div *ngIf="showForm; else uploadedBlock">
         <form [formGroup]="fileForm" (ngSubmit)="onSubmit()" (keydown.enter)="$event.preventDefault()">
-            
-            <!--
-            <input class="fileForm-input" type="file" (change)="onFileSelected($event)">
-            -->
 
             <div class="form-io-container">
                 

@@ -160,3 +160,7 @@
 .file-infos-size {
   font-size: var(--sds-typography-body-size-small);
 }
+
+.file-infos-tags {
+  font-size: var(--sds-typography-body-size-small);
+}

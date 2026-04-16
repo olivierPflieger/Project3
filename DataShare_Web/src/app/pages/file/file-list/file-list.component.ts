@@ -27,8 +27,7 @@ export class FileListComponent implements OnInit {
   messageType: 'success' | 'error' | null = null;  
   fileToken : string | null = null;
   private destroyRef = inject(DestroyRef);
-  fileForm: FormGroup = new FormGroup({});
-  isLoading: boolean = false;
+  fileForm: FormGroup = new FormGroup({});  
   domain: string = '';
   filter: string = 'valid';
   isMenuActionsOpen: boolean = false;
@@ -43,14 +42,14 @@ export class FileListComponent implements OnInit {
     this.loadFilesMetaDatas();
   }
 
-  loadFilesMetaDatas() {
+  loadFilesMetaDatas() {    
     this.fileService.getAll()
     .subscribe({
-      next: (res: HttpResponse<FileMetaDataResponse[]>) => {
+      next: (res: HttpResponse<FileMetaDataResponse[]>) => {        
         this.fileMetaDatas = res.body || [];
         this.filterFiles();
       },
-      error: (err) => {
+      error: (err) => {        
         if (err && err.status === 404) {
           this.fileMetaDatas = [];
           this.filteredFiles = [];
@@ -73,8 +72,7 @@ export class FileListComponent implements OnInit {
     });
   }
   
-  deleteFile(token: string, event: Event) {
-    
+  deleteFile(token: string, event: Event) {    
     event.preventDefault();
     const confirmed = window.confirm('Etes vous sur de vouloir supprimer ce fichier?');
 
@@ -83,14 +81,14 @@ export class FileListComponent implements OnInit {
       this.fileService.delete(token)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
-          next: () => {            
+          next: () => {                      
             this.message = "Fichier correctement supprimé";
             this.messageType = 'success';
             this.closeMenuActionsMobile();
             // List refresh
             this.loadFilesMetaDatas();
           },
-          error: (err) => {
+          error: (err) => {            
             if (err.error && err.error.message) {
                 this.message = err.statusText + ': ' + err.error.message;
               } else {
@@ -161,4 +159,5 @@ export class FileListComponent implements OnInit {
   toggleSidebar(): void {
     this.isSidebarVisible = !this.isSidebarVisible;
   }
+  
 }

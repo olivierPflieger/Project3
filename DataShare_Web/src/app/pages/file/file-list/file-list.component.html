@@ -15,7 +15,7 @@
     <aside class="sidebar-mobile" [class.sidebar-visible]="isSidebarVisible">
         <div class="sidebar-mobile-header">
             <div class="sidebar-mobile-header-icon" (click)="toggleSidebar()">
-                <img src="/images/close.svg" alt="icon">
+                <img src="/images/close.svg" alt="fermer le menu" />
             </div>
             <div class="title">DataShare</div>
         </div>
@@ -29,12 +29,6 @@
     
         <header class="header">
 
-            <div class="menu-hamburger-mobile-container">
-                <button class="menu-hamburger-mobile-btn"
-                    (click)="toggleSidebar()" aria-label="Ouvrir le menu">
-                </button>                            
-            </div>
-
             <button class="btnMenu btnAddFiles" routerLink="/files/upload">Ajouter des fichiers</button>
             <div class="button-link button-logout">
                 <a (click)="logout()">Déconnexion</a>
@@ -46,7 +40,7 @@
 
             <div class="menu-hamburger-mobile-container">
                 <button class="menu-hamburger-mobile-btn"
-                    (click)="toggleSidebar()" aria-label="Ouvrir le menu">
+                    (click)="toggleSidebar()" aria-label="Ouvrir le menu" alt="Ouvrir le menu">
                 </button>                            
             </div>
 
@@ -57,15 +51,16 @@
 
         <div class="content">
 
+            
             @if (message) {
                 <div class="alert" [ngClass]="{
                     'alert-danger': messageType === 'error',
                     'alert-success': messageType === 'success'
                 }" data-cy="file-list-div-alert">
-                    {{ message }}
-                </div>
+                {{ message }}
+            </div>
             }
-                        
+
             <div class="file-list-container">
 
                 <div class="form-title">
@@ -101,6 +96,7 @@
                             <div class="file-infos-size" [ngClass]="getExpirationClass(fileMetaData.isExpired, fileMetaData.remainingDays)">
                                 {{ getExpirationLabel(fileMetaData.isExpired, fileMetaData.remainingDays) }}
                             </div>
+                            <div class="file-infos-tags">{{ fileMetaData.tags?.join(', ') }}</div>
                         </div>                    
                     </div>
 
@@ -125,9 +121,10 @@
                             </div>
                         </div>
                         
+                        <!-- Actions mobile -->
                         <div class="file-action-mobile-container">
                             <button class="file-action-mobile-btn" 
-                                    (click)="toggleMenuActionsMobile(fileMetaData.token)" aria-label="Ouvrir le menu">
+                                    (click)="toggleMenuActionsMobile(fileMetaData.token)" aria-label="Ouvrir le menu" alt="Ouvrir le menu">
                             </button>
                             
                             <div class="file-action-mobile-popup" *ngIf="openedMenuToken === fileMetaData.token">
@@ -141,27 +138,6 @@
                 </div>
                 
             </div>
-
-            <!--
-            <div class="tabs">
-                <span class="tab active">Tous</span>
-                <span class="tab">Actifs</span>
-                <span class="tab">Expiré</span>
-
-                <button (click)="filter = 'all'; filterFiles(); ">Tous</button>
-                <button (click)="filter = 'valid'; filterFiles(); ">Actifs</button>
-                <button (click)="filter = 'expired'; filterFiles(); ">Expirés</button>
-
-                <input
-                    type="text"
-                    placeholder="Filtrer par tag..."
-                    [(ngModel)]="tagFilter"
-                    (ngModelChange)="filterFiles()"
-                />
-
-            </div>
-            -->
-            
         </div>
   </div>
 </div>

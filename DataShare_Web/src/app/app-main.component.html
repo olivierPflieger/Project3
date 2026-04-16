@@ -6,24 +6,12 @@
             DataShare
         </div>
         
-        <div>
-            <!--
-            @if (loginService.isAuthenticated()) {
-                <span>{{ loginService.getUserName() }}</span>
-            }
-            
-            
-            <button class="btnMenu" routerLink="/">Accueil</button>
-            -->
-            
+        <div>            
             @if (!(loginService.isAuthenticated())) {
                 <button class="btnMenu" routerLink="/login">Se connecter</button>
             }
             
-            @if (loginService.isAuthenticated()) {
-                <!--
-                <button class="btnMenu" (click)="logout()">Déconnection</button>
-                -->
+            @if (loginService.isAuthenticated()) {               
                 <button class="btnMenu" routerLink="/files" data-cy="app-button-monEspace">Mon espace</button>
             }
         </div>

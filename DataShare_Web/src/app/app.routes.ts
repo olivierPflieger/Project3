@@ -27,34 +27,3 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
 ];
-
-/*
-export const routes: Routes = [  
-  {
-    path: '',
-    component: HomeComponent
-  },
-  {
-    path: 'login',
-    component: LoginComponent
-  },
-  {
-    path: 'register',
-    component: RegisterComponent
-  },
-  {
-    path: 'files',
-    component: FileListComponent,
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'files/upload',
-    component: FileFormComponent,
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'file/:id',
-    component: FileDetailsComponent    
-  }
-];
-*/

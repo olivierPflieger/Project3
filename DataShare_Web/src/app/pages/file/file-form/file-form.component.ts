@@ -35,7 +35,7 @@ export class FileFormComponent implements OnInit {
   selectedFileName: string | null = null;  
   selectedFileSize: string | null = null;
 
-    // Spinner
+  // Spinner
   isLoading: boolean = false;
   private timeout: any;
 
