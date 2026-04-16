@@ -7,6 +7,7 @@ const defaultUploadFile = path.join(repoRoot, 'perf', 'fixtures', 'upload-test.t
 const defaultBaseUrl = 'http://host.docker.internal:5051';
 const defaultReportsDirectory = path.join(repoRoot, 'perf', 'reports');
 const supportedProfiles = new Set(['smoke', 'load']);
+const useRandomUploadRange = (process.env.K6_UPLOAD_RANDOM_RANGE || '').toLowerCase() === 'true';
 
 function isInsideDirectory(parentPath, childPath) {
   const relativePath = path.relative(parentPath, childPath);
@@ -40,7 +41,7 @@ const requestedUploadFile = process.env.K6_UPLOAD_FILE
   ? path.resolve(process.env.K6_UPLOAD_FILE)
   : defaultUploadFile;
 
-if (!fs.existsSync(requestedUploadFile)) {
+if (!useRandomUploadRange && !fs.existsSync(requestedUploadFile)) {
   console.error(`K6 upload fixture was not found: ${requestedUploadFile}`);
   process.exit(1);
 }
@@ -50,6 +51,12 @@ const requestedReportFile = process.env.K6_REPORT_FILE
   ? path.resolve(process.env.K6_REPORT_FILE)
   : path.join(defaultReportsDirectory, `k6-${profile}-${reportTimestamp}.html`);
 const reportDirectory = path.dirname(requestedReportFile);
+const requestedSummaryFile = process.env.K6_SUMMARY_FILE
+  ? path.resolve(process.env.K6_SUMMARY_FILE)
+  : '';
+const requestedSummaryJsonFile = process.env.K6_SUMMARY_JSON_FILE
+  ? path.resolve(process.env.K6_SUMMARY_JSON_FILE)
+  : '';
 
 fs.mkdirSync(reportDirectory, { recursive: true });
 
@@ -65,8 +72,10 @@ const dockerArgs = [
 
 let containerUploadFile = toContainerPathFromWorkspace(requestedUploadFile);
 let containerReportFile = toContainerPathFromWorkspace(requestedReportFile);
+let containerSummaryFile = requestedSummaryFile ? toContainerPathFromWorkspace(requestedSummaryFile) : '';
+let containerSummaryJsonFile = requestedSummaryJsonFile ? toContainerPathFromWorkspace(requestedSummaryJsonFile) : '';
 
-if (!isInsideDirectory(repoRoot, requestedUploadFile)) {
+if (!useRandomUploadRange && !isInsideDirectory(repoRoot, requestedUploadFile)) {
   const uploadDirectory = path.dirname(requestedUploadFile);
   dockerArgs.push('-v', `${uploadDirectory}:/k6-upload:ro`);
   containerUploadFile = `/k6-upload/${path.basename(requestedUploadFile)}`;
@@ -77,14 +86,33 @@ if (!isInsideDirectory(repoRoot, requestedReportFile)) {
   containerReportFile = `/k6-report/${path.basename(requestedReportFile)}`;
 }
 
+if (requestedSummaryFile && !isInsideDirectory(repoRoot, requestedSummaryFile)) {
+  const summaryDirectory = path.dirname(requestedSummaryFile);
+  dockerArgs.push('-v', `${summaryDirectory}:/k6-summary`);
+  containerSummaryFile = `/k6-summary/${path.basename(requestedSummaryFile)}`;
+}
+
+if (requestedSummaryJsonFile && !isInsideDirectory(repoRoot, requestedSummaryJsonFile)) {
+  const summaryJsonDirectory = path.dirname(requestedSummaryJsonFile);
+  dockerArgs.push('-v', `${summaryJsonDirectory}:/k6-summary-json`);
+  containerSummaryJsonFile = `/k6-summary-json/${path.basename(requestedSummaryJsonFile)}`;
+}
+
 const passthroughEnvNames = [
   'K6_BASE_URL',
   'K6_DURATION',
   'K6_VUS',
   'K6_ITERATIONS',
+  'K6_SCENARIO_DURATION',
+  'K6_SCENARIO_VUS',
+  'K6_SCENARIO_ITERATIONS',
   'K6_FILE_PASSWORD',
   'K6_FILE_TAGS',
   'K6_FILE_EXPIRATION',
+  'K6_UPLOAD_RANDOM_RANGE',
+  'K6_UPLOAD_MIN_MB',
+  'K6_UPLOAD_MAX_MB',
+  'K6_UPLOAD_SOURCE_MAX_MB',
   'K6_UPLOAD_RESPONSE_P95',
   'K6_DOWNLOAD_RESPONSE_P95'
 ];
@@ -102,6 +130,10 @@ dockerArgs.push(
   `K6_BASE_URL=${process.env.K6_BASE_URL || defaultBaseUrl}`,
   '-e',
   `K6_UPLOAD_FILE=${containerUploadFile}`,
+  '-e',
+  `K6_SUMMARY_FILE=${containerSummaryFile}`,
+  '-e',
+  `K6_SUMMARY_JSON_FILE=${containerSummaryJsonFile}`,
   '-e',
   'K6_WEB_DASHBOARD=true',
   '-e',
@@ -125,6 +157,14 @@ if (result.error) {
 
 if (fs.existsSync(requestedReportFile)) {
   console.log(`K6 HTML report saved to ${requestedReportFile}`);
+}
+
+if (requestedSummaryFile && fs.existsSync(requestedSummaryFile)) {
+  console.log(`K6 Markdown summary saved to ${requestedSummaryFile}`);
+}
+
+if (requestedSummaryJsonFile && fs.existsSync(requestedSummaryJsonFile)) {
+  console.log(`K6 JSON summary saved to ${requestedSummaryJsonFile}`);
 }
 
 process.exit(result.status ?? 1);

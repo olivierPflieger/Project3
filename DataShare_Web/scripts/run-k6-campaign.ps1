@@ -42,16 +42,28 @@ function Invoke-K6Run {
   )
 
   $reportPath = Join-Path $campaignReportsDirectory $RunConfig.ReportName
+  $summaryPath = [System.IO.Path]::ChangeExtension($reportPath, '.summary.md')
+  $summaryJsonPath = [System.IO.Path]::ChangeExtension($reportPath, '.summary.json')
   $displayTitle = $RunConfig.Name
 
   Write-Host ''
   Write-Host "=== $displayTitle ==="
   Write-Host "Report: $reportPath"
 
-  $env:K6_VUS = [string]$RunConfig.Vus
-  $env:K6_DURATION = $RunConfig.Duration
+  $env:K6_VUS = ''
+  $env:K6_DURATION = ''
+  $env:K6_SCENARIO_VUS = [string]$RunConfig.Vus
+  $env:K6_SCENARIO_DURATION = $RunConfig.Duration
   $env:K6_UPLOAD_FILE = $RunConfig.UploadFile
   $env:K6_REPORT_FILE = $reportPath
+  $env:K6_SUMMARY_FILE = $summaryPath
+  $env:K6_SUMMARY_JSON_FILE = $summaryJsonPath
+  $env:K6_UPLOAD_RANDOM_RANGE = if ($RunConfig.ContainsKey('UploadRandomRange') -and $RunConfig.UploadRandomRange) { 'true' } else { 'false' }
+  $env:K6_UPLOAD_MIN_MB = if ($RunConfig.ContainsKey('UploadMinMb')) { [string]$RunConfig.UploadMinMb } else { '' }
+  $env:K6_UPLOAD_MAX_MB = if ($RunConfig.ContainsKey('UploadMaxMb')) { [string]$RunConfig.UploadMaxMb } else { '' }
+  $env:K6_UPLOAD_SOURCE_MAX_MB = if ($RunConfig.ContainsKey('UploadSourceMaxMb')) { [string]$RunConfig.UploadSourceMaxMb } else { '' }
+  $env:K6_UPLOAD_RESPONSE_P95 = if ($RunConfig.ContainsKey('UploadResponseP95')) { [string]$RunConfig.UploadResponseP95 } else { '' }
+  $env:K6_DOWNLOAD_RESPONSE_P95 = if ($RunConfig.ContainsKey('DownloadResponseP95')) { [string]$RunConfig.DownloadResponseP95 } else { '' }
 
   if ($DryRun) {
     Write-Host "[DryRun] npm run perf:load"
@@ -68,53 +80,57 @@ function Invoke-K6Run {
     throw "Expected report was not generated: $reportPath"
   }
 
+  if (-not (Test-Path -LiteralPath $summaryPath)) {
+    throw "Expected summary was not generated: $summaryPath"
+  }
+
   return $reportPath
 }
 
 $smallFixture = Join-Path $fixturesDirectory 'upload-test.txt'
 $mediumFixture = Join-Path $fixturesDirectory 'upload-test-5mb.bin'
 $largeFixture = Join-Path $fixturesDirectory 'upload-test-10mb.bin'
+$xlFixture = Join-Path $fixturesDirectory 'upload-test-50mb.bin'
+$xxlFixture = Join-Path $fixturesDirectory 'upload-test-100mb.bin'
 
 Ensure-FixtureFile -Path $mediumFixture -SizeBytes 5MB
 Ensure-FixtureFile -Path $largeFixture -SizeBytes 10MB
+Ensure-FixtureFile -Path $xlFixture -SizeBytes 50MB
+Ensure-FixtureFile -Path $xxlFixture -SizeBytes 100MB
+
 New-Item -ItemType Directory -Path $campaignReportsDirectory -Force | Out-Null
 
 $runs = @(
   @{
-    Name = 'Baseline load'
-    Vus = 5
-    Duration = '1m'
-    UploadFile = $smallFixture
-    ReportName = '01-baseline-load.html'
-  },
-  @{
-    Name = 'Concurrency x10'
-    Vus = 10
-    Duration = '1m'
-    UploadFile = $smallFixture
-    ReportName = '02-concurrency-10vu.html'
-  },
-  @{
-    Name = 'Concurrency x20'
+    Name = 'Random upload size 1-100MiB x50'
     Vus = 20
     Duration = '2m'
-    UploadFile = $smallFixture
-    ReportName = '03-concurrency-20vu.html'
-  },
-  @{
-    Name = 'Medium file 5MB'
-    Vus = 5
-    Duration = '3m'
-    UploadFile = $mediumFixture
-    ReportName = '04-medium-file-5mb.html'
+    UploadFile = $xxlFixture
+    UploadRandomRange = $true
+    UploadMinMb = 1
+    UploadMaxMb = 50
+    UploadSourceMaxMb = 100
+    UploadResponseP95 = 40000
+    DownloadResponseP95 = 40000
+    ReportName = '01-random-file-50vu.html'
   }
 )
 
 $originalEnv = @{
   K6_VUS = $env:K6_VUS
   K6_DURATION = $env:K6_DURATION
+  K6_SCENARIO_VUS = $env:K6_SCENARIO_VUS
+  K6_SCENARIO_DURATION = $env:K6_SCENARIO_DURATION
   K6_UPLOAD_FILE = $env:K6_UPLOAD_FILE
   K6_REPORT_FILE = $env:K6_REPORT_FILE
+  K6_SUMMARY_FILE = $env:K6_SUMMARY_FILE
+  K6_SUMMARY_JSON_FILE = $env:K6_SUMMARY_JSON_FILE
+  K6_UPLOAD_RANDOM_RANGE = $env:K6_UPLOAD_RANDOM_RANGE
+  K6_UPLOAD_MIN_MB = $env:K6_UPLOAD_MIN_MB
+  K6_UPLOAD_MAX_MB = $env:K6_UPLOAD_MAX_MB
+  K6_UPLOAD_SOURCE_MAX_MB = $env:K6_UPLOAD_SOURCE_MAX_MB
+  K6_UPLOAD_RESPONSE_P95 = $env:K6_UPLOAD_RESPONSE_P95
+  K6_DOWNLOAD_RESPONSE_P95 = $env:K6_DOWNLOAD_RESPONSE_P95
 }
 
 $generatedReports = @()

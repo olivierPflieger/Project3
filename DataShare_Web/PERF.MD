@@ -11,6 +11,7 @@ Le scénario couvre :
 - suppression du fichier
 
 Chaque run exporte automatiquement un rapport HTML dans `perf/reports/`.
+Quand `K6_SUMMARY_FILE` et `K6_SUMMARY_JSON_FILE` sont renseignes, le script exporte aussi une synthese lisible en Markdown et JSON.
 
 ## Prérequis
 
@@ -66,8 +67,14 @@ K6_ITERATIONS=1
 K6_FILE_PASSWORD=k6-secret
 K6_FILE_TAGS=k6,perf
 K6_FILE_EXPIRATION=1
+K6_UPLOAD_RANDOM_RANGE=true
+K6_UPLOAD_MIN_MB=1
+K6_UPLOAD_MAX_MB=100
+K6_UPLOAD_SOURCE_MAX_MB=100
 K6_UPLOAD_RESPONSE_P95=2000
 K6_DOWNLOAD_RESPONSE_P95=2000
+K6_SUMMARY_FILE=perf/reports/custom-summary.md
+K6_SUMMARY_JSON_FILE=perf/reports/custom-summary.json
 ```
 
 Exemple avec plus de VUs :
@@ -87,22 +94,34 @@ $env:K6_UPLOAD_FILE="perf/fixtures/upload-test-5mb.bin"
 npm run perf:load
 ```
 
+Exemple avec une taille aléatoire entre `1 MiB` et `100 MiB` a chaque iteration :
+
+```powershell
+$env:K6_VUS="50"
+$env:K6_DURATION="1m"
+$env:K6_UPLOAD_RANDOM_RANGE="true"
+$env:K6_UPLOAD_MIN_MB="1"
+$env:K6_UPLOAD_MAX_MB="100"
+$env:K6_UPLOAD_SOURCE_MAX_MB="100"
+$env:K6_UPLOAD_RESPONSE_P95="15000"
+$env:K6_DOWNLOAD_RESPONSE_P95="15000"
+npm run perf:load
+```
+
 ## Campagne progressive
 
 Le script [scripts/run-k6-campaign.ps1](/D:/_OpenClassRooms_/Project3/DataShare_Web/scripts/run-k6-campaign.ps1) exécute une campagne complète et affiche à la fin les chemins des rapports générés.
 
 Runs inclus :
 
-- `5 VUs`, fichier de base, `1m`
-- `10 VUs`, fichier de base, `1m`
-- `20 VUs`, fichier de base, `2m`
-- `5 VUs`, fichier `5 Mo`, `3m`
+- `50 VUs`, taille de fichier aleatoire entre `1 MiB` et `100 MiB`, `1m`
 
 
 Le script crée automatiquement si besoin :
 
 - [perf/fixtures/upload-test-5mb.bin](/D:/_OpenClassRooms_/Project3/DataShare_Web/perf/fixtures/upload-test-5mb.bin)
 - [perf/fixtures/upload-test-10mb.bin](/D:/_OpenClassRooms_/Project3/DataShare_Web/perf/fixtures/upload-test-10mb.bin)
+- [perf/fixtures/upload-test-100mb.bin](/D:/_OpenClassRooms_/Project3/DataShare_Web/perf/fixtures/upload-test-100mb.bin), utilise comme source unique pour tronquer aleatoirement les uploads entre `1 MiB` et `100 MiB`
 
 Lancer la campagne :
 
@@ -120,6 +139,13 @@ Les rapports sont rangés dans un sous-dossier du type :
 
 ```text
 perf/reports/campaign-YYYYMMDD-HHmmss/
+```
+
+Pour chaque rapport HTML, la campagne genere aussi :
+
+```text
+01-random-file-50vu.summary.md
+01-random-file-50vu.summary.json
 ```
 
 ## Lecture rapide des résultats
