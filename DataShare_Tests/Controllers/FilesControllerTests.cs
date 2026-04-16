@@ -137,11 +137,6 @@ namespace DataShare_API.Tests.Controllers
             // Assert
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal(500, objectResult.StatusCode);
-
-            // Vérification du message retourné dans le corps de la réponse via le catch 500
-            var routeValues = objectResult.Value;
-            var message = routeValues?.GetType().GetProperty("message")?.GetValue(routeValues, null);
-            Assert.Equal("Une erreur d'écriture inattendue est survenue sur le disque.", message);
         }
 
         [Fact]

@@ -33,8 +33,7 @@ namespace DataShare_API.Controllers
             }            
             catch (Exception ex)
             {
-                string errorMessage = $"Une erreur serveur s'est produite: {ex.Message}";
-                return StatusCode(500, new { message = errorMessage });
+                return StatusCode(500, new { message = "Erreur interne du serveur" });
             }
         }
     }

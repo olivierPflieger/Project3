@@ -128,11 +128,6 @@ namespace DataShare_API.Tests.Controllers
             // Assert
             var statusCodeResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal(500, statusCodeResult.StatusCode);
-
-            // Le contrôleur est censé préfixer l'erreur de "Une erreur serveur s'est produite: "
-            var routeValues = statusCodeResult.Value;
-            var returnedMessage = routeValues?.GetType().GetProperty("message")?.GetValue(routeValues, null);
-            Assert.Equal($"Une erreur serveur s'est produite: {unexpectedExceptionMessage}", returnedMessage);
         }
     }
 }

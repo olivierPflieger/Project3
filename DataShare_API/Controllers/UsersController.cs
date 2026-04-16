@@ -30,8 +30,7 @@ public class UsersController : ControllerBase
         }        
         catch (Exception ex)
         {
-            string errorMessage = $"Une erreur serveur s'est produite: {ex.Message}";
-            return StatusCode(500, new { message = errorMessage });
+            return StatusCode(500, new { message = "Erreur interne du serveur" });
         }                
     }
         
@@ -46,7 +45,7 @@ public class UsersController : ControllerBase
             case HttpStatusCode.BadRequest:
                 return BadRequest(new { message = ex.Message });
             default:
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(500, new { message = "Erreur interne du serveur" });
         }
     }
 }

@@ -185,8 +185,11 @@ namespace DataShare_API.Services
                 uploadMetadata.PasswordHash = BCrypt.Net.BCrypt.HashPassword(value);
             }
             else if (key.Equals("expiration", StringComparison.OrdinalIgnoreCase))
-            {
+            {                
                 int.TryParse(value, out int expirationDays);
+                if (expirationDays == 0)
+                    throw new CustomDatashareException(HttpStatusCode.BadRequest, "Problème avec la valeur d'expiration");
+                
                 uploadMetadata.ExpirationDays = expirationDays;
             }
             else if (key.Equals("tags", StringComparison.OrdinalIgnoreCase))
@@ -264,7 +267,7 @@ namespace DataShare_API.Services
                     };
 
                     await CreateFileMetaDataAsync(fileMetaData);
-
+                    
                     // Finally return response
                     return new UploadFileResponse
                     {
@@ -277,7 +280,7 @@ namespace DataShare_API.Services
                     };
                 }
             }
-            catch (AmazonS3Exception ex)
+            catch (Exception ex)
             {
                 // Suppression du fichier orphelin sur S3
                 try

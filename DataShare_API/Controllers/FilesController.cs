@@ -63,7 +63,7 @@ namespace DataShare_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(500, new { message = "Erreur interne du serveur" });
             }
         }
 
@@ -83,7 +83,7 @@ namespace DataShare_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(500, new { message = "Erreur interne du serveur" });
             }
         }
 
@@ -119,7 +119,7 @@ namespace DataShare_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(500, new { message = "Erreur interne du serveur" });
             }
         }
 
@@ -164,7 +164,7 @@ namespace DataShare_API.Controllers
             }            
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(500, new { message = "Erreur interne du serveur" });
             }
         }
 
@@ -192,7 +192,7 @@ namespace DataShare_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(500, new { message = "Erreur interne du serveur" });
             }
         }
 
@@ -206,8 +206,10 @@ namespace DataShare_API.Controllers
                     return Conflict(new { message = ex.Message });
                 case HttpStatusCode.BadRequest:
                     return BadRequest(new { message = ex.Message });
+                case HttpStatusCode.Gone:
+                    return StatusCode(410, new { message = ex.Message });
                 default:
-                    return StatusCode(500, new { message = ex.Message });
+                    return StatusCode(500, new { message = "Erreur interne du serveur" });
             }
         }
     }
