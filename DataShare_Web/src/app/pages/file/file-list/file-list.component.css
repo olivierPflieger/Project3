@@ -224,18 +224,85 @@
   visibility: hidden;
 }
 
+.sidebar-mobile {
+  display: none;
+  visibility: hidden;
+}
+
+.header-mobile {
+  display: none;
+  visibility: hidden;
+}
+
 /* Responsive design */
 
 @media (max-width: 640px) {
   
-  .sidebar{
+  /* Sidebar for mobile */
+  
+  .sidebar {
     display: none;
     visibility: hidden;
   }
 
-  .sidebar.sidebar-visible {
+  .header {
+    display: none;
+    visibility: hidden;
+  }
+
+  .header-mobile {
+    display: flex;
+    visibility: visible;    
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--sds-size-space-400);
+    background: #FFEEE3;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .sidebar-mobile{
+    box-sizing: border-box;
+    display: flex;
+    visibility: hidden;    
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;    
+    background: var(--Background);
+    padding: 16px;
+    color: white;
+    gap: 10px;
+    z-index: 9999;    
+    opacity: 0;    
+    transform: translateX(-120%);
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+    pointer-events: none;
+  }
+
+  .sidebar-mobile.sidebar-visible {
+    opacity: 1;
     display: flex;
     visibility: visible;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  .sidebar-mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 72px;    
+    gap: var(--sds-size-space-400);
+    flex-shrink: 0;
+    align-self: stretch;
+  }
+
+  .sidebar-mobile-header-icon img {
+    width: var(--sds-size-space-400);
+    height: var(--sds-size-space-400);   
+    cursor: pointer; 
   }
     
   /* Menu Hamburger for mobile */
@@ -263,6 +330,22 @@
     stroke: var(--sds-color-icon-default-default);
     background: rgba(255, 193, 145, 0.05);
     background: url('/images/menu-burger.svg') no-repeat center;
+  }
+
+  .mobile-menu-item {
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;  
+    color: #803A00;
+    font-feature-settings: 'liga' off;  
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.40);
+    padding: var(--sds-size-space-200);
+    margin-bottom: var(--sds-size-space-200);
   }
   
   /* Menu actions list for mobile */

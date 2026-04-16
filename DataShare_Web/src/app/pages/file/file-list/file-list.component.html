@@ -1,7 +1,7 @@
 <div class="layout">
    
     <!-- Sidebar -->
-    <aside class="sidebar" [class.sidebar-visible]="isSidebarVisible">
+    <aside class="sidebar">
         <div class="title">DataShare</div>
 
         <nav class="menu">
@@ -9,6 +9,20 @@
         </nav>
 
         <div class="footer">Copyright DataShare® 2025</div>
+    </aside>
+
+     <!-- Sidebar Mobile -->
+    <aside class="sidebar-mobile" [class.sidebar-visible]="isSidebarVisible">
+        <div class="sidebar-mobile-header">
+            <div class="sidebar-mobile-header-icon" (click)="toggleSidebar()">
+                <img src="/images/close.svg" alt="icon">
+            </div>
+            <div class="title">DataShare</div>
+        </div>
+        <nav class="menu">
+            <div class="mobile-menu-item" (click)="toggleSidebar()">Mes fichiers</div>
+            <div class="mobile-menu-item" routerLink="/files/upload">Ajouter des fichiers</div>
+        </nav>
     </aside>
 
     <div class="main">
@@ -21,7 +35,21 @@
                 </button>                            
             </div>
 
-            <button class="btnMenu" routerLink="/files/upload">Ajouter des fichiers</button>
+            <button class="btnMenu btnAddFiles" routerLink="/files/upload">Ajouter des fichiers</button>
+            <div class="button-link button-logout">
+                <a (click)="logout()">Déconnexion</a>
+            </div>
+        </header>
+
+        <!-- Header mobile -->
+        <header class="header-mobile">
+
+            <div class="menu-hamburger-mobile-container">
+                <button class="menu-hamburger-mobile-btn"
+                    (click)="toggleSidebar()" aria-label="Ouvrir le menu">
+                </button>                            
+            </div>
+
             <div class="button-link button-logout">
                 <a (click)="logout()">Déconnexion</a>
             </div>
@@ -131,19 +159,6 @@
                     (ngModelChange)="filterFiles()"
                 />
 
-            </div>
-        
-            
-            <div class="file-list" *ngFor="let fileMeta of filteredFiles">
-                <div class="file-item">
-                <div class="file-info">
-                    <strong>{{ fileMeta.originalFileName }}</strong>
-                    <span>Expire le : {{ fileMeta.expirationDate }}</span>
-                </div>
-                <div class="file-actions">
-                    <a href="#" (click)="deleteFile(fileMeta.token, $event)">Delete</a>
-                    <button [routerLink]="['/file', fileMeta.token]">Accéder</button>
-                </div>                
             </div>
             -->
             
