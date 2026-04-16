@@ -74,7 +74,7 @@
                         <div *ngIf="fileMetaData.isProtected" class="file-action file-lock">
                         </div>
 
-                        <div class="file-action">
+                        <div class="file-action file-action-mobile">
                             <div class="file-action-button file-action-delete"
                                 (click)="deleteFile(fileMetaData.token, $event)"
                                 data-cy="file-list-div-delete">
@@ -82,13 +82,25 @@
                             </div>
                         </div>
 
-                         <div class="file-action">
+                         <div class="file-action file-action-mobile">
                             <div class="file-action-button file-action-access" 
                                         [routerLink]="['/file', fileMetaData.token]"
                                         data-cy="file-list-div-access">
                                 Accéder
                             </div>
                         </div>
+                        
+                        <div class="menu-actions-mobile">
+                            <button class="hamburger-btn" 
+                                    (click)="toggleMenuActionsMobile(fileMetaData.token)" aria-label="Ouvrir le menu">
+                            </button>
+                            
+                            <div class="popup-menu" *ngIf="openedMenuToken === fileMetaData.token">
+                                <a (click)="deleteFile(fileMetaData.token, $event)">Supprimer</a>
+                                <a [routerLink]="['/file', fileMetaData.token]" (click)="closeMenuActionsMobile()">Accéder</a>                                
+                            </div>                        
+                        </div>
+
                     </div>
 
                 </div>

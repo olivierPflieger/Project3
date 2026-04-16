@@ -31,6 +31,8 @@ export class FileListComponent implements OnInit {
   isLoading: boolean = false;
   domain: string = '';
   filter: string = 'valid';
+  isMenuActionsOpen: boolean = false;
+  openedMenuToken: string | null = null;
   
   constructor(private router: Router, private route: ActivatedRoute, public fileService: FileService, public loginService: LoginService) {
     this.domain = window.location.origin;
@@ -80,6 +82,7 @@ export class FileListComponent implements OnInit {
             this.filteredFiles = this.fileMetaDatas.filter(s => s.token !== token );
             this.message = "Fichier correctement supprimé";
             this.messageType = 'success';
+            this.closeMenuActionsMobile();
           },
           error: (err) => {
             if (err.error && err.error.message) {
@@ -139,5 +142,13 @@ export class FileListComponent implements OnInit {
     } else {
       return 'expiration-text-normal';
     }
+  }
+
+  toggleMenuActionsMobile(token: string): void {
+    this.openedMenuToken = this.openedMenuToken === token ? null : token;
+  }
+
+  closeMenuActionsMobile(): void {
+    this.openedMenuToken = null;
   }
 }
