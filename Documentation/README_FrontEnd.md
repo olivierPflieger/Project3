@@ -17,3 +17,15 @@ Pour démarrer le serveur, ouvrir un terminal à la racine du projet DataShare_W
 ```bash
 ng serve
 ```
+
+## Guide des tests du Front-End
+
+Ce document explique comment éxecuter les tests e2e du Front-End
+
+[Voir la documentation](README_FrontEnd_Tests.md)
+
+## Guide des tests de performances K6
+
+Ce document explique comment éxecuter les tests de performances K6
+
+[Voir la documentation](README_Tests_K6.md)
