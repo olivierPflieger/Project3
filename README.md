@@ -1,6 +1,4 @@
-﻿# Nom du Projet
-
-Projet DataShare
+﻿# Projet DataShare
 
 ## Stack Technique
 
@@ -17,7 +15,7 @@ incluant la base de données PostgreSQL via Docker et le serveur de l'API .NET.
 
 [Voir la documentation](Documentation/README_BackEnd.md)
 
-## Tests unitaires et d'intégration du Back-End
+## Guide des tests du Back-End
 
 Ce document explique comment éxecuter les tests du Back-End
 
@@ -29,13 +27,13 @@ Ce document explique comment lancer l'environnement de développement Front-End
 
 [Voir la documentation](Documentation/Readme_frontEnd.md)
 
-## Tests end-to-end du Front-End
+## Guide des tests du Front-End
 
 Ce document explique comment éxecuter les tests e2e du Front-End
 
 [Voir la documentation](Documentation/README_FrontEnd_Tests.md)
 
-## Tests de performances K6
+## Guide des tests de performances K6
 
 Ce document explique comment éxecuter les tests de performances K6
 
