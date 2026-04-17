@@ -15,17 +15,17 @@ incluant la base de données PostgreSQL via Docker et le serveur de l'API .NET.
 
 [Voir la documentation](Documentation/README_BackEnd.md)
 
-## Guide des tests du Back-End
-
-Ce document explique comment éxecuter les tests du Back-End
-
-[Voir la documentation](Documentation/README_BackEnd_Tests.md)
-
 ## Guide de Démarrage du Front-End
 
 Ce document explique comment lancer l'environnement de développement Front-End
 
 [Voir la documentation](Documentation/Readme_frontEnd.md)
+
+## Guide des tests du Back-End
+
+Ce document explique comment éxecuter les tests du Back-End
+
+[Voir la documentation](Documentation/README_BackEnd_Tests.md)
 
 ## Guide des tests du Front-End
 
