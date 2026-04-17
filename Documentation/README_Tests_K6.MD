@@ -124,6 +124,7 @@ Le script crée automatiquement si besoin :
 - [perf/fixtures/upload-test-100mb.bin](/D:/_OpenClassRooms_/Project3/DataShare_Web/perf/fixtures/upload-test-100mb.bin), utilise comme source unique pour tronquer aleatoirement les uploads entre `1 MiB` et `100 MiB`
 
 Lancer la campagne :
+Se mettre dans DataShare_Web
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\run-k6-campaign.ps1

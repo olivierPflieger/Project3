@@ -1,0 +1,280 @@
+{
+  "info": {
+    "_postman_id": "bc4ca14a-e8c8-44f7-bd83-d5510b1c4405",
+    "name": "Project3",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "32090868"
+  },
+  "item": [
+    {
+      "name": "users/Create",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"\", \"password\": \"\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5051/api/Users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5051",
+          "path": [
+            "api",
+            "Users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "login",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"\", \"password\": \"\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5051/api/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5051",
+          "path": [
+            "api",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "files/List",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http://localhost:5051/api/Files",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5051",
+          "path": [
+            "api",
+            "Files"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "files/Delete",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http://localhost:5051/api/Files/ef4a8ae0-7e49-4b73-87a0-3efd4925f7fa",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5051",
+          "path": [
+            "api",
+            "Files",
+            "ef4a8ae0-7e49-4b73-87a0-3efd4925f7fa"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "files/FindByToken",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http://localhost:5051/api/Files/d76f61a3-1214-4c8d-84d8-0ab8e3ee532b1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5051",
+          "path": [
+            "api",
+            "Files",
+            "d76f61a3-1214-4c8d-84d8-0ab8e3ee532b1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "file/download",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"password\":\"\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5051/api/Files/download/d76f61a3-1214-4c8d-84d8-0ab8e3ee532b",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5051",
+          "path": [
+            "api",
+            "Files",
+            "download",
+            "d76f61a3-1214-4c8d-84d8-0ab8e3ee532b"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "file/Upload",
+      "protocolProfileBehavior": {
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "password",
+              "value": "",
+              "type": "text",
+              "uuid": "7c82b870-5d6e-4b62-b862-bc24cf536df7"
+            },
+            {
+              "key": "expiration",
+              "value": "4",
+              "type": "text",
+              "uuid": "120dc0f6-7aca-466a-826d-daaa6f55a35f"
+            },
+            {
+              "key": "tags",
+              "value": "test, image, vacances",
+              "type": "text",
+              "uuid": "93e8abbb-821c-468e-b520-4055f192a14f"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "uuid": "00f6b5a3-598f-4000-851b-98497e9393c8",
+              "src": ""
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5051/api/Files",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5051",
+          "path": [
+            "api",
+            "Files"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
