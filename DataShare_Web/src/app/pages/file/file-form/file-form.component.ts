@@ -99,8 +99,6 @@ export class FileFormComponent implements OnInit {
             this.message = Object.values(apiErrors)
               .flat()
               .join('\n'); 
-
-            console.log("erreur: " + this.message);
             
           } else {
             if (err.error && err.error.message) {

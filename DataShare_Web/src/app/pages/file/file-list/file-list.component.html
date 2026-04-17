@@ -96,6 +96,10 @@
                             <div class="file-infos-size" [ngClass]="getExpirationClass(fileMetaData.isExpired, fileMetaData.remainingDays)">
                                 {{ getExpirationLabel(fileMetaData.isExpired, fileMetaData.remainingDays) }}
                             </div>
+                            <div class="file-infos-expiration-days">
+                                Téleversé le {{ fileMetaData.createdAt | date:'dd/MM/yyyy HH:mm:ss' }} -
+                                Expiration saisie : {{ fileMetaData.expirationDays }} jours
+                            </div>
                             <div class="file-infos-tags">{{ fileMetaData.tags?.join(', ') }}</div>
                         </div>                    
                     </div>

@@ -157,10 +157,8 @@
   text-overflow: ellipsis;
 }
 
-.file-infos-size {
-  font-size: var(--sds-typography-body-size-small);
-}
-
+.file-infos-size, 
+.file-infos-expiration-days, 
 .file-infos-tags {
   font-size: var(--sds-typography-body-size-small);
 }
