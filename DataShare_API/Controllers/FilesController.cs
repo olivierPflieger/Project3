@@ -28,6 +28,9 @@ namespace DataShare_API.Controllers
             _settings = options.Value;
         }
 
+        /// <summary>
+        /// Upload un fichier
+        /// </summary>
         [HttpPost()]
         [DisableFormValueModelBinding]
         [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
@@ -67,6 +70,11 @@ namespace DataShare_API.Controllers
             }
         }
 
+        /// <summary>
+        /// Télécharge un fichier à partir de son token unique
+        /// </summary>
+        /// <param name="token">Le token unique généré lors de l'upload du fichier.</param>
+        /// <param name="request">Contient le mot de passe optionnel si le fichier est protégé.</param>
         [HttpPost("download/{token}")]
         [AllowAnonymous]
         public async Task<IActionResult> DownloadFile(string token, [FromBody] DownloadFileRequest request)
@@ -87,6 +95,10 @@ namespace DataShare_API.Controllers
             }
         }
 
+        /// <summary>
+        /// Récupère les métadonnées d'un fichier à partir de son token unique.
+        /// </summary>
+        /// <param name="token">Le token unique généré lors de l'upload du fichier.</param>
         [HttpGet("{token}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetFileMetaDataByToken(string token)
@@ -124,6 +136,9 @@ namespace DataShare_API.Controllers
             }
         }
 
+        /// <summary>
+        /// Récupère les métadonnées de tous les fichiers d'un utilisateur connecté.
+        /// </summary>
         [HttpGet()]
         public async Task<IActionResult> GetAllFiles()
         {
@@ -170,6 +185,10 @@ namespace DataShare_API.Controllers
             }
         }
 
+        /// <summary>
+        /// Supprime les métadonnées ainsi que le fichier à partir de son token unique.
+        /// </summary>
+        /// <param name="token">Le token unique généré lors de l'upload du fichier.</param>
         [HttpDelete("{token}")]
         public async Task<IActionResult> DeleteFile(string token)
         {

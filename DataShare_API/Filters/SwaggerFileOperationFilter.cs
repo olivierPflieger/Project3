@@ -29,6 +29,21 @@ namespace DataShare_API.Filters
                                     {
                                         Type = "string",
                                         Format = "binary"
+                                    },
+                                    ["password"] = new OpenApiSchema
+                                    {
+                                        Type = "string",
+                                        Description = "(Optionnel) Un mot de passe pour protéger le téléchargement de ce fichier."
+                                    },
+                                    ["tags"] = new OpenApiSchema
+                                    {
+                                        Type = "string",
+                                        Description = "(Optionnel) Liste de tags séparés par des virgules (ex: projet, confidentiel, image)."
+                                    },
+                                    ["expirationDays"] = new OpenApiSchema
+                                    {
+                                        Type = "integer",
+                                        Description = "(Optionnel) Nombre de jours avant que le fichier n'expire et soit supprimé. (Par défaut: 7)"
                                     }
                                 },
                                 Required = new HashSet<string> { "file" }

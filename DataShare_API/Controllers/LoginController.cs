@@ -15,6 +15,9 @@ namespace DataShare_API.Controllers
             _loginService = loginService;
         }
 
+        /// <summary>
+        /// Connection d'un utilisateur à l'application en fournissant son email et son mot de passe
+        /// </summary>        
         [HttpPost()]
         public IActionResult Login([FromBody] LoginRequest request)
         {

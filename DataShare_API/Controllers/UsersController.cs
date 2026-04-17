@@ -16,6 +16,9 @@ public class UsersController : ControllerBase
         _userService = userService;        
     }
 
+    /// <summary>
+    /// Création d'un utilisateur en fournissant son email et son mot de passe
+    /// </summary>    
     [HttpPost]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest createUserRequest)
     {

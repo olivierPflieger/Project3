@@ -4,6 +4,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	<!-- Ajoutez cette ligne -->
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<!-- Optionnel : Ignore les avertissements pour les classes publiques non documentées -->
+	<NoWarn>$(NoWarn);1591</NoWarn>
     <RootNamespace>DataShare_API</RootNamespace>
     <UserSecretsId>426d57bc-90e8-4f3b-9913-b4861924f7ad</UserSecretsId>
   </PropertyGroup>
