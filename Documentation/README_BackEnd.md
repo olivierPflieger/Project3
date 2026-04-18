@@ -45,6 +45,52 @@ dotnet run
 http://localhost:5051/swagger/
 ```
 
+## Configuration pour le développement local
+
+### Jwt Key
+Ce projet utilise les "User Secrets" de .NET pour gérer la clé secrète JWT en local sans la commiter sur Git. 
+Après avoir cloné le dépôt, vous devez configurer votre propre clé JWT locale pour que l'authentification fonctionne.
+
+Une fois la clé générée, ouvrez un terminal à la racine du projet backend et exécutez les commandes suivantes :
+
+```bash
+dotnet user-secrets init
+dotnet user-secrets set "Jwt:Key" "votre-cle-secrete-locale"
+```
+
+*Note : Assurez-vous que la clé locale fait au moins 256 bits (environ 32 caractères) pour que l'algorithme HMAC-SHA256 fonctionne correctement.*
+
+Pour voir le contenu de vos secrets locaux, vous pouvez exécuter :
+
+```bash
+dotnet user-secrets list
+```
+
+### AWS Access Key
+
+Ce projet utilise également les "User Secrets" pour gérer les clés d'accès AWS en local
+
+Après avoir obtenu vos clés d'accès AWS, ouvrez un terminal à la racine du projet backend et exécutez les commandes suivantes :
+
+```bash
+dotnet user-secrets set "AWS:AccessKey" "VOTRE_ACCESS_KEY_ICI"
+dotnet user-secrets set "AWS:SecretKey" "VOTRE_SECRET_KEY_ICI"
+dotnet user-secrets set "AWS:Region" "eu-west-3"
+```
+
+### Database password
+
+Les credentials d’accès à la base de données sont masqués par des variables d’environnement. 
+Ces variables d’environnement sont définies dans le fichier .env
+Le fichier .env est ignoré par GIT
+
+Créez un fichier .env à la racine du projet DataShare_API
+Remplacez admin_user et admin_password par les valeurs correspondantes
+
+POSTGRES_USER=admin_user
+POSTGRES_PASSWORD=admin_password
+
+
 ## Utilisation générale (hors première utilisation)
 
 ### Démarrer le backEnd et la base de données (Docker)
@@ -119,6 +165,7 @@ cd Scripts
 
 Accédez à l'interface Swagger à l'adresse suivante :  
 [http://localhost:5051/swagger/](http://localhost:5051/swagger/)
+
 
 ## POSTMAN
 
