@@ -5,117 +5,133 @@
 - SDK .NET 8
 - Docker Desktop
 - Outil CLI Entity Framework Core (dotnet-ef). 
- 
-Pour installer CLI Entity Framework Core, ouvrir un terminal et éxécutez :
+
+Pour installer CLI Entity Framework Core, ouvrir une console Powershell et éxécutez :
 
 ```
 dotnet tool install --global dotnet-ef --version 8.*
 ```     
 
-## Guide de Démarrage du backEnd
+## Première utilisation
 
-Ce document explique comment lancer l'environnement de développement, 
-incluant la base de données PostgreSQL via Docker et le serveur de l'API .NET.
+Vous venez de cloner le projet GIT. Suivez les instructions suivantes pour configurer et démarrer le projet back-End pour la 
+première fois.
 
-## Vous venez de cloner le projet ? (Première utilisation)
+### Variables d'environnement
 
-1. Assurez-vous que Docker Desktop (ou le service Docker) est lancé sur votre machine.
+Ce projet utilise les "User Secrets" de .NET pour gérer les variables d'environnement.
 
-2. Ouvrez un terminal à la racine du projet DataShare_API et exécutez :
+Après avoir cloné le dépôt, vous devez configurer vos propres variables d'environnement pour que le projet puisse démarrer correctement.
 
-```
-docker-compose up -d
-```
+#### Jwt Key
 
-3. Puis exécutez : (**Obligatoire** la première fois, pour créer les tables à partir des fichiers de migration existants dans le code).
- 
-```
-dotnet ef database update
-``` 
-
-4. Enfin, afin de démarrer l'API, exécutez :
+Pour générer une clé, utilisez par exemple OpenSSL. Ouvrer un terminal (bash ou cygwin64) et exécutez :
 
 ```
-dotnet run
-``` 
-
-5. Une fois l'API démarrée, accédez à l'interface Swagger à l'adresse suivante :  
-
+openssl rand -base64 32
 ```
-http://localhost:5051/swagger/
-```
+*Note : Assurez-vous que la clé locale fait au moins 256 bits (environ 32 caractères) pour que l'algorithme HMAC-SHA256 fonctionne correctement.*
 
-## Configuration pour le développement local
-
-### Jwt Key
-Ce projet utilise les "User Secrets" de .NET pour gérer la clé secrète JWT en local sans la commiter sur Git. 
-Après avoir cloné le dépôt, vous devez configurer votre propre clé JWT locale pour que l'authentification fonctionne.
-
-Une fois la clé générée, ouvrez un terminal à la racine du projet backend et exécutez les commandes suivantes :
+Une fois la clé générée, ouvrez une console Powershell à la racine du projet DataShare_API et exécutez les commandes suivantes :
 
 ```bash
 dotnet user-secrets init
 dotnet user-secrets set "Jwt:Key" "votre-cle-secrete-locale"
 ```
 
-*Note : Assurez-vous que la clé locale fait au moins 256 bits (environ 32 caractères) pour que l'algorithme HMAC-SHA256 fonctionne correctement.*
+#### AWS Access Key
 
-Pour voir le contenu de vos secrets locaux, vous pouvez exécuter :
+L'accès au bucket est fait via un compte IAM en place dans AWS.
+Ouvrez une console Powershell à la racine du projet DataShare_API et exécutez les commandes suivantes :
+
+```bash
+dotnet user-secrets set "AWS:AccessKey" "ACCESS_KEY"
+dotnet user-secrets set "AWS:SecretKey" "SECRET_KEY"
+dotnet user-secrets set "AWS:Region" "eu-west-3"
+```
+
+#### Database identifiants
+
+Ouvrez une console Powershell à la racine du projet backend et exécutez les commandes suivantes :
+
+```bash
+dotnet user-secrets set "POSTGRES_HOST" "localhost"
+dotnet user-secrets set "POSTGRES_PORT" "5432"
+dotnet user-secrets set "POSTGRES_DB" "datashare"
+dotnet user-secrets set "POSTGRES_USER" "toChange"
+dotnet user-secrets set "POSTGRES_PASSWORD" "toChange"
+```
+
+#### Vérification
+
+Une fois en place, afin de vérifier que les variables soient bien configurées, vous pouvez exécuter :
 
 ```bash
 dotnet user-secrets list
 ```
+Les variables suivantes sont en place
 
-### AWS Access Key
-
-Ce projet utilise également les "User Secrets" pour gérer les clés d'accès AWS en local
-
-Après avoir obtenu vos clés d'accès AWS, ouvrez un terminal à la racine du projet backend et exécutez les commandes suivantes :
-
-```bash
-dotnet user-secrets set "AWS:AccessKey" "VOTRE_ACCESS_KEY_ICI"
-dotnet user-secrets set "AWS:SecretKey" "VOTRE_SECRET_KEY_ICI"
-dotnet user-secrets set "AWS:Region" "eu-west-3"
+```
+POSTGRES_USER = ...
+POSTGRES_PORT = ...
+POSTGRES_PASSWORD = ...
+POSTGRES_HOST = ...
+POSTGRES_DB = ...
+Jwt:Key = ...
+AWS:SecretKey = ...
+AWS:Region = ...
+AWS:AccessKey = ...
 ```
 
-### Database password
+#### Démarrez le back-End
 
-Les credentials d’accès à la base de données sont masqués par des variables d’environnement. 
-Ces variables d’environnement sont définies dans le fichier .env
-Le fichier .env est ignoré par GIT
+1. Démarrez Docker Desktop (ou le service Docker)
 
-Créez un fichier .env à la racine du projet DataShare_API
-Remplacez admin_user et admin_password par les valeurs correspondantes
+2. Pour démarrer la database et l'API, ouvrez une console Powershell à la racine du projet DataShare_API et exécutez :
 
-POSTGRES_USER=admin_user
-POSTGRES_PASSWORD=admin_password
+```
+./start-database.ps1
+dotnet run
+```
 
+3. Une fois l'API démarrée, l'interface Swagger qui décrit l'API est disponible à l'adresse suivante :
+
+```
+http://localhost:5051/swagger/
+```
 
 ## Utilisation générale (hors première utilisation)
 
-### Démarrer le backEnd et la base de données (Docker)
+Démarrez Docker Desktop (ou le service Docker)
 
-Assurez-vous que Docker Desktop (ou le service Docker) est lancé sur votre machine.  
-Ouvrez un terminal à la racine du projet DataShare_API et exécutez :
-
-```
-docker-compose up -d
-```
-
-### Mettre à jour la base de données
-
-Au besoin, afin d'appliquer les nouveaux changements de structure effectués sur la base de données, 
-toujours dans le terminal à la racine du projet DataShare_API, exécutez :
+Ouvrez une console Powershell à la racine du projet DataShare_API et exécutez :
 
 ```
-dotnet ef database update
-``` 
+./start-database.ps1
+dotnet run
+```
+
+## Mettre à jour la base de données
+
+Les modifications de structure de la base de données font l'objet d'un commentaire précis dans le commit
+
+```
+feat!: Migration requise - ...
+```
+
+Dans ce cas, afin d'appliquer les nouveaux changements effectués sur la base de données, 
+stoppez l'application et relancer les deux commandes :
+
+```
+./start-database.ps1
+dotnet run
+```
 
 ## Se connecter à la base de données
 
-### Via un outil graphique (Recommandé)
+### Via un outil graphique
 
-Utilisez un outil comme **DBeaver**, **pgAdmin** ou **heidiSQL** avec les identifiants présents dans le fichier `docker-compose.yml` :
+Utilisez un outil comme **DBeaver**, **pgAdmin** ou **heidiSQL** avec les identifiants présents dans les variables d'environnement
 
 - **Hôte** : `localhost`
 - **Port** : `5432`
@@ -125,7 +141,7 @@ Utilisez un outil comme **DBeaver**, **pgAdmin** ou **heidiSQL** avec les identi
 
 ### Via la ligne de commande (CLI Docker)
 
-Pour accéder directement à la base via le terminal du conteneur :
+Pour accéder directement à la base via un terminal:
 
 ```
 docker exec -it postgres_db psql -U admin -d datashare -W
@@ -153,11 +169,9 @@ psql -U admin -d datashare -W
 
 ### Cleaning de la base
 
-Pour supprimer toutes les entrées dans la database ainsi que supprimer tous les fichiers dans AWS,
-ouvrez un terminal dans le répertoire DataShare_API\Scripts et exécutez :
+Pour supprimer toutes les entrées dans la database ainsi que supprimer tous les fichiers dans AWS, ouvrez une console Powershell dans le répertoire DataShare_API\Scripts et exécutez :
 
 ```
-cd Scripts
 .\clean_database_and_bucket.ps1
 ```
 

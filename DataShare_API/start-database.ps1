@@ -16,4 +16,3 @@ $env:POSTGRES_PASSWORD = ($secret -split "=")[1].Trim()
 
 docker compose up -d
 dotnet ef database update
-dotnet run

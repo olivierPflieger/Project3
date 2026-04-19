@@ -2,7 +2,7 @@
 
 ## Exécuter les tests
 
-Pour lancer les tests sans couverture de code, ouvrez un terminal à la racine du projet DataShare_Tests 
+Pour lancer les tests sans couverture de code, ouvrez une console Powershell à la racine du projet DataShare_Tests 
 et exécutez :
 
 ```
@@ -15,7 +15,7 @@ Optionnel: Pour ajouter le nom des tests, éxecutez :
 dotnet test --logger "console;verbosity=normal"
 ```
 
-Pour lancer les tests avec couverture de code, ouvrez un terminal à la racine du projet DataShare_Tests 
+Pour lancer les tests avec couverture de code, ouvrez une console Powershell à la racine du projet DataShare_Tests 
 et exécutez :
 
 ```
