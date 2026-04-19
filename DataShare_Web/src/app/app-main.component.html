@@ -2,9 +2,9 @@
 
     <header class="header">        
         
-        <div class="appTitle">
+        <h1 class="appTitle">
             DataShare
-        </div>
+        </h1>
         
         <div>            
             @if (!(loginService.isAuthenticated())) {
@@ -17,9 +17,9 @@
         </div>
     </header>
     
-    <div class="main-content">    
+    <main class="main-content">    
         <router-outlet/>
-    </div>
+    </main>
     
     <footer class="footer">
         <p>Copyright DataShare© 2025</p>

@@ -25,13 +25,13 @@
                         </div>                    
                     </div>
                     <ng-template #noFileSelected>
-                        <div class="file-placeholder">Sélectionner un fichier...</div>
+                        <label class="file-placeholder" for="fileInput">Sélectionner un fichier...</label>
                     </ng-template>
                     
                     <div class="button-select-file" (click)="fileInput.click()">
                         Changer
                     </div>
-                    <input #fileInput data-cy="file-form-input-file"
+                    <input #fileInput data-cy="file-form-input-file" id="fileInput"
                            type="file" hidden (change)="onFileSelected($event)">
                 </div>
 
@@ -47,9 +47,9 @@
                 
                 <div class="form-io">
                     
-                    <label class="form-input-label">Mot de passe</label>
+                    <label class="form-input-label" for="password">Mot de passe</label>
                     <input type="password" class="form-input"                        
-                    formControlName="password" 
+                    formControlName="password" id="password"
                     placeholder="Optionnel"
                     data-cy="file-form-input-password"
                     />
@@ -64,8 +64,8 @@
                 
                 <div class="form-io form-expiration">
                     
-                    <label class="form-input-label">Expiration</label>
-                    <select class="form-input expiration" [formControl]="selectExpiration" data-cy="file-form-select-expiration">
+                    <label class="form-input-label" for="expiration">Expiration</label>
+                    <select class="form-input expiration" [formControl]="selectExpiration" id="expiration" data-cy="file-form-select-expiration">
                         <option *ngFor="let option of expirations" [value]="option.value">
                             {{ option.viewValue }}
                         </option>
@@ -74,8 +74,8 @@
 
                 <div class="form-io">
                     
-                    <label class="form-input-label">Ajouter des tags</label>
-                    <input type="text" class="form-input"
+                    <label class="form-input-label" for="tags">Ajouter des tags</label>
+                    <input type="text" class="form-input" id="tags"
                     [formControl]="tagInput"
                     (keyup)="onTagKeyUp($event)"
                     placeholder="Séparez les tags par un espace"

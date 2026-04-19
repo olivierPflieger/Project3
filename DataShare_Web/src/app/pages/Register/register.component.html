@@ -27,9 +27,9 @@
             
             <div class="form-io">
 
-                <label class="form-input-label">Email</label>                
+                <label class="form-input-label" for="email">Email</label>                
                 <input type="email" class="form-input" 
-                formControlName="email"
+                formControlName="email" id="email"
                 data-cy="register-input-email"
                 placeholder="Saisissez votre email..."/>                
                 @if (submitted && form['email'].errors) {
@@ -46,9 +46,9 @@
             
             <div class="form-io">
                 
-                <label class="form-input-label">Mot de passe</label>
+                <label class="form-input-label" for="password">Mot de passe</label>
                 <input type="password" class="form-input"
-                formControlName="password" 
+                formControlName="password" id="password"
                 data-cy="register-input-password"
                 placeholder="Saisissez votre mot de passe...">
                 @if (submitted && form['password'].errors) {
@@ -62,9 +62,9 @@
                     </div>
                 }
                 
-                <label class="form-input-label">Vérification du mot de passe</label>
+                <label class="form-input-label" for="confirmPassword">Vérification du mot de passe</label>
                 <input type="password" class="form-input"
-                formControlName="confirmPassword" 
+                formControlName="confirmPassword" id="confirmPassword"
                 data-cy="register-input-confirmPassword"
                 placeholder="Saisissez-le à nouveau">
                 @if (submitted && userForm?.errors?.['passwordMismatch']) {

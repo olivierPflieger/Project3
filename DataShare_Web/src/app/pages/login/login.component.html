@@ -25,9 +25,9 @@
         <div class="form-io-container">
 
             <div class="form-io">
-                <label class="form-input-label">Email</label>                
+                <label class="form-input-label" for="email">Email</label>                
                 <input class="form-input" type="text" 
-                    formControlName="email"
+                    formControlName="email" id="email"
                     data-cy="login-input-email" 
                     placeholder="Saisissez votre email...">
                     @if (submitted && form['email'].errors) {
@@ -43,9 +43,9 @@
             </div>
 
             <div class="form-io">
-                <label class="form-input-label">Mot de passe</label>
+                <label class="form-input-label" for="password">Mot de passe</label>
                 <input class="form-input" type="password" 
-                    formControlName="password" 
+                    formControlName="password" id="password"
                     data-cy="login-input-password"
                     placeholder="Saisissez votre mot de passe...">
                     @if (submitted && form['password'].errors) {
