@@ -47,6 +47,5 @@ Thumbs.db
 
 * Tests artefacts
 perf/reports
-perf/fixtures/upload-test-5mb.bin
-perf/fixtures/upload-test-10mb.bin
+perf/fixtures/upload**
 cypress/downloads
