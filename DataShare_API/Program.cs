@@ -17,9 +17,17 @@ builder.Services.Configure<FileUploadSettings>(builder.Configuration.GetSection(
 // Injecte les options AWS depuis le appsettings.json
 builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
 
+var config = builder.Configuration;
+var connectionString =
+    $"Host={config["POSTGRES_HOST"]};" +
+    $"Port={config["POSTGRES_PORT"]};" +
+    $"Database={config["POSTGRES_DB"]};" +
+    $"Username={config["POSTGRES_USER"]};" +
+    $"Password={config["POSTGRES_PASSWORD"]};";
+
 // Ajout du DbContext avec PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // Enregistrement des services
 builder.Services.AddScoped<IUserService, UserService>();
