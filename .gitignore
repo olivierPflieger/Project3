@@ -74,3 +74,6 @@ ehthumbs.db
 
 # Secrets
 .env
+
+# Tests reports
+Datashare_Tests/coveragereport
