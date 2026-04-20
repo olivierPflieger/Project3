@@ -45,30 +45,49 @@ namespace DataShare_API.Services
             // Additional inputs parameters from body
             var uploadMetadata = new UploadMetadata();
 
+            var fileMetaData = (FileMetaData?)null;
             while (section != null)                        
             {
                 var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition);
 
                 // Extract additional parameters from body (ex: password, tags, etc.)
                 if (hasContentDispositionHeader && contentDisposition.DispositionType.Equals("form-data"))                    
-                {                    
-                    // Extract additional parameters from body (ex: password, tags, etc.)
+                {
+                    // Extract additional parameters from body(ex: password, tags, etc.)
                     if (string.IsNullOrEmpty(contentDisposition.FileName.Value))
                     {
                         await ExtractFormMetadataAsync(section, contentDisposition, uploadMetadata);
                     }
-
                     // Streaming & Processing file
                     else if (!string.IsNullOrEmpty(contentDisposition.FileName.Value))
                     {
-                        return await ProcessAndUploadFileAsync(section, contentDisposition.FileName.Value, uploadMetadata, userId);
-                    }                    
+                        fileMetaData = await ProcessAndUploadFileAsync(section, contentDisposition.FileName.Value, uploadMetadata, userId);
+                    }
                 }
-                                                                
+                    
                 section = await reader.ReadNextSectionAsync();
             }
 
-            throw new CustomDatashareException(HttpStatusCode.BadRequest, "Aucun fichier valide n'a été trouvé");
+            if (fileMetaData == null)
+                throw new CustomDatashareException(HttpStatusCode.BadRequest, "Aucun fichier valide n'a été trouvé");
+
+            // Injection des paramètres additionnels
+            fileMetaData.ExpirationDays = uploadMetadata.ExpirationDays;            
+            fileMetaData.Password = uploadMetadata.PasswordHash;
+            fileMetaData.Tags = uploadMetadata.Tags;
+
+            await CreateFileMetaDataAsync(fileMetaData);
+
+            // Finally return response
+            return new UploadFileResponse
+            {
+                OriginalFileName = fileMetaData.OriginalName,
+                Token = fileMetaData.Token,
+                Extension = fileMetaData.Extension,
+                FileSize = FileUtils.FormatFileSize(long.Parse(fileMetaData.Size)),
+                CreatedAt = fileMetaData.CreatedAt,
+                ExpirationDays = fileMetaData.ExpirationDays
+            };                                    
         }
 
         public async Task<DownloadFileResponse> DownloadFileAsync(string token, string? password)
@@ -223,7 +242,7 @@ namespace DataShare_API.Services
         }
 
         // File Upload : Process file and upload to S3
-        private async Task<UploadFileResponse> ProcessAndUploadFileAsync(MultipartSection section, string originalFileName, UploadMetadata metadata, int userId)
+        private async Task<FileMetaData> ProcessAndUploadFileAsync(MultipartSection section, string originalFileName, UploadMetadata metadata, int userId)
         {
             var extension = Path.GetExtension(originalFileName).ToLowerInvariant();
 
@@ -266,18 +285,7 @@ namespace DataShare_API.Services
                         UserId = userId
                     };
 
-                    await CreateFileMetaDataAsync(fileMetaData);
-                    
-                    // Finally return response
-                    return new UploadFileResponse
-                    {
-                        OriginalFileName = originalFileName,
-                        Token = token,
-                        Extension = extension,
-                        FileSize = FileUtils.FormatFileSize(s3ObjectMetadata.ContentLength),
-                        CreatedAt = fileMetaData.CreatedAt,
-                        ExpirationDays = metadata.ExpirationDays
-                    };
+                    return fileMetaData;                    
                 }
             }
             catch (Exception ex)
