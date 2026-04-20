@@ -104,14 +104,14 @@ $runs = @(
   @{
     Name = 'Random upload size 1-100MiB x50'
     Vus = 20
-    Duration = '2m'
+    Duration = '3m'
     UploadFile = $xxlFixture
     UploadRandomRange = $true
     UploadMinMb = 1
-    UploadMaxMb = 50
+    UploadMaxMb = 100
     UploadSourceMaxMb = 100
-    UploadResponseP95 = 40000
-    DownloadResponseP95 = 40000
+    UploadResponseP95 = 20000
+    DownloadResponseP95 = 20000
     ReportName = '01-random-file-50vu.html'
   }
 )
