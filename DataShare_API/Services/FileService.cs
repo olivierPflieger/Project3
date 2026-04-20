@@ -76,7 +76,27 @@ namespace DataShare_API.Services
             fileMetaData.Password = uploadMetadata.PasswordHash;
             fileMetaData.Tags = uploadMetadata.Tags;
 
-            await CreateFileMetaDataAsync(fileMetaData);
+            try
+            {
+                await CreateFileMetaDataAsync(fileMetaData);
+            } 
+            catch (Exception ex)
+            {
+                // L'insertion en base a échoué, on supprime le fichier orphelin sur S3
+                try
+                {
+                    var deleteRequest = new DeleteObjectRequest
+                    {
+                        BucketName = _settings.AwsBucketName,
+                        Key = String.Format("{0}{1}", fileMetaData.Token, fileMetaData.Extension)
+                    };
+                    await _s3Client.DeleteObjectAsync(deleteRequest);
+                }
+                catch
+                {
+                    throw new CustomDatashareException(HttpStatusCode.BadRequest, "Erreur d'insertion en base de données");
+                }
+            }
 
             // Finally return response
             return new UploadFileResponse
@@ -87,7 +107,7 @@ namespace DataShare_API.Services
                 FileSize = FileUtils.FormatFileSize(long.Parse(fileMetaData.Size)),
                 CreatedAt = fileMetaData.CreatedAt,
                 ExpirationDays = fileMetaData.ExpirationDays
-            };                                    
+            };
         }
 
         public async Task<DownloadFileResponse> DownloadFileAsync(string token, string? password)
@@ -290,22 +310,6 @@ namespace DataShare_API.Services
             }
             catch (Exception ex)
             {
-                // Suppression du fichier orphelin sur S3
-                try
-                {
-                    var deleteRequest = new DeleteObjectRequest
-                    {
-                        BucketName = _settings.AwsBucketName,
-                        Key = generatedFileName
-                    };
-                    await _s3Client.DeleteObjectAsync(deleteRequest);
-                }
-                catch
-                {
-                    // On capture silencieusement l'erreur de nettoyage.
-                    // On ne veut pas que cette erreur masque la VRAIE erreur qui a causé le crash initial.
-                }
-
                 throw new CustomDatashareException(HttpStatusCode.InternalServerError, $"Erreur lors de l'envoi du fichier vers AWS S3 : {ex.Message}");
             }
         }
