@@ -27,10 +27,10 @@ http://localhost:4200
 
 Ce document explique comment éxecuter les tests e2e du Front-End
 
-[Voir la documentation](README_FrontEnd_Tests.md)
+[Voir la documentation](TESTING_FrontEnd.md)
 
 ## Guide des tests de performances K6
 
 Ce document explique comment éxecuter les tests de performances K6
 
-[Voir la documentation](README_Tests_K6.md)
+[Voir la documentation](PERF_K6.md)

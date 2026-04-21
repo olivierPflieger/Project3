@@ -106,6 +106,10 @@ AWS:AccessKey = ...
 
 ```
 ./start-database.ps1
+```
+Puis, pour lancer le serveur, exécutez : 
+
+```
 dotnet run
 ```
 
@@ -196,4 +200,4 @@ La collection Postman utilisée pour ce projet est disponible dans \Resources\Pr
 
 Ce document explique comment éxecuter les tests du Back-End
 
-[Voir la documentation](README_BackEnd.md)
+[Voir la documentation](TESTING_BackEnd.md)
