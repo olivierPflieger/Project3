@@ -11,16 +11,18 @@ Ce projet utilise les fonctionnalités avancées de sécurité proposées par Gi
 ## Analyse statique du code
 
 **CodeQL** est utilisé pour effectuer des analyses automatiques du code.
-Ces analyses sont exécutées automatiquement sur les *pull requests* ainsi que régulièrement sur le dépôt.
+Ces analyses sont exécutées automatiquement sur les commits faits sur le dépôt.
 
 ## Sécurité des dépendances
 
 Les outils intégrés de GitHub sont utilisés :
 
-* `Dependabot alerts` et `Dependabot malware` sont activés afin de générer des alertes.
-* `Dependabot version updates` est désactivé, afin de ne pas risquer de générer de régression dans l'application.
-En cas de mise en production, ce point devra faire l'objet d'une prise de décision.
+* `Dependabot` est activé afin de générer des alertes (envoi d'un mail) en cas de vulnérabilité (ou malware) identifiée dans les dépendances du projet. 
+De plus, dans ce cas, Github générera automatiquement une pull request. Un merge manuel reste cependant à valider.
 
+* Par contre, `Dependabot version updates` est désactivé par défaut, afin de ne pas risquer de générer de régression dans l'application.
+
+Point ouvert: En cas de mise en production, ce point devra faire l'objet d'une prise de décision.
 
 ## Détection de secrets
 

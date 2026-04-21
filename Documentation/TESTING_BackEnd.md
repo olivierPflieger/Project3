@@ -20,7 +20,12 @@ et exécutez :
 
 ```
 dotnet test --collect:"XPlat Code Coverage" --settings coverage.runsettings
+```
+
+puis, pour générer le rapport, exécutez : 
+
+```
 reportgenerator -reports:TestResults/**/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:Html
 ```
 
-Le rapport de couverture de code est disponible dans \coveragereport\index.html
+Le rapport de couverture de code est disponible dans DataShare_Tests\coveragereport\index.html

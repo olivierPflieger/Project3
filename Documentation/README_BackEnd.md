@@ -1,16 +1,31 @@
-﻿# DataShare Back-End
+﻿# DataShare Back-end
 
-## Pré-requis pour le bon fonctionnement du backEnd
+## Pré-requis pour le bon fonctionnement du Back-end
 
-- SDK .NET 8
-- Docker Desktop
-- Outil CLI Entity Framework Core (dotnet-ef). 
+- [SDK .NET 8](https://dotnet.microsoft.com/fr-fr/download/dotnet/8.0)
+- [Docker Desktop] (https://docs.docker.com/desktop/setup/install/windows-install) version 4.65.0
+- CLI Entity Framework Core (dotnet-ef)
 
 Pour installer CLI Entity Framework Core, ouvrir une console Powershell et éxécutez :
 
 ```
 dotnet tool install --global dotnet-ef --version 8.*
 ```     
+
+## Utilisation générale (hors première utilisation)
+
+Démarrez Docker Desktop (ou le service Docker)
+
+Ouvrez une console Powershell à la racine du projet DataShare_API et exécutez :
+
+```
+.\start-database.ps1
+```
+Puis, pour démarrer le serveur
+
+```
+dotnet run
+```
 
 ## Première utilisation
 
@@ -100,30 +115,22 @@ dotnet run
 http://localhost:5051/swagger/
 ```
 
-## Utilisation générale (hors première utilisation)
-
-Démarrez Docker Desktop (ou le service Docker)
-
-Ouvrez une console Powershell à la racine du projet DataShare_API et exécutez :
-
-```
-./start-database.ps1
-dotnet run
-```
-
 ## Mettre à jour la base de données
 
-Les modifications de structure de la base de données font l'objet d'un commentaire précis dans le commit
+Les modifications de structure de la base de données devront faite l'objet d'un commentaire précis dans le commit
 
 ```
 feat!: Migration requise - ...
 ```
 
-Dans ce cas, afin d'appliquer les nouveaux changements effectués sur la base de données, 
-stoppez l'application et relancer les deux commandes :
+Dans ce cas, afin d'appliquer les nouveaux changements effectués sur la base de données, stoppez l'application et éxecutez :
 
 ```
 ./start-database.ps1
+```
+Puis, pour relancer le serveur, éxecutez : 
+
+```
 dotnet run
 ```
 

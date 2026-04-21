@@ -1,10 +1,12 @@
-# DataShare Front-End
+# DataShare Front-end
+
+## Pré-requis pour le bon fonctionnement du Front-end
 
 Ce projet a été généré avec [Angular CLI](https://github.com/angular/angular-cli) version 21.2.3.
 
 ## Installation des dépendances
 
-Pour installer les dépendances, ouvrir un terminal à la racine du projet DataShare_Web et éxécutez :
+Pour installer les dépendances, ouvrez un terminal à la racine du projet DataShare_Web et éxécutez :
 
 ```bash
 npm install
@@ -17,6 +19,9 @@ Pour démarrer le serveur, ouvrir un terminal à la racine du projet DataShare_W
 ```bash
 ng serve
 ```
+
+Une fois le serveur démarré, l’application est disponible à l’adresse suivante : 
+http://localhost:4200
 
 ## Guide des tests du Front-End
 

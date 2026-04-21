@@ -47,27 +47,7 @@ Pour chaque rapport HTML, la campagne génère aussi :
 ```
 ## Configuration de la campagne
 
-Le wrapper [scripts/run-k6.cjs](/D:/_OpenClassRooms_/Project3/DataShare_Web/scripts/run-k6.cjs) prend en charge :
-
-```powershell
-K6_BASE_URL=http://host.docker.internal:5051
-K6_UPLOAD_FILE=perf/fixtures/upload-test.txt
-K6_REPORT_FILE=perf/reports/custom-report.html
-K6_VUS=5
-K6_DURATION=1m
-K6_ITERATIONS=1
-K6_FILE_PASSWORD=k6-secret
-K6_FILE_TAGS=k6,perf
-K6_FILE_EXPIRATION=1
-K6_UPLOAD_RANDOM_RANGE=true
-K6_UPLOAD_MIN_MB=1
-K6_UPLOAD_MAX_MB=100
-K6_UPLOAD_SOURCE_MAX_MB=100
-K6_UPLOAD_RESPONSE_P95=2000
-K6_DOWNLOAD_RESPONSE_P95=2000
-K6_SUMMARY_FILE=perf/reports/custom-summary.md
-K6_SUMMARY_JSON_FILE=perf/reports/custom-summary.json
-```
+Les paramètres d'entrée de la campagne peuvent être modifiés dans le fichier Scripts/run-k6-campaign.ps1
 
 Exemple avec 50 VUS, pour une durée de 2mn et une taille aléatoire entre `1 MiB` et `10 MiB` a chaque iteration :
 

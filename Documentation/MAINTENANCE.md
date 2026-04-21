@@ -7,138 +7,87 @@ Ce document décrit les procédures de maintenance de l'application (Angular fro
 
 ## Procédures de mise à jour
 
-### Frontend (Angular)
+### Front-end (Angular)
 
-* Vérifier les mises à jour :
+* Pour vérifier les mises à jour, ouvrez un terminal à la racine du projet DataShare_Web et éxécutez :
 
   ```bash
   npm outdated
   ```
 
-* Mettre à jour les dépendances :
+* Pour mettre à jour les dépendances, ouvrez un terminal à la racine du projet DataShare_Web et éxécutez :
 
   ```bash
   npm update
   ```
 
-* Mise à jour majeure Angular :
+* Pour mettre à jour la version majeure Angular, ouvrez un terminal à la racine du projet DataShare_Web et éxécutez :
 
   ```bash
   ng update
   ```
 
----
 
-### Backend (.NET Core)
+### Back-end (.NET Core)
 
-* Vérifier les mises à jour :
+* Pour vérifier les mises à jour, ouvrez une console Powershell à la racine du projet DataShare_API et éxécutez :
 
   ```bash
   dotnet list package --outdated
   ```
 
-* Mettre à jour les dépendances :
+* Pour mettre à jour les dépendances, ouvrez une console Powershell à la racine du projet DataShare_API et éxécutez :
+
 
   ```bash
   dotnet add package <nom_package>
   ```
 
----
 
 ### Base de données (PostgreSQL)
 
-* Appliquer les migrations :
+* Les modifications de structure de la base de données devront l'objet d'un commentaire précis dans le commit
+
+```
+feat!: Migration requise - ...
+```
+
+Dans ce cas, afin d'appliquer les nouveaux changements effectués sur la base de données, stoppez l'application (si elle est démarrée), ouvrez une console Powershell à la racine du projet DataShare_API et éxécutez :
+
+```
+./start-database.ps1
+```
+
+* Pour sauvegarder la base de données, ouvrez un terminal dans un répertoire de votre choix et éxécutez :
 
   ```bash
-  dotnet ef database update
-  ```
-
-* Sauvegarde :
-
-  ```bash
-  pg_dump -U <user> -d <database> > backup.sql
+  docker exec -i postgres_db pg_dump -U <user> -d <datashare> > datashare-backup.sql
   ```
 
 * Restauration :
 
   ```bash
-  psql -U <user> -d <database> < backup.sql
+  docker exec -i postgres_db pg_dump -U <user> -d <datashare> < datashare-backup.sql
   ```
 
----
+## Fréquence de mise à jour de dépendances
 
-## ⏱️ Fréquence de maintenance
+Dans le cadre de ce MVP, et dû aux risques identifiés dans la section suivante, aucune fréquence de mise à jour automatique des dépendances n'est activée. En cas de mise en production, ce point devra faire l'objet d'une prise de décision.
 
-* Hebdomadaire :
+Néanmoins `Dependabot` est activé afin de générer des alertes (envoi d'un mail) en cas de vulnérabilité (ou malware) identifiée dans les dépendances du projet. 
+De plus, dans ce cas, Github générera automatiquement une pull request. Un merge manuel reste cependant à valider.
 
-  * Vérification des logs backend
-  * Surveillance des erreurs frontend
+Par contre, `Dependabot version updates` est désactivé par défaut.
 
-* Mensuelle :
+## Risques de mises à jour des dépendances
 
-  * Mise à jour des dépendances mineures (Angular, .NET)
-  * Vérification des performances
+Les mises à jour de dépendances présentent de nombreux risques :
 
-* Trimestrielle :
+* Comportement inattendu
+* Introduction de bugs
+* Suppression de méthodes entraînant un problème de compilation
+* Risque d'incompatibilité entre dépendances
+* Risque de stabilité en production (dans le cas de dépendance mise à jour automatiquement sans test préalables)
+* ...
 
-  * Mise à jour majeure des frameworks
-  * Audit de sécurité
-  * Nettoyage de la base de données
-
----
-
-## 👀 Surveillance
-
-* Logs backend (.NET)
-
-* Console navigateur (Angular)
-
-* Base de données :
-
-  * requêtes lentes
-  * utilisation CPU / mémoire
-
-* Outils possibles :
-
-  * Serilog / logs fichiers
-  * pgAdmin pour PostgreSQL
-
----
-
-## ⚠️ Risques connus
-
-* Incompatibilité lors de mises à jour majeures Angular ou .NET
-* Perte de données en cas de mauvaise migration
-* Dégradation des performances (requêtes SQL lentes)
-* Mauvaise configuration en production
-
----
-
-## 🔄 Plan de rollback
-
-En cas de problème après déploiement :
-
-1. Revenir à la version précédente :
-
-   ```bash
-   git checkout <version_precedente>
-   ```
-
-2. Restaurer la base de données :
-
-   ```bash
-   psql -U <user> -d <database> < backup.sql
-   ```
-
-3. Redéployer l'application
-
-4. Analyser les logs pour identifier le problème
-
----
-
-## 🔐 Bonnes pratiques
-
-* Toujours tester en environnement de développement avant production
-* Sauvegarder la base de données avant chaque migration
-* Documenter les changements importants
-* Utiliser un contrôle de version (Git)
+Ainsi, bien que des outils comme Dependabot facilitent la détection des mises à jour, leur intégration doit être contrôlée via des tests automatisés et une validation humaine avant mise en production.
