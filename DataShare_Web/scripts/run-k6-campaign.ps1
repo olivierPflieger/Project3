@@ -112,7 +112,7 @@ $runs = @(
     UploadSourceMaxMb = 100
     UploadResponseP95 = 20000
     DownloadResponseP95 = 20000
-    ReportName = '01-random-file-50vu.html'
+    ReportName = 'k6-report.html'
   }
 )
 
