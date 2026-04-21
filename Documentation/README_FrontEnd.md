@@ -33,4 +33,4 @@ Ce document explique comment éxecuter les tests e2e du Front-End
 
 Ce document explique comment éxecuter les tests de performances K6
 
-[Voir la documentation](PERF_K6.md)
+[Voir la documentation](PERF.md)

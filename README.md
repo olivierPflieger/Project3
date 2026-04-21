@@ -48,3 +48,8 @@ Ce document explique comment éxecuter les tests de performances K6
 Ce document décrit la politique de sécurité mise en place pour ce MVP
 
 [Voir la documentation](Documentation/SECURITY.md)
+
+## Maintenance de l'application
+
+[Voir la documentation](Documentation/MAINTENANCE.md)
+

@@ -2,6 +2,8 @@
 
 ## Exécuter les tests
 
+Important : Assurez-vous que l'API soit coupée avant de lancer les tests du Back-End
+
 Pour lancer les tests sans couverture de code, ouvrez une console Powershell à la racine du projet DataShare_Tests 
 et exécutez :
 
