@@ -13,5 +13,5 @@
 - [Tests Back-End](testing-backend.md)
 - [Tests Front-End](testing-frontend.md)
 - [Tests de performances K6](perf.md)
-- [Politique de sécurité](security.md)
+- [Sécurité](security.md)
 - [Maintenance](maintenance.md)
