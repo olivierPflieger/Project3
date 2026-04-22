@@ -1,0 +1,17 @@
+site_name: Projet3 DataShare
+site_url: https://github.com/olivierPflieger/Project3/
+theme:
+  name: material
+  language: fr
+
+nav:
+  - Accueil: index.md
+  - Démarrage:
+      - Back-End: backend.md
+      - Front-End: frontend.md
+  - Tests:
+      - Back-End: testing-backend.md
+      - Front-End: testing-frontend.md
+      - Performance K6: perf.md
+  - Sécurité: security.md
+  - Maintenance: maintenance.md

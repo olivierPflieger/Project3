@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://github.com/olivierPflieger/Project3/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://github.com/olivierPflieger/Project3/backend/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://github.com/olivierPflieger/Project3/frontend/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://github.com/olivierPflieger/Project3/maintenance/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://github.com/olivierPflieger/Project3/perf/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://github.com/olivierPflieger/Project3/security/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://github.com/olivierPflieger/Project3/testing-backend/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://github.com/olivierPflieger/Project3/testing-frontend/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+</urlset>
