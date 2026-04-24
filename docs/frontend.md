@@ -4,6 +4,15 @@
 
 Ce projet a été généré avec [Angular CLI](https://github.com/angular/angular-cli) version 21.2.3.
 
+Pour installer Angular CLI
+Installer [Node](https://nodejs.org/fr)
+
+Puis, ouvrez un terminal et éxecuter
+
+```
+npm install -g @angular/cli
+```
+
 ## Installation des dépendances
 
 Pour installer les dépendances, ouvrez un terminal à la racine du projet DataShare_Web et éxécutez :
