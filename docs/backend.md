@@ -21,6 +21,14 @@ Ouvrez une console Powershell à la racine du projet DataShare_API et exécutez 
 ```
 .\start-database.ps1
 ```
+
+NOTE : Si vous avez des problèmes à éxecuter les scripts ps1, exécutez au préalable la commande :
+
+```
+Set-ExecutionPolicy RemoteSigned
+./start-database.ps1
+```
+
 Puis, pour démarrer le serveur
 
 ```
@@ -67,7 +75,7 @@ dotnet user-secrets set "AWS:Region" "eu-west-3"
 
 #### Database identifiants
 
-Ouvrez une console Powershell à la racine du projet backend et exécutez les commandes suivantes :
+Ouvrez une console Powershell à la racine du projet DataShare_API et exécutez les commandes suivantes :
 
 ```bash
 dotnet user-secrets set "POSTGRES_HOST" "localhost"
@@ -107,6 +115,14 @@ AWS:AccessKey = ...
 ```
 ./start-database.ps1
 ```
+
+NOTE : Si vous avez des problèmes à éxecuter les scripts ps1, exécutez au préalable la commande :
+
+```
+Set-ExecutionPolicy RemoteSigned
+./start-database.ps1
+```
+
 Puis, pour lancer le serveur, exécutez : 
 
 ```
@@ -132,6 +148,14 @@ Dans ce cas, afin d'appliquer les nouveaux changements effectués sur la base de
 ```
 ./start-database.ps1
 ```
+
+NOTE : Si vous avez des problèmes à éxecuter les scripts ps1, exécutez au préalable la commande :
+
+```
+Set-ExecutionPolicy RemoteSigned
+./start-database.ps1
+```
+
 Puis, pour relancer le serveur, éxecutez : 
 
 ```
@@ -183,6 +207,13 @@ psql -U admin -d datashare -W
 Pour supprimer toutes les entrées dans la database ainsi que supprimer tous les fichiers dans AWS, ouvrez une console Powershell dans le répertoire DataShare_API\Scripts et exécutez :
 
 ```
+.\clean_database_and_bucket.ps1
+```
+
+NOTE : Si vous avez des problèmes à éxecuter les scripts ps1, exécutez au préalable la commande :
+
+```
+Set-ExecutionPolicy RemoteSigned
 .\clean_database_and_bucket.ps1
 ```
 
