@@ -4,10 +4,11 @@
 
 Ce projet a été généré avec [Angular CLI](https://github.com/angular/angular-cli) version 21.2.3.
 
-Pour installer Angular CLI
-Installer [Node](https://nodejs.org/fr)
+Pour installer Angular CLI:
 
-Puis, ouvrez un terminal et éxecuter
+Installez [Node](https://nodejs.org/fr)
+
+Puis, ouvrez un terminal et exécuter
 
 ```
 npm install -g @angular/cli
