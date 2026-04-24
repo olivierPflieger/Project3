@@ -42,35 +42,44 @@ perf/reports/campaign-YYYYMMDD-HHmmss/
 Pour chaque rapport HTML, la campagne génère aussi :
 
 ```text
-01-random-file-50vu.summary.md
-01-random-file-50vu.summary.json
+test.summary.md
+test.summary.json
 ```
 ## Configuration de la campagne
 
 Les paramètres d'entrée de la campagne peuvent être modifiés dans le fichier Scripts/run-k6-campaign.ps1
 
-Exemple avec 50 VUS, pour une durée de 2mn et une taille aléatoire entre `1 MiB` et `10 MiB` a chaque iteration :
+Scénario avec 1 VU, pour une durée de 2mn et une taille aléatoire entre `1 MiB` et `10 MiB` a chaque iteration :
 
 ```powershell
-$env:K6_VUS="50"
+$env:K6_VUS="1"
 $env:K6_DURATION="2m"
 $env:K6_UPLOAD_RANDOM_RANGE="true"
 $env:K6_UPLOAD_MIN_MB="1"
-$env:K6_UPLOAD_MAX_MB="100"
-$env:K6_UPLOAD_SOURCE_MAX_MB="10"
-$env:K6_UPLOAD_RESPONSE_P95="10000"
-$env:K6_DOWNLOAD_RESPONSE_P95="10000"
+$env:K6_UPLOAD_MAX_MB="50"
+$env:K6_UPLOAD_SOURCE_MAX_MB="100"
+$env:K6_UPLOAD_RESPONSE_P95="5000"
+$env:K6_DOWNLOAD_RESPONSE_P95="5000"
 ```
 
-Exemple avec 20 VUS pour une durée de 3mn et une taille aléatoire entre `1 MiB` et `50 MiB` a chaque iteration :
+Rapport généré le 20/06/2026
+
+![Description](./assets/k6-01.jpg)
+
+
+Scénario avec 20 VUS pour une durée de 3mn et une taille aléatoire entre `1 MiB` et `50 MiB` a chaque iteration :
 
 ```powershell
 $env:K6_VUS="20"
 $env:K6_DURATION="3m"
 $env:K6_UPLOAD_RANDOM_RANGE="true"
 $env:K6_UPLOAD_MIN_MB="1"
-$env:K6_UPLOAD_MAX_MB="50"
+$env:K6_UPLOAD_MAX_MB="100"
 $env:K6_UPLOAD_SOURCE_MAX_MB="100"
-$env:K6_UPLOAD_RESPONSE_P95="15000"
-$env:K6_DOWNLOAD_RESPONSE_P95="15000"
+$env:K6_UPLOAD_RESPONSE_P95="20000"
+$env:K6_DOWNLOAD_RESPONSE_P95="20000"
 ```
+
+Rapport généré le 20/06/2026
+
+![Description](./assets/k6-02.jpg)

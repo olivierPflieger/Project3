@@ -31,3 +31,9 @@ reportgenerator -reports:TestResults/**/coverage.cobertura.xml -targetdir:covera
 ```
 
 Le rapport de couverture de code est disponible dans DataShare_Tests\coveragereport\index.html
+
+## Rapport
+
+Rapport généré le 20/06/2026
+
+![Description](./assets/rapport-backend.jpg)

@@ -38,3 +38,9 @@ Pour ouvrir la console Cypress, ouvrir un terminal à la racine du projet DataSh
 ```bash
 npx cypress open
 ```
+
+## Rapport
+
+Rapport généré le 20/06/2026
+
+![Description](./assets/rapport-frontend.jpg)
