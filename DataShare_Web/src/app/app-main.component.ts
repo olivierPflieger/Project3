@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { LoginService } from './core/service/login/login.service';
+import { SentryExempleComponent } from './sentry-example.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink],
+  imports: [RouterOutlet, RouterLink, SentryExempleComponent],
   templateUrl: './app-main.component.html',
   styleUrl: './app-main.component.css'
 })

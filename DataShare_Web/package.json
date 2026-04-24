@@ -19,7 +19,8 @@
     "cy:coverage": "start-server-and-test start:coverage http://localhost:4201 \"cypress run --config baseUrl=http://localhost:4201\"",
     "perf:smoke": "node scripts/run-k6.cjs smoke",
     "perf:load": "node scripts/run-k6.cjs load",
-    "perf:k6": "node scripts/run-k6.cjs"
+    "perf:k6": "node scripts/run-k6.cjs",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org oc-mj --project javascript-angular ./dist && sentry-cli sourcemaps upload --org oc-mj --project javascript-angular ./dist"
   },
   "private": true,
   "packageManager": "npm@11.12.0",
@@ -30,6 +31,8 @@
     "@angular/forms": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
+    "@sentry/angular": "^10.50.0",
+    "@sentry/cli": "^2.58.5",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "^0.16.1"

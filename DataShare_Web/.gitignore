@@ -49,3 +49,6 @@ Thumbs.db
 perf/reports
 perf/fixtures/upload**
 cypress/downloads
+
+# Sentry Config File
+.sentryclirc

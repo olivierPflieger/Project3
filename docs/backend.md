@@ -3,7 +3,7 @@
 ## Pré-requis pour le bon fonctionnement du Back-end
 
 - [SDK .NET 8](https://dotnet.microsoft.com/fr-fr/download/dotnet/8.0)
-- [Docker Desktop] (https://docs.docker.com/desktop/setup/install/windows-install) version 4.65.0
+- [Docker Desktop version 4.65.0](https://docs.docker.com/desktop/setup/install/windows-install)
 - CLI Entity Framework Core (dotnet-ef)
 
 Pour installer CLI Entity Framework Core, ouvrir une console Powershell et éxécutez :
