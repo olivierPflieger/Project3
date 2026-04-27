@@ -41,6 +41,6 @@ npx cypress open
 
 ## Rapport
 
-Rapport généré le 20/06/2026
+Rapport généré le 20/04/2026
 
 ![Description](./assets/rapport-frontend.jpg)
