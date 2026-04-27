@@ -62,7 +62,7 @@ $env:K6_UPLOAD_RESPONSE_P95="5000"
 $env:K6_DOWNLOAD_RESPONSE_P95="5000"
 ```
 
-Rapport généré le 20/06/2026
+Rapport généré le 20/04/2026
 
 ![Description](./assets/k6-01.jpg)
 
