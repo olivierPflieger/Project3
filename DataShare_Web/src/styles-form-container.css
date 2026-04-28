@@ -140,6 +140,7 @@
   height: 24px;
   background-image: url("/images/file-selector.svg");
   background-size: contain;
+  background-repeat: no-repeat;
   margin-top: 7px;
 }
 
