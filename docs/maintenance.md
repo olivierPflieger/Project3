@@ -91,3 +91,7 @@ Les mises à jour de dépendances présentent de nombreux risques :
 * ...
 
 Ainsi, bien que des outils comme Dependabot facilitent la détection des mises à jour, leur intégration doit être contrôlée via des tests automatisés et une validation humaine avant mise en production.
+
+## Implémentation de Sentry
+
+![Description](./assets/sentry.jpg)

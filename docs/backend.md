@@ -226,9 +226,3 @@ Accédez à l'interface Swagger à l'adresse suivante :
 ## POSTMAN
 
 La collection Postman utilisée pour ce projet est disponible dans \Resources\Project3.postman_collection.json
-
-# Tests unitaires et d'intégration du back-End
-
-Ce document explique comment éxecuter les tests du Back-End
-
-[Voir la documentation](TESTING_BackEnd.md)
